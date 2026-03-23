@@ -28,11 +28,10 @@ header{height:82px;display:flex;align-items:center;justify-content:space-between
 .item.active{border-color:var(--gold);background:#fff7e8}
 .item-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .item-title{flex:1;font-weight:700}
-.hidden-actions{display:flex;gap:6px;min-width:74px;justify-content:flex-end;visibility:hidden;opacity:0;}
-.item:hover .hidden-actions{visibility:visible;opacity:1;}
 .input,.textarea{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px 12px;background:#fff;font:inherit}
 .textarea{min-height:120px;resize:vertical}
-.small-btn,.copy-btn{border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;padding:10px 12px;font-size:13px}
+.small-btn,.copy-btn{border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;padding:10px 12px;font-size:13px;transition:all 0.2s}
+.small-btn:hover{opacity:0.85}
 .copy-btn{background:var(--gold);border-color:var(--gold2);color:#fff;font-weight:800}
 .gold-btn{background:var(--gold);border-color:var(--gold2);color:#fff}
 .blue-btn{background:var(--blue);border-color:#3a5a8a;color:#fff}
@@ -46,7 +45,7 @@ header{height:82px;display:flex;align-items:center;justify-content:space-between
 .gold-box{background:var(--goldsoft);border:1px solid #ead39f}
 .blue-box{background:var(--bluesoft);border:1px solid #c7d8ff}
 .card{border:2px solid #2f3237;background:#fff;border-radius:14px;padding:14px;margin-bottom:14px}
-.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .card-label{font-size:12px;font-weight:900;color:var(--gold2);text-transform:uppercase}
 .card-text{white-space:pre-wrap;line-height:1.62;font-size:18px;color:#2a2a2a}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -62,17 +61,19 @@ header{height:82px;display:flex;align-items:center;justify-content:space-between
 .app-modal-backdrop.show{display:flex}
 .app-modal{width:min(560px, calc(100vw - 32px)); background:#fff; border-radius:16px; padding:16px;}
 .app-modal-title{font-size:20px; font-weight:800; margin-bottom:10px}
-.app-modal-text{font-size:14px; color:var(--muted); margin-bottom:10px; white-space:pre-wrap}
+.app-modal-text{font-size:14px; color:var(--muted); margin-bottom:10px; white-space:pre-wrap; line-height:1.5}
 .app-modal-input,.app-modal-textarea{width:100%; border:1px solid #d7d2c7; border-radius:10px; padding:10px 12px; font:inherit;}
 .app-modal-textarea{min-height:120px}
 .app-modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:12px}
 .login-modal .role-buttons{display:flex;gap:12px;margin-bottom:16px}
-.login-modal .role-btn{flex:1;padding:12px;font-weight:700;border-radius:12px;cursor:pointer;border:1px solid var(--line);background:#fff}
+.login-modal .role-btn{flex:1;padding:12px;font-weight:700;border-radius:12px;cursor:pointer;border:1px solid var(--line);background:#fff;transition:all 0.2s}
 .login-modal .role-btn.active{background:var(--gold);color:#fff}
 .login-modal .password-field{display:none}
 .login-modal .password-field.show{display:block}
-.github-warning{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:10px;margin-bottom:12px;font-size:13px}
-.github-warning button{background:#ffc107;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:bold}
+.github-warning{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.github-warning-text{flex:1}
+.github-warning button{background:#ffc107;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:bold}
+.github-warning button:hover{background:#e0a800}
 @media (max-width:1150px){.layout{grid-template-columns:1fr}}
 </style>
 </head>
@@ -95,7 +96,7 @@ header{height:82px;display:flex;align-items:center;justify-content:space-between
     <div class="section-head"><div class="section-title">Магистраль</div></div>
     <div id="mainList" class="list"></div>
     <div class="divider"></div>
-    <div class="section-head"><div class="section-title" style="font-size:18px">📋 Предложения от менеджеров</div><div id="propBadge"></div></div>
+    <div class="section-head"><div class="section-title" style="font-size:18px">📋 Предложения</div><div id="propBadge"></div></div>
     <div id="proposalList" class="list"></div>
   </aside>
   <main class="panel white"><div id="center"></div></main>
@@ -110,11 +111,11 @@ const GITHUB_CONFIG = {
 };
 
 let githubToken = null;
-let pendingProposals = [];      // Из GitHub Issues
-let localProposals = [];        // Локальные предложения (если нет GitHub)
+let pendingProposals = [];
+let localProposals = [];
 
 // ==================== ОСНОВНЫЕ ДАННЫЕ ====================
-const KEY = 'borzo_v9';
+const KEY = 'borzo_v10';
 const AUTH_KEY = 'borzo_auth';
 
 const defaults = {
@@ -165,8 +166,6 @@ let state = load();
 
 function save() {
   localStorage.setItem(KEY, JSON.stringify(state));
-  // Сохраняем локальные предложения отдельно
-  localStorage.setItem('borzo_local_proposals', JSON.stringify(localProposals));
 }
 
 function loadLocalProposals() {
@@ -174,6 +173,10 @@ function loadLocalProposals() {
     const raw = localStorage.getItem('borzo_local_proposals');
     if (raw) localProposals = JSON.parse(raw);
   } catch(e) { localProposals = []; }
+}
+
+function saveLocalProposals() {
+  localStorage.setItem('borzo_local_proposals', JSON.stringify(localProposals));
 }
 
 const isOwner = () => state.role === 'owner';
@@ -192,7 +195,7 @@ async function requestGitHubToken() {
   return new Promise(resolve => {
     const backdrop = document.getElementById('appModalBackdrop');
     document.getElementById('appModalTitle').textContent = '🔐 Настройка GitHub';
-    document.getElementById('appModalText').innerHTML = 'Введите Personal Access Token для отправки предложений.<br><br><strong>Требуемые права:</strong> Issues (read/write)';
+    document.getElementById('appModalText').innerHTML = 'Введите Personal Access Token для отправки предложений руководителю.\n\n<strong>Требуемые права:</strong> Issues (read/write)\n\nТокен нужен ТОЛЬКО для отправки предложений. Без него руководитель не увидит ваши предложения!';
     document.getElementById('appModalFields').innerHTML = `
       <input id="githubTokenInput" class="app-modal-input" type="password" placeholder="GitHub Personal Access Token">
       <div class="toolbar" style="margin-top: 8px;">
@@ -222,11 +225,10 @@ async function requestGitHubToken() {
   });
 }
 
-// СОЗДАНИЕ ПРЕДЛОЖЕНИЯ
 async function createGitHubIssue(proposal) {
   const token = getGitHubToken();
   if (!token) {
-    // Нет токена - сохраняем локально
+    // Сохраняем локально с пометкой
     const localProposal = {
       id: Date.now(),
       ...proposal,
@@ -235,9 +237,10 @@ async function createGitHubIssue(proposal) {
       fromGitHub: false
     };
     localProposals.unshift(localProposal);
-    localStorage.setItem('borzo_local_proposals', JSON.stringify(localProposals));
+    saveLocalProposals();
+    
     showAlertModal('⚠️ GitHub не настроен', 
-      'Предложение сохранено ЛОКАЛЬНО.\n\nРуководитель его НЕ УВИДИТ, пока вы не настроите GitHub.\n\nНажмите "🔧 Настроить GitHub" в окне входа.\n\nПосле настройки предложение нужно будет отправить заново.');
+      '❌ Предложение НЕ ОТПРАВЛЕНО руководителю!\n\n✅ Сохранено ЛОКАЛЬНО (только на вашем компьютере).\n\n📌 Чтобы руководитель увидел предложение:\n1. Нажмите "🔧 Настроить GitHub" в окне входа\n2. Введите токен\n3. Отправьте предложение заново');
     return null;
   }
   
@@ -284,7 +287,8 @@ async function createGitHubIssue(proposal) {
     
     if (response.ok) {
       const issue = await response.json();
-      showAlertModal('✅ Предложение отправлено', `Предложение успешно создано в GitHub!\n\nНомер: #${issue.number}\n\nРуководитель увидит его после синхронизации.`);
+      showAlertModal('✅ Предложение отправлено!', 
+        `✅ Ваше предложение успешно отправлено руководителю!\n\n📌 Номер: #${issue.number}\n\n👨‍💼 Руководитель увидит его после синхронизации.`);
       return issue;
     } else {
       const error = await response.json();
@@ -292,12 +296,11 @@ async function createGitHubIssue(proposal) {
       return null;
     }
   } catch (e) {
-    showAlertModal('❌ Ошибка', `Ошибка соединения: ${e.message}`);
+    showAlertModal('❌ Ошибка', `Ошибка соединения: ${e.message}\n\nПроверьте интернет-соединение.`);
     return null;
   }
 }
 
-// ПОЛУЧЕНИЕ PENDING ISSUES
 async function fetchPendingIssues() {
   const token = getGitHubToken();
   if (!token) return [];
@@ -395,7 +398,6 @@ async function updateIssueStatus(issueNumber, status, comment = '') {
   }
 }
 
-// СИНХРОНИЗАЦИЯ
 async function syncProposals() {
   if (isOwner()) {
     const token = getGitHubToken();
@@ -406,7 +408,6 @@ async function syncProposals() {
     const issues = await fetchPendingIssues();
     pendingProposals = issues.map(parseIssueToProposal);
   } else {
-    // Менеджер видит только свои локальные предложения
     loadLocalProposals();
     pendingProposals = localProposals.filter(p => p.status === 'local');
   }
@@ -414,7 +415,6 @@ async function syncProposals() {
   return pendingProposals;
 }
 
-// ПРИНЯТИЕ (только для руководителя)
 async function approveProposal(proposal, withEdit) {
   if (!isOwner()) return;
   
@@ -500,7 +500,7 @@ async function approveProposal(proposal, withEdit) {
   pendingProposals = pendingProposals.filter(pr => pr.id !== p.id);
   if (!p.fromGitHub) {
     localProposals = localProposals.filter(pr => pr.id !== p.id);
-    localStorage.setItem('borzo_local_proposals', JSON.stringify(localProposals));
+    saveLocalProposals();
   }
   save();
   render();
@@ -521,7 +521,7 @@ async function rejectProposal(proposal) {
   pendingProposals = pendingProposals.filter(p => p.id !== proposal.id);
   if (!proposal.fromGitHub) {
     localProposals = localProposals.filter(p => p.id !== proposal.id);
-    localStorage.setItem('borzo_local_proposals', JSON.stringify(localProposals));
+    saveLocalProposals();
   }
   renderProposals();
   showAlertModal('❌ Отклонено', `Предложение отклонено.\nПричина: ${comment || 'Не указана'}`);
@@ -538,7 +538,7 @@ async function saveNewVariantProposal() {
   const condition = document.getElementById('prop-name')?.value?.trim();
   const text = document.getElementById('prop-text')?.value?.trim();
   if (!condition || !text) {
-    showAlertModal('Ошибка', 'Заполните все поля');
+    showAlertModal('Ошибка', 'Заполните поле "Назначение" и "Текст ответа"');
     return;
   }
   await createProposal('block', state.currentBlock, { condition, text, mode: 'add' });
@@ -549,7 +549,10 @@ async function saveNewVariantProposal() {
 async function saveInlineProposal(i) {
   const condition = document.getElementById('inline-name-' + i)?.value?.trim();
   const text = document.getElementById('inline-text-' + i)?.value?.trim();
-  if (!condition || !text) return;
+  if (!condition || !text) {
+    showAlertModal('Ошибка', 'Заполните все поля');
+    return;
+  }
   await createProposal('block', state.currentBlock, { condition, text, mode: 'replace', sourceIndex: i });
   inlineProposalIndex = null;
   render();
@@ -724,7 +727,7 @@ function renderProposals() {
     if (p.type === 'block') targetInfo = `<div class="muted">📍 Блок: ${esc(p.targetName || '')}</div>`;
     if (p.type === 'section') targetInfo = `<div class="muted">📍 Раздел: ${esc(p.targetName || '')}</div>`;
     
-    const statusText = p.status === 'local' ? '💾 Локально' : '⏳ Ожидает';
+    const statusText = p.status === 'local' ? '💾 Локально (не отправлено!)' : '⏳ Ожидает';
     const statusClass = p.status === 'local' ? 'status-local' : 'status-pending';
     
     div.innerHTML = `
@@ -763,9 +766,9 @@ function renderProposals() {
     } else if (p.status === 'local') {
       const infoBtn = document.createElement('button');
       infoBtn.className = 'small-btn';
-      infoBtn.textContent = '⚠️ Не отправлено';
+      infoBtn.textContent = '⚠️ Не отправлено руководителю';
       infoBtn.onclick = () => showAlertModal('⚠️ Локальное предложение', 
-        'Это предложение сохранено только на вашем компьютере.\n\nРуководитель его НЕ УВИДИТ!\n\nЧтобы отправить руководителю:\n1. Настройте GitHub (кнопка в окне входа)\n2. Создайте предложение заново');
+        '❌ Это предложение НЕ отправлено руководителю!\n\n✅ Оно сохранено только на вашем компьютере.\n\n📌 Чтобы руководитель увидел предложение:\n1. Настройте GitHub (кнопка в окне входа)\n2. Создайте предложение заново\n3. После настройки все новые предложения будут отправляться автоматически');
       tools.appendChild(infoBtn);
     } else {
       const infoBtn = document.createElement('button');
@@ -806,7 +809,7 @@ function renderMain() {
         render();
       }
     } else {
-      const result = await showTripleFieldModal('Предложить блок', 'Название блока', 'Назначение', 'Текст первого сообщения');
+      const result = await showTripleFieldModal('Предложить новый блок', 'Название блока', 'Назначение / когда использовать', 'Текст первого сообщения');
       if (result && result.f1.trim() && result.f2.trim() && result.f3.trim()) {
         await createProposal('main-list', 'Магистраль', {
           blockName: result.f1.trim(),
@@ -851,7 +854,7 @@ function renderRight() {
           render();
         }
       } else {
-        const result = await showTripleFieldModal('Предложить элемент', 'Название элемента', 'Назначение', 'Текст первого сообщения');
+        const result = await showTripleFieldModal('Предложить новый элемент', 'Название элемента', 'Назначение / когда использовать', 'Текст первого сообщения');
         if (result && result.f1.trim() && result.f2.trim() && result.f3.trim()) {
           await createProposal('section', section, {
             blockName: result.f1.trim(),
@@ -879,7 +882,7 @@ function renderRight() {
         render();
       }
     } else {
-      const result = await showQuadFieldModal('Предложить раздел', 'Название раздела', 'Название первого элемента', 'Назначение', 'Текст первого сообщения');
+      const result = await showQuadFieldModal('Предложить новый раздел', 'Название раздела', 'Название первого элемента', 'Назначение / когда использовать', 'Текст первого сообщения');
       if (result && result.f1.trim() && result.f2.trim() && result.f3.trim() && result.f4.trim()) {
         await createProposal('new-section', 'Новый раздел', {
           sectionName: result.f1.trim(),
@@ -906,7 +909,9 @@ function renderCenter() {
   if (!isOwner() && !getGitHubToken()) {
     githubWarning = `
       <div class="github-warning">
-        ⚠️ <strong>GitHub не настроен!</strong> Ваши предложения будут сохраняться ЛОКАЛЬНО, и руководитель их НЕ УВИДИТ.<br>
+        <div class="github-warning-text">
+          ⚠️ <strong>GitHub не настроен!</strong> Ваши предложения будут сохраняться ТОЛЬКО ЛОКАЛЬНО, руководитель их НЕ УВИДИТ.
+        </div>
         <button onclick="showGitHubSetup()">🔧 Настроить GitHub</button>
       </div>
     `;
@@ -1028,6 +1033,9 @@ function showLoginModal() {
     <div style="margin-top: 12px;">
       <button id="githubSetupBtn" class="small-btn" style="width: 100%;">🔧 Настроить GitHub (для отправки предложений)</button>
     </div>
+    <div style="margin-top: 8px; font-size: 12px; color: #666; text-align: center;">
+      Без настройки GitHub предложения НЕ ДОЙДУТ до руководителя!
+    </div>
   `;
   const actions = document.getElementById('appModalActions');
   actions.innerHTML = '';
@@ -1086,7 +1094,7 @@ function showLoginModal() {
       const token = await requestGitHubToken();
       if (token) {
         saveGitHubToken(token);
-        showAlertModal('✅ Успешно', 'GitHub настроен! Теперь предложения будут отправляться руководителю.');
+        showAlertModal('✅ Успешно', 'GitHub настроен! Теперь ваши предложения будут отправляться руководителю.');
         await syncProposals();
         render();
       }
@@ -1094,7 +1102,6 @@ function showLoginModal() {
   }, 0);
 }
 
-// ==================== СОХРАНЕНИЕ В GITHUB ====================
 async function saveToGitHub() {
   const token = getGitHubToken();
   if (!token) {
@@ -1137,7 +1144,6 @@ async function saveToGitHub() {
   return false;
 }
 
-// ==================== ГЛАВНЫЙ РЕНДЕР ====================
 function render() {
   roleSelect.value = state.role;
   const isOwnerMode = isOwner();
@@ -1152,7 +1158,6 @@ function render() {
   save();
 }
 
-// ==================== ЗАПУСК ====================
 window.addEventListener('load', async () => {
   loadLocalProposals();
   if (!checkAuth()) {
