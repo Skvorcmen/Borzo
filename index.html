@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BORZO - Script Navigator с синхронизацией</title>
+<title>BORZO - Script Navigator с GitHub синхронизацией</title>
 <style>
 :root{
   --bg:#3a3a3a; --bg2:#474747; --panel:#f8f7f3; --white:#fff; --line:#ddd8cf;
@@ -23,21 +23,19 @@ header{height:82px;display:flex;align-items:center;justify-content:space-between
 .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
 .section-title{font-size:22px;font-weight:800}.muted{font-size:12px;color:var(--muted)}
 .list{display:flex;flex-direction:column;gap:8px}
-.item{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease}
-.item:hover{border-color:var(--gold);background:#fffaf1;box-shadow:0 0 0 2px rgba(201,162,74,.08) inset}
-.item.active{border-color:var(--gold);background:#fff7e8;box-shadow:0 0 0 2px rgba(201,162,74,.12) inset}
-.item.drag-over{border-color:#2f3237 !important; box-shadow:0 0 0 2px rgba(47,50,55,.14) inset !important}
-.card.drag-over{border-color:#2f3237 !important; box-shadow:0 0 0 2px rgba(47,50,55,.12) inset !important}
+.item{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease;cursor:pointer}
+.item:hover{border-color:var(--gold);background:#fffaf1}
+.item.active{border-color:var(--gold);background:#fff7e8}
 .item-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.item-title{flex:1;font-weight:700;cursor:pointer}
+.item-title{flex:1;font-weight:700}
 .hidden-actions{display:flex;gap:6px;min-width:74px;justify-content:flex-end;visibility:hidden;opacity:0;pointer-events:none;}
-.item:hover .hidden-actions,.item.active .hidden-actions,.item.show .hidden-actions{visibility:visible;opacity:1;pointer-events:auto;}
+.item:hover .hidden-actions{visibility:visible;opacity:1;pointer-events:auto;}
 .input,.textarea,.item-input{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px 12px;background:#fff;font:inherit}
 .textarea{min-height:120px;resize:vertical}
 .icon-btn,.small-btn,.copy-btn{border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font:inherit}
 .icon-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px}
 .small-btn{padding:10px 12px;font-size:13px}
-.copy-btn{min-height:48px;min-width:148px;padding:12px 20px;font-size:16px;font-weight:800;background:var(--gold);border-color:var(--gold2);color:#fff;box-shadow:0 4px 12px rgba(201,162,74,.18)}
+.copy-btn{padding:12px 20px;font-size:16px;font-weight:800;background:var(--gold);border-color:var(--gold2);color:#fff}
 .gold-btn{background:var(--gold);border-color:var(--gold2);color:#fff}
 .blue-btn{background:var(--blue);border-color:#3a5a8a;color:#fff}
 .danger-btn{color:var(--danger)}
@@ -46,49 +44,34 @@ header{height:82px;display:flex;align-items:center;justify-content:space-between
 .center-sub{font-size:18px;font-weight:800;margin-bottom:14px}
 .center-sub.main{color:var(--green)}
 .center-sub.side{color:var(--muted)}
-.info-box{border-radius:14px;padding:12px 14px;margin-bottom:12px;line-height:1.45}.gold-box{background:var(--goldsoft);border:1px solid #ead39f}.blue-box{background:var(--bluesoft);border:1px solid #c7d8ff}
-.card{border:2px solid #2f3237;background:#ffffff;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
+.info-box{border-radius:14px;padding:12px 14px;margin-bottom:12px;line-height:1.45}
+.gold-box{background:var(--goldsoft);border:1px solid #ead39f}
+.blue-box{background:var(--bluesoft);border:1px solid #c7d8ff}
+.card{border:2px solid #2f3237;background:#fff;border-radius:14px;padding:14px;margin-bottom:14px}
 .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.card-main{display:block}
-.drag-handle{width:24px;height:24px;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;background:#fff;color:#666;cursor:grab;user-select:none;flex:0 0 auto;}
-.drag-handle:active{cursor:grabbing}
-.card-body{flex:1;min-width:0}
-.card-text{user-select:text;-webkit-user-select:text;cursor:text}
-.material-row{display:flex;align-items:center;gap:8px;margin-top:8px}
-.card-label{font-size:12px;font-weight:900;color:var(--gold2);text-transform:uppercase;letter-spacing:.6px}
+.card-label{font-size:12px;font-weight:900;color:var(--gold2);text-transform:uppercase}
 .card-text{white-space:pre-wrap;line-height:1.62;font-size:18px;color:#2a2a2a}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.divider{height:1px;background:#e7e3da;margin:14px 0}.empty{padding:14px;border:1px dashed #cfcac0;border-radius:12px;background:#fff;color:var(--muted)}
+.divider{height:1px;background:#e7e3da;margin:14px 0}
+.empty{padding:14px;border:1px dashed #cfcac0;border-radius:12px;background:#fff;color:var(--muted);text-align:center}
 .badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--danger);color:#fff;font-size:12px;font-weight:700}
 .proposal-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff;margin-bottom:12px}
 .proposal-title{font-weight:700;margin-bottom:6px}
 .proposal-status{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;margin-left:8px}
 .status-pending{background:#ffc107;color:#000}
-.status-approved{background:#28a745;color:#fff}
-.status-rejected{background:#dc3545;color:#fff}
-.attachments-row{display:flex;gap:10px;overflow-x:auto;padding:6px 0 2px 0;margin-top:8px}
-.asset-chip{min-width:120px;max-width:140px;border:1px solid #d7d2c7;border-radius:10px;padding:6px;background:#fafafa;display:flex;flex-direction:column;gap:4px}
-.asset-chip-title{font-size:12px;font-weight:700;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.asset-chip-preview{height:60px;border:1px solid #ece7dc;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px}
-.asset-chip-preview img{max-width:100%;max-height:100%;display:block;border-radius:8px}
-.asset-chip-link{font-size:11px;line-height:1.3;color:#555;word-break:break-all;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.asset-editor{margin-top:10px;border-top:1px solid #e7e3da;padding-top:10px}
-.asset-editor-grid{display:grid;grid-template-columns:1fr 120px 1fr;gap:8px}
-.asset-file{font:inherit}
 .app-modal-backdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:9999;}
 .app-modal-backdrop.show{display:flex}
-.app-modal{width:min(560px, calc(100vw - 32px)); background:#fff; border-radius:16px; border:1px solid var(--line); box-shadow:0 20px 40px rgba(0,0,0,.25); padding:16px;}
+.app-modal{width:min(560px, calc(100vw - 32px)); background:#fff; border-radius:16px; padding:16px;}
 .app-modal-title{font-size:20px; font-weight:800; margin-bottom:10px}
 .app-modal-text{font-size:14px; color:var(--muted); margin-bottom:10px}
-.app-modal-input,.app-modal-textarea{width:100%; border:1px solid #d7d2c7; border-radius:10px; padding:10px 12px; background:#fff; font:inherit;}
-.app-modal-textarea{min-height:120px; resize:vertical}
-.app-modal-actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:12px}
-.login-modal .app-modal-input {margin-bottom: 12px;}
-.login-modal .role-buttons {display: flex; gap: 12px; margin-bottom: 16px;}
-.login-modal .role-btn {flex: 1; padding: 12px; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; border: 1px solid var(--line); background: #fff; transition: all 0.2s;}
-.login-modal .role-btn.active {background: var(--gold); border-color: var(--gold2); color: #fff;}
-.login-modal .password-field {display: none;}
-.login-modal .password-field.show {display: block;}
+.app-modal-input,.app-modal-textarea{width:100%; border:1px solid #d7d2c7; border-radius:10px; padding:10px 12px; font:inherit;}
+.app-modal-textarea{min-height:120px}
+.app-modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:12px}
+.login-modal .role-buttons{display:flex;gap:12px;margin-bottom:16px}
+.login-modal .role-btn{flex:1;padding:12px;font-weight:700;border-radius:12px;cursor:pointer;border:1px solid var(--line);background:#fff}
+.login-modal .role-btn.active{background:var(--gold);color:#fff}
+.login-modal .password-field{display:none}
+.login-modal .password-field.show{display:block}
 @media (max-width:1150px){.layout{grid-template-columns:1fr}}
 </style>
 </head>
@@ -96,12 +79,10 @@ header{height:82px;display:flex;align-items:center;justify-content:space-between
 <header>
   <div class="brand">
     <div class="logo">BORZO</div>
-    <div><div class="header-title">Script Navigator</div><div class="header-sub">Внутренний навигатор скриптов</div></div>
+    <div><div class="header-title">Script Navigator</div><div class="header-sub">Синхронизация через GitHub</div></div>
   </div>
   <div style="display:flex;gap:8px;align-items:center">
     <button id="saveProjectBtn" class="small-btn gold-btn" style="display: none;">💾 Сохранить изменения</button>
-    <button id="downloadProjectBtn" class="small-btn gold-btn" style="display: none;">📥 Скачать проект</button>
-    <button id="exportBtn" class="small-btn gold-btn" style="display: none;">📤 Экспорт базы</button>
     <button id="syncIssuesBtn" class="small-btn blue-btn" style="display: none;">🔄 Синхронизировать</button>
     <select id="roleSelect" class="role-select"><option value="manager">Менеджер</option><option value="owner">Руководитель</option></select>
     <button id="logoutBtn" class="small-btn" style="background:#2f2f2f; border-color:#666; color:#fff;">Выйти</button>
@@ -113,113 +94,101 @@ header{height:82px;display:flex;align-items:center;justify-content:space-between
     <div class="section-head"><div class="section-title">Магистраль</div></div>
     <div id="mainList" class="list"></div>
     <div class="divider"></div>
-    <div class="section-head"><div class="section-title" style="font-size:18px">Предложения (GitHub Issues)</div><div id="propBadge"></div></div>
-    <div id="managerReplyArea" class="list"></div>
-    <div id="proposalList" class="list"><div class="empty">Загрузка предложений...</div></div>
+    <div class="section-head"><div class="section-title" style="font-size:18px">📋 Предложения от менеджеров</div><div id="propBadge"></div></div>
+    <div id="proposalList" class="list"><div class="empty">🔄 Загрузка предложений...</div></div>
   </aside>
   <main class="panel white"><div id="center"></div></main>
-  <aside class="panel"><div id="right"></div></aside>
+  <aside class="panel">
+    <div id="right"></div>
+  </aside>
 </div>
 
 <script>
-// ==================== КОНФИГУРАЦИЯ GITHUB ====================
+// ==================== КОНФИГУРАЦИЯ ====================
 const GITHUB_CONFIG = {
   owner: 'Skvorcmen',
-  repo: 'Borzo',
-  token: null,
-  labels: {
-    pending: 'pending',
-    approved: 'approved',
-    rejected: 'rejected'
-  }
+  repo: 'Borzo'
 };
 
 let githubToken = null;
-let githubIssuesProposals = []; // Предложения из GitHub Issues
+let pendingProposals = []; // Предложения из GitHub Issues
 
 // ==================== ОСНОВНЫЕ ДАННЫЕ ====================
-const KEY='borzo_v7';
-const AUTH_KEY='borzo_auth';
-const defaults={
- role:'manager',
- currentBlock:'Входящий старт',
- lastMain:'Входящий старт',
- mainOrder:['Входящий старт','Выбор модели','Размер и цвет','Город клиента','Доставка и оплата','Финальное подтверждение'],
- sectionOrder:['Вопросы клиентов','Обработка возражений','Пауза','Закрытие клиента'],
- sections:{
-   'Вопросы клиентов':['Где посмотреть','Разница моделей','Нестандартный размер','Другой цвет'],
-   'Обработка возражений':['Дорого','Сомнение в прочности','Сомнение в качестве','Доставка после 18:00'],
-   'Пауза':['Подумаю / позже','Молчание после фильтра','Выбрал модель и пропал','Пропал после ссылки на оплату'],
-   'Закрытие клиента':['Дорого — закрытие','Не сейчас']
- },
- blocks:{
-  'Входящий старт':{kind:'main',note:'Если клиент сразу ушёл в уточняющий вопрос, после ответа его нужно вернуть в магистраль.',hint:'',messages:[
-    {label:'Стандартный входящий',text:'Здравствуйте. Меня зовут Индира, менеджер BORZO.\n\nСейчас отправлю цены и краткое описание.'},
-    {label:'Если клиент сразу спросил город',text:'Здравствуйте. Меня зовут Индира, менеджер BORZO.\n\nФабрика находится в Астане. Отправляем по всему Казахстану через Kaspi.\n\nСейчас отправлю цены и краткое описание.'},
-    {label:'Шапка + прайс',text:'BORZO — дизайнерская консоль,\nкоторая станет украшением вашего интерьера.\n\nLUX:\n3 м — 310 000 ₸\n3,5 м — 335 000 ₸\n4 м — 360 000 ₸\n\nGEOMETRY (модель 2026, с подсветкой):\n3 м — 335 000 ₸\n3,5 м — 360 000 ₸\n4 м — 385 000 ₸'},
-    {label:'Фильтр по сроку',text:'Мы изготавливаем столы партиями и не держим большой склад,\nпоэтому уточню — вы планируете покупку в ближайшее время?'}
-  ]},
-  'Выбор модели':{kind:'main',note:'После этого сообщения отправить фото моделей.',hint:'',messages:[{label:'Основное сообщение',text:'Какой вариант вам ближе — LUX или GEOMETRY?'}]},
-  'Размер и цвет':{kind:'main',note:'Если клиент перескочил к доставке или городу — вернуть его к выбору размера и цвета.',hint:'',messages:[{label:'Основное сообщение',text:'Отлично 👍\n\nУ наших столов есть стандартные размеры:\nВ сложенном виде консоль — 100×45×76 см\nВ разложенном формате доступны варианты — 3 м / 3,5 м / 4 м\n\nПодскажите размер и цвет? Уточню, доступен ли этот вариант сейчас.'}]},
-  'Город клиента':{kind:'main',note:'',hint:'',messages:[{label:'Сообщение',text:'Ваш вариант доступен.\n\nПодскажите, с какого вы города?'}]},
-  'Доставка и оплата':{kind:'main',note:'',hint:'',messages:[{label:'Если Астана',text:'По Астане доставка бесплатная.\n\nПодскажите ваш адрес и в какое время будет удобно принять доставку?'},{label:'Если другой город',text:'Доставка по Казахстану через Kaspi/Kazpost. Стоимость доставки 3000-5000 ₸.\n\nПодскажите точный адрес для расчёта?'}]},
-  'Финальное подтверждение':{kind:'main',note:'',hint:'',messages:[{label:'Подтверждение',text:'Подтверждаю:\n\n— модель\n— размер\n— цвет\n— город доставки\n— способ оплаты\n\nВсё верно?'}]},
-  'Где посмотреть':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Работаем в онлайн-формате напрямую от фабрики в Астане.\n\nЕсть подробные видеообзоры — отправить вам?'}]},
-  'Разница моделей':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Разница в дизайне и деталях исполнения.\n\nLUX — более классическая модель.\nGEOMETRY — сложная геометрия основания и подсветка.'}]},
-  'Нестандартный размер':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Мы работаем с фиксированными размерами. Индивидуальные размеры не изготавливаем.'}]},
-  'Другой цвет':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Мы работаем с утверждённой палитрой. Другие оттенки не производим.'}]},
-  'Дорого':{kind:'side',note:'После обработки возражения нужно вернуться туда, где менеджер был до ветки.',hint:'',messages:[{label:'Ответ',text:'Понимаю. Цена выше среднего, потому что конструкция и подход отличаются.'}]},
-  'Сомнение в прочности':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Конструкция тестировалась на нагрузку 200+ кг.'}]},
-  'Сомнение в качестве':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Если вдруг что-то не устроит — можно оформить возврат.'}]},
-  'Доставка после 18:00':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Можем согласовать доставку после 18:00. Уточните удобный день.'}]},
-  'Подумаю / позже':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Поняла вас. Если есть вопросы — уточняйте, я всё подробно расскажу.'}]},
-  'Молчание после фильтра':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Подскажите, ваш запрос по столу ещё актуален?'}]},
-  'Выбрал модель и пропал':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Мы можем забронировать выбранную модель на 24 часа без предоплаты. Продолжим оформление?'}]},
-  'Пропал после ссылки на оплату':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Ссылка на оплату действительна 2 часа. Если нужна помощь с оплатой — напишите.'}]},
-  'Дорого — закрытие':{kind:'side',note:'',hint:'',messages:[{label:'Закрытие',text:'Если вернётесь к вопросу позже — буду рада помочь.'}]},
-  'Не сейчас':{kind:'side',note:'',hint:'',messages:[{label:'Закрытие',text:'Если позже вопрос снова станет актуальным — напишите.'}]}
- },
- proposals:[],
- managerMessages:[]
+const KEY = 'borzo_v8';
+const AUTH_KEY = 'borzo_auth';
+
+const defaults = {
+  role: 'manager',
+  currentBlock: 'Входящий старт',
+  lastMain: 'Входящий старт',
+  mainOrder: ['Входящий старт', 'Выбор модели', 'Размер и цвет', 'Город клиента', 'Доставка и оплата', 'Финальное подтверждение'],
+  sectionOrder: ['Вопросы клиентов', 'Обработка возражений', 'Пауза', 'Закрытие клиента'],
+  sections: {
+    'Вопросы клиентов': ['Где посмотреть', 'Разница моделей', 'Нестандартный размер', 'Другой цвет'],
+    'Обработка возражений': ['Дорого', 'Сомнение в прочности', 'Сомнение в качестве', 'Доставка после 18:00'],
+    'Пауза': ['Подумаю / позже', 'Молчание после фильтра', 'Выбрал модель и пропал', 'Пропал после ссылки на оплату'],
+    'Закрытие клиента': ['Дорого — закрытие', 'Не сейчас']
+  },
+  blocks: {
+    'Входящий старт': { kind: 'main', note: 'Если клиент сразу ушёл в уточняющий вопрос, после ответа его нужно вернуть в магистраль.', hint: '', messages: [
+      { label: 'Стандартный входящий', text: 'Здравствуйте. Меня зовут Индира, менеджер BORZO.\n\nСейчас отправлю цены и краткое описание.' },
+      { label: 'Если клиент сразу спросил город', text: 'Здравствуйте. Меня зовут Индира, менеджер BORZO.\n\nФабрика находится в Астане. Отправляем по всему Казахстану через Kaspi.\n\nСейчас отправлю цены и краткое описание.' },
+      { label: 'Шапка + прайс', text: 'BORZO — дизайнерская консоль,\nкоторая станет украшением вашего интерьера.\n\nLUX:\n3 м — 310 000 ₸\n3,5 м — 335 000 ₸\n4 м — 360 000 ₸\n\nGEOMETRY:\n3 м — 335 000 ₸\n3,5 м — 360 000 ₸\n4 м — 385 000 ₸' }
+    ]},
+    'Выбор модели': { kind: 'main', note: 'После этого сообщения отправить фото моделей.', hint: '', messages: [{ label: 'Основное сообщение', text: 'Какой вариант вам ближе — LUX или GEOMETRY?' }] },
+    'Размер и цвет': { kind: 'main', note: '', hint: '', messages: [{ label: 'Основное сообщение', text: 'Отлично 👍\n\nПодскажите размер и цвет?' }] },
+    'Город клиента': { kind: 'main', note: 'После подтверждения модели и цвета', hint: '', messages: [
+      { label: 'Если в наличии', text: 'Ваш вариант доступен.\n\nПодскажите, с какого вы города?' },
+      { label: 'Если нужно подготовить', text: 'Ваш вариант готовится к текущей партии, будет готов к отгрузке.\n\nПодскажите, в какой город нужна доставка?' }
+    ]},
+    'Доставка и оплата': { kind: 'main', note: '', hint: '', messages: [
+      { label: 'Если Астана', text: 'По Астане доставка бесплатная.\n\nПодскажите ваш адрес и в какое время будет удобно принять доставку?' },
+      { label: 'Если другой город', text: 'Доставка по Казахстану через Kaspi. Стоимость 3000-5000 ₸.\n\nПодскажите точный адрес?' }
+    ]},
+    'Финальное подтверждение': { kind: 'main', note: '', hint: '', messages: [{ label: 'Подтверждение', text: 'Подтверждаю все данные. Всё верно?' }] }
+  }
 };
 
-const esc = s => String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
-const escAttr = s => esc(s).replaceAll('"','&quot;');
-const escJs = s => String(s).replaceAll('\\','\\\\').replaceAll("'", "\\'");
-function load(){ try{const raw=localStorage.getItem(KEY); return raw?JSON.parse(raw):clone(defaults)}catch(e){return clone(defaults)} }
+const esc = s => String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+const escAttr = s => esc(s).replaceAll('"', '&quot;');
+const escJs = s => String(s).replaceAll('\\', '\\\\').replaceAll("'", "\\'");
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaults));
+  } catch (e) {
+    return JSON.parse(JSON.stringify(defaults));
+  }
+}
+
 let state = load();
-let editBlockName = null;
-let editSectionName = null;
-let editMessageIndex = null;
-let inlineProposalIndex = null;
-let assetEditIndex = null;
-let dragState = null;
 
-const roleSelect = document.getElementById('roleSelect');
-const exportBtn = document.getElementById('exportBtn');
-const downloadProjectBtn = document.getElementById('downloadProjectBtn');
-const saveProjectBtn = document.getElementById('saveProjectBtn');
-const syncIssuesBtn = document.getElementById('syncIssuesBtn');
-const logoutBtn = document.getElementById('logoutBtn');
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(state));
+}
 
-const isOwner = ()=> state.role === 'owner';
-function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-function clone(x){ return JSON.parse(JSON.stringify(x)); }
+const isOwner = () => state.role === 'owner';
 
 // ==================== РАБОТА С GITHUB ISSUES ====================
-function saveGitHubToken(token) { githubToken = token; localStorage.setItem('github_token', token); }
+function saveGitHubToken(token) {
+  githubToken = token;
+  localStorage.setItem('github_token', token);
+}
+
+function getGitHubToken() {
+  return localStorage.getItem('github_token');
+}
 
 async function requestGitHubToken() {
   return new Promise(resolve => {
     const backdrop = document.getElementById('appModalBackdrop');
-    document.getElementById('appModalTitle').textContent = 'Настройка GitHub';
-    document.getElementById('appModalText').textContent = 'Введите Personal Access Token (права: repo) - нужен только руководителю';
+    document.getElementById('appModalTitle').textContent = '🔐 Настройка GitHub';
+    document.getElementById('appModalText').innerHTML = 'Введите Personal Access Token для работы с предложениями.<br><br><strong>Требуемые права:</strong> Issues (read/write), Contents (read/write)';
     document.getElementById('appModalFields').innerHTML = `
       <input id="githubTokenInput" class="app-modal-input" type="password" placeholder="GitHub Personal Access Token">
-      <div class="toolbar" style="margin-top: 8px;"><button id="githubTokenHelpBtn" class="small-btn">Как получить токен?</button></div>
-      <div class="info-box gold-box" style="margin-top: 12px; font-size: 12px;">
-        ⚠️ Токен нужен только руководителю для принятия предложений.<br>
-        Менеджеры могут создавать предложения без токена.
+      <div class="toolbar" style="margin-top: 8px;">
+        <button id="githubTokenHelpBtn" class="small-btn">❓ Как получить токен?</button>
       </div>
     `;
     const actions = document.getElementById('appModalActions');
@@ -231,175 +200,115 @@ async function requestGitHubToken() {
     const saveBtn = document.createElement('button');
     saveBtn.className = 'small-btn gold-btn';
     saveBtn.textContent = 'Сохранить';
-    saveBtn.onclick = () => { const token = document.getElementById('githubTokenInput').value; closeAppModal(); resolve(token); };
+    saveBtn.onclick = () => {
+      const token = document.getElementById('githubTokenInput').value;
+      closeAppModal();
+      resolve(token);
+    };
     actions.appendChild(cancelBtn);
     actions.appendChild(saveBtn);
     backdrop.classList.add('show');
-    document.getElementById('githubTokenHelpBtn').onclick = () => { window.open('https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens', '_blank'); };
+    
+    document.getElementById('githubTokenHelpBtn').onclick = () => {
+      window.open('https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens', '_blank');
+    };
   });
 }
 
-// Создание Issue (менеджер или руководитель без токена не может создавать)
-async function createGitHubIssue(proposalData) {
-  if (!githubToken) {
-    // Если нет токена, сохраняем локально и показываем сообщение
-    showAlertModal('Внимание', 'Для создания предложения в GitHub нужен токен. Предложение сохранено локально, но руководитель его не увидит пока вы не настроите GitHub.\n\nНажмите "Настроить GitHub" в окне входа.');
+// СОЗДАНИЕ ПРЕДЛОЖЕНИЯ (менеджер отправляет)
+async function createGitHubIssue(proposal) {
+  const token = getGitHubToken();
+  if (!token) {
+    showAlertModal('⚠️ GitHub не настроен', 'Для отправки предложений нужно настроить GitHub.\n\nНажмите "🔧 Настроить GitHub" в окне входа.\n\nЕсли у вас нет токена, обратитесь к руководителю.');
     return null;
   }
   
-  const title = `[ПРЕДЛОЖЕНИЕ] ${proposalData.type === 'block' ? 'Изменить сообщение' : proposalData.type === 'main-list' ? 'Новый блок' : proposalData.type === 'section' ? 'Новый элемент' : 'Новый раздел'}: ${proposalData.condition.substring(0, 40)}`;
+  const title = `[ПРЕДЛОЖЕНИЕ] ${proposal.type === 'block' ? 'Изменить сообщение' : proposal.type === 'main-list' ? 'Новый блок' : proposal.type === 'section' ? 'Новый элемент' : 'Новый раздел'}: ${proposal.condition.substring(0, 40)}`;
   
-  let body = `## Предложение от менеджера\n\n`;
-  body += `**Тип:** ${proposalData.type === 'block' ? 'Изменение сообщения' : proposalData.type === 'main-list' ? 'Новый блок' : proposalData.type === 'section' ? 'Новый элемент' : 'Новый раздел'}\n\n`;
+  let body = `## 📝 Предложение от менеджера\n\n`;
+  body += `**Тип:** ${proposal.type === 'block' ? 'Изменение сообщения' : proposal.type === 'main-list' ? 'Новый блок' : proposal.type === 'section' ? 'Новый элемент' : 'Новый раздел'}\n\n`;
   
-  if(proposalData.type === 'block') {
-    body += `**Блок:** ${proposalData.targetName}\n`;
-    if(proposalData.mode === 'replace') body += `**Режим:** Замена существующего сообщения\n`;
-    body += `\n**Назначение/условие:** ${proposalData.condition}\n\n`;
-    body += `**Текст сообщения:**\n\`\`\`\n${proposalData.text}\n\`\`\`\n`;
-  } else if(proposalData.type === 'main-list') {
-    body += `**Название блока:** ${proposalData.blockName}\n`;
-    body += `**Назначение:** ${proposalData.condition}\n\n`;
-    body += `**Первый текст:**\n\`\`\`\n${proposalData.text}\n\`\`\`\n`;
-  } else if(proposalData.type === 'section') {
-    body += `**Раздел:** ${proposalData.targetName}\n`;
-    body += `**Название элемента:** ${proposalData.blockName}\n`;
-    body += `**Назначение:** ${proposalData.condition}\n\n`;
-    body += `**Текст:**\n\`\`\`\n${proposalData.text}\n\`\`\`\n`;
-  } else if(proposalData.type === 'new-section') {
-    body += `**Название раздела:** ${proposalData.sectionName}\n`;
-    body += `**Первый элемент:** ${proposalData.blockName}\n`;
-    body += `**Назначение:** ${proposalData.condition}\n\n`;
-    body += `**Текст:**\n\`\`\`\n${proposalData.text}\n\`\`\`\n`;
+  if (proposal.type === 'block') {
+    body += `**Блок:** ${proposal.targetName}\n`;
+    body += `\n**📌 Назначение/условие:**\n${proposal.condition}\n\n`;
+    body += `**💬 Текст сообщения:**\n\`\`\`\n${proposal.text}\n\`\`\`\n`;
+  } else if (proposal.type === 'main-list') {
+    body += `**Название блока:** ${proposal.blockName}\n`;
+    body += `**📌 Назначение:** ${proposal.condition}\n\n`;
+    body += `**💬 Первый текст:**\n\`\`\`\n${proposal.text}\n\`\`\`\n`;
+  } else if (proposal.type === 'section') {
+    body += `**Раздел:** ${proposal.targetName}\n`;
+    body += `**Название элемента:** ${proposal.blockName}\n`;
+    body += `**📌 Назначение:** ${proposal.condition}\n\n`;
+    body += `**💬 Текст:**\n\`\`\`\n${proposal.text}\n\`\`\`\n`;
+  } else if (proposal.type === 'new-section') {
+    body += `**Название раздела:** ${proposal.sectionName}\n`;
+    body += `**Первый элемент:** ${proposal.blockName}\n`;
+    body += `**📌 Назначение:** ${proposal.condition}\n\n`;
+    body += `**💬 Текст:**\n\`\`\`\n${proposal.text}\n\`\`\`\n`;
   }
   
-  body += `\n---\n*Создано автоматически из BORZO Navigator менеджером*`;
+  body += `\n---\n*Создано автоматически из BORZO Navigator*`;
   
   try {
     const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues`, {
       method: 'POST',
       headers: {
-        'Authorization': `token ${githubToken}`,
+        'Authorization': `token ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         title: title,
         body: body,
-        labels: [GITHUB_CONFIG.labels.pending]
+        labels: ['pending']
       })
     });
     
     if (response.ok) {
       const issue = await response.json();
-      showAlertModal('✅ Предложение отправлено', `Предложение создано в GitHub как Issue #${issue.number}\n\nРуководитель увидит его после синхронизации.`);
+      showAlertModal('✅ Предложение отправлено', `Предложение успешно создано в GitHub!\n\nНомер: #${issue.number}\n\nРуководитель увидит его после синхронизации.`);
       return issue;
     } else {
       const error = await response.json();
-      showAlertModal('Ошибка', `Не удалось создать Issue: ${error.message || 'Неизвестная ошибка'}`);
+      showAlertModal('❌ Ошибка', `Не удалось создать предложение: ${error.message || 'Неизвестная ошибка'}`);
       return null;
     }
-  } catch(e) {
-    showAlertModal('Ошибка', `Ошибка создания Issue: ${e.message}`);
+  } catch (e) {
+    showAlertModal('❌ Ошибка', `Ошибка соединения: ${e.message}`);
     return null;
   }
 }
 
-// Получение всех pending Issues (для руководителя)
+// ПОЛУЧЕНИЕ ВСЕХ PENDING ISSUES (руководитель)
 async function fetchPendingIssues() {
-  if (!githubToken) return [];
+  const token = getGitHubToken();
+  if (!token) return [];
   
   try {
-    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues?labels=${GITHUB_CONFIG.labels.pending}&state=open&per_page=100`, {
-      headers: { 'Authorization': `token ${githubToken}` }
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues?labels=pending&state=open&per_page=100`, {
+      headers: { 'Authorization': `token ${token}` }
     });
     
     if (response.ok) {
       const issues = await response.json();
       return issues;
     }
-  } catch(e) {
+  } catch (e) {
     console.error('Error fetching issues:', e);
   }
   return [];
 }
 
-// Получение всех approved/rejected Issues (для истории)
-async function fetchAllIssues() {
-  if (!githubToken) return [];
-  
-  try {
-    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues?state=all&per_page=100`, {
-      headers: { 'Authorization': `token ${githubToken}` }
-    });
-    
-    if (response.ok) {
-      const issues = await response.json();
-      return issues;
-    }
-  } catch(e) {
-    console.error('Error fetching issues:', e);
-  }
-  return [];
-}
-
-// Обновление статуса Issue
-async function updateIssueStatus(issueNumber, status, comment = '') {
-  if (!githubToken) return false;
-  
-  const label = status === 'approved' ? GITHUB_CONFIG.labels.approved : GITHUB_CONFIG.labels.rejected;
-  
-  try {
-    // Обновляем лейбл
-    await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues/${issueNumber}`, {
-      method: 'PATCH',
-      headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ labels: [label] })
-    });
-    
-    // Добавляем комментарий
-    if (comment) {
-      await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues/${issueNumber}/comments`, {
-        method: 'POST',
-        headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: `**Статус изменен:** ${status === 'approved' ? '✅ ПРИНЯТО' : '❌ ОТКЛОНЕНО'}\n\n${comment}` })
-      });
-    }
-    
-    return true;
-  } catch(e) {
-    console.error('Error updating issue:', e);
-    return false;
-  }
-}
-
-// Закрытие Issue
-async function closeIssue(issueNumber) {
-  if (!githubToken) return false;
-  
-  try {
-    await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues/${issueNumber}`, {
-      method: 'PATCH',
-      headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ state: 'closed' })
-    });
-    return true;
-  } catch(e) {
-    return false;
-  }
-}
-
-// Парсинг Issue в объект предложения
+// ПАРСИНГ ISSUE В ПРЕДЛОЖЕНИЕ
 function parseIssueToProposal(issue) {
-  // Пытаемся извлечь данные из тела Issue
   const body = issue.body || '';
   let type = 'block';
-  let condition = issue.title.replace(/^\[ПРЕДЛОЖЕНИЕ\]\s*/, '').substring(0, 50);
+  let condition = issue.title.replace(/^\[ПРЕДЛОЖЕНИЕ\]\s*/, '').substring(0, 80);
   let text = '';
   let targetName = '';
   let blockName = '';
   let sectionName = '';
   
-  // Парсим тело
   const typeMatch = body.match(/\*\*Тип:\*\*\s*(.+)/);
   if (typeMatch) {
     const typeStr = typeMatch[1];
@@ -421,11 +330,13 @@ function parseIssueToProposal(issue) {
   const sectionMatch = body.match(/\*\*Название раздела:\*\*\s*(.+)/);
   if (sectionMatch) sectionName = sectionMatch[1].trim();
   
-  const firstElemMatch = body.match(/\*\*Первый элемент:\*\*\s*(.+)/);
-  if (firstElemMatch) blockName = firstElemMatch[1].trim();
-  
-  const conditionMatch = body.match(/\*\*Назначение\/условие:\*\*\s*(.+?)(?:\n\n|\n\*)/s);
-  if (conditionMatch) condition = conditionMatch[1].trim();
+  const conditionMatch = body.match(/\*\*📌 Назначение.*?:\*\*\s*([^\n]+)/);
+  if (!conditionMatch) {
+    const condMatch2 = body.match(/\*\*Назначение\/условие:\*\*\s*([^\n]+)/);
+    if (condMatch2) condition = condMatch2[1].trim();
+  } else {
+    condition = conditionMatch[1].trim();
+  }
   
   const textMatch = body.match(/```\n([\s\S]*?)```/);
   if (textMatch) text = textMatch[1].trim();
@@ -434,264 +345,430 @@ function parseIssueToProposal(issue) {
     id: issue.number,
     githubIssueId: issue.number,
     githubIssueUrl: issue.html_url,
-    targetType: type,
+    type: type,
     targetName: targetName,
     blockName: blockName,
     sectionName: sectionName,
     condition: condition,
     text: text,
-    status: issue.labels.find(l => l.name === GITHUB_CONFIG.labels.approved) ? 'approved' : 
-            (issue.labels.find(l => l.name === GITHUB_CONFIG.labels.rejected) ? 'rejected' : 'pending'),
+    status: 'pending',
     createdAt: issue.created_at,
     fromGitHub: true
   };
 }
 
-// Синхронизация предложений из GitHub
-async function syncProposalsFromGitHub() {
-  if (!githubToken) {
-    if (isOwner()) {
-      const token = await requestGitHubToken();
-      if (token) saveGitHubToken(token);
-      else return [];
-    } else {
-      return [];
+// ОБНОВЛЕНИЕ СТАТУСА ISSUE
+async function updateIssueStatus(issueNumber, status, comment = '') {
+  const token = getGitHubToken();
+  if (!token) return false;
+  
+  try {
+    await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues/${issueNumber}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ state: 'closed' })
+    });
+    
+    if (comment) {
+      await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues/${issueNumber}/comments`, {
+        method: 'POST',
+        headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: `**Статус:** ${status === 'approved' ? '✅ ПРИНЯТО' : '❌ ОТКЛОНЕНО'}\n\n${comment}` })
+      });
     }
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// СОХРАНЕНИЕ ДАННЫХ В GITHUB
+async function saveToGitHub() {
+  const token = getGitHubToken();
+  if (!token) {
+    const newToken = await requestGitHubToken();
+    if (!newToken) return false;
+    saveGitHubToken(newToken);
+  }
+  
+  const dataToSave = JSON.stringify(state, null, 2);
+  
+  try {
+    let sha = null;
+    try {
+      const getResponse = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/borzo_data.json`, {
+        headers: { 'Authorization': `token ${getGitHubToken()}` }
+      });
+      if (getResponse.ok) {
+        const data = await getResponse.json();
+        sha = data.sha;
+      }
+    } catch (e) {}
+    
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/borzo_data.json`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${getGitHubToken()}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `Сохранить изменения ${new Date().toLocaleString()}`,
+        content: btoa(unescape(encodeURIComponent(dataToSave))),
+        sha: sha
+      })
+    });
+    
+    if (response.ok) {
+      showAlertModal('✅ Успешно', 'Изменения сохранены в GitHub');
+      return true;
+    }
+  } catch (e) {
+    showAlertModal('❌ Ошибка', `Не удалось сохранить: ${e.message}`);
+  }
+  return false;
+}
+
+// ЗАГРУЗКА ДАННЫХ ИЗ GITHUB
+async function loadFromGitHub() {
+  const token = getGitHubToken();
+  if (!token) return false;
+  
+  try {
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/borzo_data.json`, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const content = decodeURIComponent(escape(atob(data.content)));
+      const loadedState = JSON.parse(content);
+      state = loadedState;
+      save();
+      render();
+      showAlertModal('✅ Успешно', 'Данные загружены из GitHub');
+      return true;
+    }
+  } catch (e) {
+    console.error('Error loading:', e);
+  }
+  return false;
+}
+
+// СИНХРОНИЗАЦИЯ ПРЕДЛОЖЕНИЙ
+async function syncProposals() {
+  const token = getGitHubToken();
+  if (!token && isOwner()) {
+    const newToken = await requestGitHubToken();
+    if (newToken) saveGitHubToken(newToken);
   }
   
   const issues = await fetchPendingIssues();
-  const proposals = issues.map(parseIssueToProposal);
-  githubIssuesProposals = proposals;
-  
-  // Объединяем с локальными предложениями (локальные только для менеджеров без токена)
-  const allProposals = [...proposals];
-  
+  pendingProposals = issues.map(parseIssueToProposal);
   renderProposals();
-  return allProposals;
+  return pendingProposals;
 }
 
-// ==================== ФУНКЦИИ ДЛЯ ПРЕДЛОЖЕНИЙ ====================
-async function createProposalWithGitHub(proposalData) {
-  // Создаем Issue в GitHub (если есть токен)
-  const issue = await createGitHubIssue(proposalData);
-  
-  if (issue) {
-    // Если Issue создан, добавляем в локальный список
-    const proposal = {
-      id: issue.number,
-      githubIssueId: issue.number,
-      githubIssueUrl: issue.html_url,
-      ...proposalData,
-      createdAt: new Date().toISOString(),
-      status: 'pending',
-      fromGitHub: true
-    };
-    githubIssuesProposals.unshift(proposal);
-  } else if (githubToken === null && isOwner()) {
-    // Если руководитель пытается создать без токена - просим ввести
-    const token = await requestGitHubToken();
-    if (token) {
-      saveGitHubToken(token);
-      return createProposalWithGitHub(proposalData);
-    }
-  } else if (!githubToken && !isOwner()) {
-    // Менеджер без токена - показываем сообщение
-    showAlertModal('⚠️ Требуется настройка GitHub', 'Для отправки предложений руководителю необходимо настроить GitHub.\n\nНажмите "🔧 Настроить GitHub" в окне входа и введите токен.\n\nЕсли у вас нет токена, обратитесь к руководителю.');
-  }
-  
-  renderProposals();
-}
-
-// Принятие предложения (руководитель)
+// ПРИНЯТИЕ ПРЕДЛОЖЕНИЯ
 async function approveProposal(proposal, withEdit) {
-  if (!proposal.fromGitHub) {
-    // Локальное предложение (без GitHub)
-    applyProposalChanges(proposal);
-    // Удаляем из локального списка
-    const index = githubIssuesProposals.findIndex(p => p.id === proposal.id);
-    if (index !== -1) githubIssuesProposals.splice(index, 1);
-    renderProposals();
-    render();
-    save();
-    return;
-  }
-  
-  // GitHub Issue
-  let updatedProposal = { ...proposal };
+  let p = { ...proposal };
   
   if (withEdit) {
-    // Редактирование предложения
     let result = null;
-    if (proposal.targetType === 'new-section') {
+    if (p.type === 'new-section') {
       result = await showQuadFieldModal('Скорректировать предложение', 'Название раздела', 'Название элемента', 'Назначение', 'Текст',
-        proposal.sectionName || '', proposal.blockName || '', proposal.condition || '', proposal.text || '');
+        p.sectionName || '', p.blockName || '', p.condition || '', p.text || '');
       if (result) {
-        updatedProposal.sectionName = result.f1.trim() || proposal.sectionName;
-        updatedProposal.blockName = result.f2.trim() || proposal.blockName;
-        updatedProposal.condition = result.f3.trim() || proposal.condition;
-        updatedProposal.text = result.f4.trim() || proposal.text;
+        p.sectionName = result.f1.trim() || p.sectionName;
+        p.blockName = result.f2.trim() || p.blockName;
+        p.condition = result.f3.trim() || p.condition;
+        p.text = result.f4.trim() || p.text;
       } else return;
-    } else if (proposal.targetType === 'main-list') {
+    } else if (p.type === 'main-list') {
       result = await showTripleFieldModal('Скорректировать блок', 'Название блока', 'Назначение', 'Текст',
-        proposal.blockName || '', proposal.condition || '', proposal.text || '');
+        p.blockName || '', p.condition || '', p.text || '');
       if (result) {
-        updatedProposal.blockName = result.f1.trim() || proposal.blockName;
-        updatedProposal.condition = result.f2.trim() || proposal.condition;
-        updatedProposal.text = result.f3.trim() || proposal.text;
+        p.blockName = result.f1.trim() || p.blockName;
+        p.condition = result.f2.trim() || p.condition;
+        p.text = result.f3.trim() || p.text;
       } else return;
-    } else if (proposal.targetType === 'section') {
+    } else if (p.type === 'section') {
       result = await showTripleFieldModal('Скорректировать элемент', 'Название элемента', 'Назначение', 'Текст',
-        proposal.blockName || '', proposal.condition || '', proposal.text || '');
+        p.blockName || '', p.condition || '', p.text || '');
       if (result) {
-        updatedProposal.blockName = result.f1.trim() || proposal.blockName;
-        updatedProposal.condition = result.f2.trim() || proposal.condition;
-        updatedProposal.text = result.f3.trim() || proposal.text;
+        p.blockName = result.f1.trim() || p.blockName;
+        p.condition = result.f2.trim() || p.condition;
+        p.text = result.f3.trim() || p.text;
       } else return;
     } else {
       result = await showTripleFieldModal('Скорректировать предложение', 'Назначение', 'Блок', 'Текст',
-        proposal.condition || '', proposal.targetName || '', proposal.text || '');
+        p.condition || '', p.targetName || '', p.text || '');
       if (result) {
-        updatedProposal.condition = result.f1.trim() || proposal.condition;
-        updatedProposal.text = result.f3.trim() || proposal.text;
+        p.condition = result.f1.trim() || p.condition;
+        p.text = result.f3.trim() || p.text;
       } else return;
     }
   }
   
   // Применяем изменения
-  applyProposalChanges(updatedProposal);
-  
-  // Обновляем статус в GitHub
-  await updateIssueStatus(proposal.githubIssueId, 'approved', withEdit ? 'Принято с корректировками' : 'Принято');
-  await closeIssue(proposal.githubIssueId);
-  
-  // Удаляем из списка
-  const index = githubIssuesProposals.findIndex(p => p.id === proposal.id);
-  if (index !== -1) githubIssuesProposals.splice(index, 1);
-  
-  renderProposals();
-  render();
-  save();
-  showAlertModal('✅ Успешно', 'Предложение принято и применено.');
-}
-
-// Применение изменений из предложения
-function applyProposalChanges(proposal) {
-  if (proposal.targetType === 'block') {
-    if (!state.blocks[proposal.targetName]) state.blocks[proposal.targetName] = {kind:'side',note:'',hint:'',messages:[]};
-    if (proposal.mode === 'replace' && Number.isInteger(proposal.sourceIndex) && state.blocks[proposal.targetName].messages[proposal.sourceIndex]) {
-      const existing = state.blocks[proposal.targetName].messages[proposal.sourceIndex] || {};
-      state.blocks[proposal.targetName].messages[proposal.sourceIndex] = {label:proposal.condition, text:proposal.text, attachments: existing.attachments || []};
-    } else {
-      state.blocks[proposal.targetName].messages.push({label:proposal.condition, text:proposal.text, attachments:[]});
-    }
+  if (p.type === 'block') {
+    if (!state.blocks[p.targetName]) state.blocks[p.targetName] = { kind: 'side', note: '', hint: '', messages: [] };
+    state.blocks[p.targetName].messages.push({ label: p.condition, text: p.text, attachments: [] });
   }
   
-  if (proposal.targetType === 'main-list') {
-    let blockName = proposal.blockName || proposal.condition;
+  if (p.type === 'main-list') {
+    let blockName = p.blockName || p.condition;
     if (blockName && !state.blocks[blockName]) {
       state.mainOrder.push(blockName);
-      state.blocks[blockName] = {kind:'main',note:'',hint:'',messages:[{label:proposal.condition, text:proposal.text}]};
+      state.blocks[blockName] = { kind: 'main', note: '', hint: '', messages: [{ label: p.condition, text: p.text }] };
     }
   }
   
-  if (proposal.targetType === 'section') {
-    let blockName = proposal.blockName || proposal.condition;
+  if (p.type === 'section') {
+    let blockName = p.blockName || p.condition;
     if (blockName) {
-      if (!state.blocks[blockName]) state.blocks[blockName] = {kind:'side',note:'',hint:'',messages:[{label:proposal.condition, text:proposal.text}]};
-      if (!state.sections[proposal.targetName]) state.sections[proposal.targetName] = [];
-      if (!state.sections[proposal.targetName].includes(blockName)) state.sections[proposal.targetName].push(blockName);
+      if (!state.blocks[blockName]) state.blocks[blockName] = { kind: 'side', note: '', hint: '', messages: [{ label: p.condition, text: p.text }] };
+      if (!state.sections[p.targetName]) state.sections[p.targetName] = [];
+      if (!state.sections[p.targetName].includes(blockName)) state.sections[p.targetName].push(blockName);
     }
   }
   
-  if (proposal.targetType === 'new-section') {
-    let sectionName = proposal.sectionName || proposal.condition;
-    let blockName = proposal.blockName || '';
+  if (p.type === 'new-section') {
+    let sectionName = p.sectionName || p.condition;
+    let blockName = p.blockName || '';
     if (sectionName && !state.sections[sectionName]) {
       state.sectionOrder.push(sectionName);
       state.sections[sectionName] = [];
       if (blockName) {
-        state.blocks[blockName] = {kind:'side',note:'',hint:'',messages:[{label:proposal.condition, text:proposal.text}]};
+        state.blocks[blockName] = { kind: 'side', note: '', hint: '', messages: [{ label: p.condition, text: p.text }] };
         state.sections[sectionName].push(blockName);
       }
     }
   }
+  
+  await updateIssueStatus(p.githubIssueId, 'approved', withEdit ? 'Принято с корректировками' : 'Принято');
+  
+  pendingProposals = pendingProposals.filter(pr => pr.id !== p.id);
+  save();
+  render();
+  renderProposals();
+  showAlertModal('✅ Успешно', 'Предложение принято и применено.');
 }
 
-// Отклонение предложения
+// ОТКЛОНЕНИЕ ПРЕДЛОЖЕНИЯ
 async function rejectProposal(proposal) {
   const comment = await showPromptModal('Отклонение предложения', 'Укажите причину отклонения', '');
   if (comment === null) return;
   
-  if (proposal.fromGitHub && proposal.githubIssueId) {
-    await updateIssueStatus(proposal.githubIssueId, 'rejected', comment);
-    await closeIssue(proposal.githubIssueId);
-  }
-  
-  const index = githubIssuesProposals.findIndex(p => p.id === proposal.id);
-  if (index !== -1) githubIssuesProposals.splice(index, 1);
-  
+  await updateIssueStatus(proposal.githubIssueId, 'rejected', comment);
+  pendingProposals = pendingProposals.filter(p => p.id !== proposal.id);
   renderProposals();
-  showAlertModal('Отклонено', `Предложение отклонено. Причина: ${comment || 'Не указана'}`);
+  showAlertModal('❌ Отклонено', `Предложение отклонено.\nПричина: ${comment || 'Не указана'}`);
 }
 
-// ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (сокращены для размера) ====================
-function closeAppModal(){ const backdrop = document.getElementById('appModalBackdrop'); backdrop.classList.remove('show'); backdrop.className = 'app-modal-backdrop'; document.getElementById('appModalTitle').textContent = ''; document.getElementById('appModalText').textContent = ''; document.getElementById('appModalFields').innerHTML = ''; document.getElementById('appModalActions').innerHTML = ''; }
-function showAlertModal(title, textMsg){ return new Promise(resolve => { const backdrop = document.getElementById('appModalBackdrop'); document.getElementById('appModalTitle').textContent = title || 'Сообщение'; document.getElementById('appModalText').textContent = textMsg || ''; document.getElementById('appModalFields').innerHTML = ''; const actions = document.getElementById('appModalActions'); actions.innerHTML = ''; const ok = document.createElement('button'); ok.className = 'small-btn gold-btn'; ok.textContent = 'Ок'; ok.onclick = () => { closeAppModal(); resolve(true); }; actions.appendChild(ok); backdrop.classList.add('show'); }); }
-function showConfirmModal(title, textMsg){ return new Promise(resolve => { const backdrop = document.getElementById('appModalBackdrop'); document.getElementById('appModalTitle').textContent = title || 'Подтвердите действие'; document.getElementById('appModalText').textContent = textMsg || ''; document.getElementById('appModalFields').innerHTML = ''; const actions = document.getElementById('appModalActions'); actions.innerHTML = ''; const cancel = document.createElement('button'); cancel.className = 'small-btn'; cancel.textContent = 'Отмена'; cancel.onclick = () => { closeAppModal(); resolve(false); }; const ok = document.createElement('button'); ok.className = 'small-btn gold-btn'; ok.textContent = 'Подтвердить'; ok.onclick = () => { closeAppModal(); resolve(true); }; actions.appendChild(cancel); actions.appendChild(ok); backdrop.classList.add('show'); }); }
-function showPromptModal(title, label, defaultValue=''){ return new Promise(resolve => { const backdrop = document.getElementById('appModalBackdrop'); document.getElementById('appModalTitle').textContent = title || 'Введите значение'; document.getElementById('appModalText').textContent = ''; document.getElementById('appModalFields').innerHTML = "<input id='appModalInput' class='app-modal-input' value='"+escAttr(defaultValue||'')+"' placeholder='"+escAttr(label||'')+"'>"; const actions = document.getElementById('appModalActions'); actions.innerHTML = ''; const cancel = document.createElement('button'); cancel.className = 'small-btn'; cancel.textContent = 'Отмена'; cancel.onclick = () => { closeAppModal(); resolve(null); }; const ok = document.createElement('button'); ok.className = 'small-btn gold-btn'; ok.textContent = 'Сохранить'; ok.onclick = () => { const val = document.getElementById('appModalInput').value; closeAppModal(); resolve(val); }; actions.appendChild(cancel); actions.appendChild(ok); backdrop.classList.add('show'); setTimeout(() => { const el = document.getElementById('appModalInput'); if(el){ el.focus(); el.select(); } }, 0); }); }
-function showTripleFieldModal(title, f1, f2, f3, v1='', v2='', v3=''){ return new Promise(resolve=>{ const backdrop = document.getElementById('appModalBackdrop'); document.getElementById('appModalTitle').textContent = title || ''; document.getElementById('appModalText').textContent = ''; document.getElementById('appModalFields').innerHTML = "<input id='mf1' class='app-modal-input' placeholder='"+escAttr(f1||'Поле 1')+"' value='"+escAttr(v1||'')+"' style='margin-bottom:8px'><input id='mf2' class='app-modal-input' placeholder='"+escAttr(f2||'Поле 2')+"' value='"+escAttr(v2||'')+"' style='margin-bottom:8px'><textarea id='mf3' class='app-modal-textarea' placeholder='"+escAttr(f3||'Поле 3')+"'>"+esc(v3||'')+"</textarea>"; const actions = document.getElementById('appModalActions'); actions.innerHTML = ''; const cancel = document.createElement('button'); cancel.className='small-btn'; cancel.textContent='Отмена'; cancel.onclick=()=>{ closeAppModal(); resolve(null); }; const ok = document.createElement('button'); ok.className='small-btn gold-btn'; ok.textContent='Сохранить'; ok.onclick=()=>{ const r = { f1:document.getElementById('mf1').value, f2:document.getElementById('mf2').value, f3:document.getElementById('mf3').value }; closeAppModal(); resolve(r); }; actions.appendChild(cancel); actions.appendChild(ok); backdrop.classList.add('show'); }); }
-function showQuadFieldModal(title, f1, f2, f3, f4, v1='', v2='', v3='', v4=''){ return new Promise(resolve=>{ const backdrop = document.getElementById('appModalBackdrop'); document.getElementById('appModalTitle').textContent = title || ''; document.getElementById('appModalText').textContent = ''; document.getElementById('appModalFields').innerHTML = "<input id='qf1' class='app-modal-input' placeholder='"+escAttr(f1||'Поле 1')+"' value='"+escAttr(v1||'')+"' style='margin-bottom:8px'><input id='qf2' class='app-modal-input' placeholder='"+escAttr(f2||'Поле 2')+"' value='"+escAttr(v2||'')+"' style='margin-bottom:8px'><input id='qf3' class='app-modal-input' placeholder='"+escAttr(f3||'Поле 3')+"' value='"+escAttr(v3||'')+"' style='margin-bottom:8px'><textarea id='qf4' class='app-modal-textarea' placeholder='"+escAttr(f4||'Поле 4')+"'>"+esc(v4||'')+"</textarea>"; const actions = document.getElementById('appModalActions'); actions.innerHTML = ''; const cancel = document.createElement('button'); cancel.className='small-btn'; cancel.textContent='Отмена'; cancel.onclick=()=>{ closeAppModal(); resolve(null); }; const ok = document.createElement('button'); ok.className='small-btn gold-btn'; ok.textContent='Сохранить'; ok.onclick=()=>{ const r = { f1:document.getElementById('qf1').value, f2:document.getElementById('qf2').value, f3:document.getElementById('qf3').value, f4:document.getElementById('qf4').value }; closeAppModal(); resolve(r); }; actions.appendChild(cancel); actions.appendChild(ok); backdrop.classList.add('show'); }); }
+// ==================== СОЗДАНИЕ ПРЕДЛОЖЕНИЙ ====================
+async function createProposal(type, targetName, data = {}) {
+  const proposalData = { type, targetName, ...data };
+  await createGitHubIssue(proposalData);
+}
 
-// ==================== ФУНКЦИИ РЕНДЕРИНГА ПРЕДЛОЖЕНИЙ ====================
+async function saveNewVariantProposal() {
+  const condition = document.getElementById('prop-name')?.value?.trim();
+  const text = document.getElementById('prop-text')?.value?.trim();
+  if (!condition || !text) return;
+  await createProposal('block', state.currentBlock, { condition, text, mode: 'add' });
+  if (document.getElementById('prop-name')) document.getElementById('prop-name').value = '';
+  if (document.getElementById('prop-text')) document.getElementById('prop-text').value = '';
+}
+
+async function saveInlineProposal(i) {
+  const condition = document.getElementById('inline-name-' + i)?.value?.trim();
+  const text = document.getElementById('inline-text-' + i)?.value?.trim();
+  if (!condition || !text) return;
+  await createProposal('block', state.currentBlock, { condition, text, mode: 'replace', sourceIndex: i });
+  inlineProposalIndex = null;
+  render();
+}
+
+// ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+function closeAppModal() {
+  const backdrop = document.getElementById('appModalBackdrop');
+  backdrop.classList.remove('show');
+  backdrop.className = 'app-modal-backdrop';
+}
+
+function showAlertModal(title, text) {
+  return new Promise(resolve => {
+    const backdrop = document.getElementById('appModalBackdrop');
+    document.getElementById('appModalTitle').textContent = title;
+    document.getElementById('appModalText').innerHTML = text.replace(/\n/g, '<br>');
+    document.getElementById('appModalFields').innerHTML = '';
+    const actions = document.getElementById('appModalActions');
+    actions.innerHTML = '';
+    const ok = document.createElement('button');
+    ok.className = 'small-btn gold-btn';
+    ok.textContent = 'OK';
+    ok.onclick = () => { closeAppModal(); resolve(true); };
+    actions.appendChild(ok);
+    backdrop.classList.add('show');
+  });
+}
+
+function showConfirmModal(title, text) {
+  return new Promise(resolve => {
+    const backdrop = document.getElementById('appModalBackdrop');
+    document.getElementById('appModalTitle').textContent = title;
+    document.getElementById('appModalText').innerHTML = text;
+    document.getElementById('appModalFields').innerHTML = '';
+    const actions = document.getElementById('appModalActions');
+    actions.innerHTML = '';
+    const cancel = document.createElement('button');
+    cancel.className = 'small-btn';
+    cancel.textContent = 'Отмена';
+    cancel.onclick = () => { closeAppModal(); resolve(false); };
+    const ok = document.createElement('button');
+    ok.className = 'small-btn gold-btn';
+    ok.textContent = 'Подтвердить';
+    ok.onclick = () => { closeAppModal(); resolve(true); };
+    actions.appendChild(cancel);
+    actions.appendChild(ok);
+    backdrop.classList.add('show');
+  });
+}
+
+function showPromptModal(title, label, defaultValue = '') {
+  return new Promise(resolve => {
+    const backdrop = document.getElementById('appModalBackdrop');
+    document.getElementById('appModalTitle').textContent = title;
+    document.getElementById('appModalText').innerHTML = '';
+    document.getElementById('appModalFields').innerHTML = `<input id="appModalInput" class="app-modal-input" value="${escAttr(defaultValue)}" placeholder="${escAttr(label)}">`;
+    const actions = document.getElementById('appModalActions');
+    actions.innerHTML = '';
+    const cancel = document.createElement('button');
+    cancel.className = 'small-btn';
+    cancel.textContent = 'Отмена';
+    cancel.onclick = () => { closeAppModal(); resolve(null); };
+    const ok = document.createElement('button');
+    ok.className = 'small-btn gold-btn';
+    ok.textContent = 'Сохранить';
+    ok.onclick = () => {
+      const val = document.getElementById('appModalInput').value;
+      closeAppModal();
+      resolve(val);
+    };
+    actions.appendChild(cancel);
+    actions.appendChild(ok);
+    backdrop.classList.add('show');
+    setTimeout(() => document.getElementById('appModalInput')?.focus(), 0);
+  });
+}
+
+function showTripleFieldModal(title, f1, f2, f3, v1 = '', v2 = '', v3 = '') {
+  return new Promise(resolve => {
+    const backdrop = document.getElementById('appModalBackdrop');
+    document.getElementById('appModalTitle').textContent = title;
+    document.getElementById('appModalText').innerHTML = '';
+    document.getElementById('appModalFields').innerHTML = `
+      <input id="mf1" class="app-modal-input" placeholder="${escAttr(f1)}" value="${escAttr(v1)}" style="margin-bottom:8px">
+      <input id="mf2" class="app-modal-input" placeholder="${escAttr(f2)}" value="${escAttr(v2)}" style="margin-bottom:8px">
+      <textarea id="mf3" class="app-modal-textarea" placeholder="${escAttr(f3)}">${esc(v3)}</textarea>
+    `;
+    const actions = document.getElementById('appModalActions');
+    actions.innerHTML = '';
+    const cancel = document.createElement('button');
+    cancel.className = 'small-btn';
+    cancel.textContent = 'Отмена';
+    cancel.onclick = () => { closeAppModal(); resolve(null); };
+    const ok = document.createElement('button');
+    ok.className = 'small-btn gold-btn';
+    ok.textContent = 'Отправить';
+    ok.onclick = () => {
+      const r = {
+        f1: document.getElementById('mf1').value,
+        f2: document.getElementById('mf2').value,
+        f3: document.getElementById('mf3').value
+      };
+      closeAppModal();
+      resolve(r);
+    };
+    actions.appendChild(cancel);
+    actions.appendChild(ok);
+    backdrop.classList.add('show');
+  });
+}
+
+function showQuadFieldModal(title, f1, f2, f3, f4, v1 = '', v2 = '', v3 = '', v4 = '') {
+  return new Promise(resolve => {
+    const backdrop = document.getElementById('appModalBackdrop');
+    document.getElementById('appModalTitle').textContent = title;
+    document.getElementById('appModalText').innerHTML = '';
+    document.getElementById('appModalFields').innerHTML = `
+      <input id="qf1" class="app-modal-input" placeholder="${escAttr(f1)}" value="${escAttr(v1)}" style="margin-bottom:8px">
+      <input id="qf2" class="app-modal-input" placeholder="${escAttr(f2)}" value="${escAttr(v2)}" style="margin-bottom:8px">
+      <input id="qf3" class="app-modal-input" placeholder="${escAttr(f3)}" value="${escAttr(v3)}" style="margin-bottom:8px">
+      <textarea id="qf4" class="app-modal-textarea" placeholder="${escAttr(f4)}">${esc(v4)}</textarea>
+    `;
+    const actions = document.getElementById('appModalActions');
+    actions.innerHTML = '';
+    const cancel = document.createElement('button');
+    cancel.className = 'small-btn';
+    cancel.textContent = 'Отмена';
+    cancel.onclick = () => { closeAppModal(); resolve(null); };
+    const ok = document.createElement('button');
+    ok.className = 'small-btn gold-btn';
+    ok.textContent = 'Отправить';
+    ok.onclick = () => {
+      const r = {
+        f1: document.getElementById('qf1').value,
+        f2: document.getElementById('qf2').value,
+        f3: document.getElementById('qf3').value,
+        f4: document.getElementById('qf4').value
+      };
+      closeAppModal();
+      resolve(r);
+    };
+    actions.appendChild(cancel);
+    actions.appendChild(ok);
+    backdrop.classList.add('show');
+  });
+}
+
+// ==================== РЕНДЕРИНГ ====================
 function renderProposals() {
   const badge = document.getElementById('propBadge');
-  const count = githubIssuesProposals.filter(p => p.status === 'pending').length;
-  badge.innerHTML = count ? `<span class='badge'>${count}</span>` : '';
+  badge.innerHTML = pendingProposals.length ? `<span class="badge">${pendingProposals.length}</span>` : '';
   
   const el = document.getElementById('proposalList');
-  if (!githubIssuesProposals.length) {
-    el.innerHTML = "<div class='empty'>📭 Нет активных предложений</div>";
+  if (!pendingProposals.length) {
+    el.innerHTML = '<div class="empty">📭 Нет активных предложений</div>';
     return;
   }
   
   el.innerHTML = '';
-  githubIssuesProposals.forEach((p, i) => {
-    const isPending = p.status === 'pending';
+  pendingProposals.forEach(p => {
     const div = document.createElement('div');
     div.className = 'proposal-card';
     
     let typeText = '';
-    if (p.targetType === 'block') typeText = '📝 Изменение сообщения';
-    else if (p.targetType === 'main-list') typeText = '➕ Новый блок';
-    else if (p.targetType === 'section') typeText = '📌 Новый элемент';
-    else if (p.targetType === 'new-section') typeText = '📁 Новый раздел';
+    if (p.type === 'block') typeText = '📝 Изменение сообщения';
+    else if (p.type === 'main-list') typeText = '➕ Новый блок';
+    else if (p.type === 'section') typeText = '📌 Новый элемент';
+    else if (p.type === 'new-section') typeText = '📁 Новый раздел';
     
     let targetInfo = '';
-    if (p.targetType === 'block') targetInfo = `<div class='muted'>Блок: ${esc(p.targetName || '')}</div>`;
-    if (p.targetType === 'section') targetInfo = `<div class='muted'>Раздел: ${esc(p.targetName || '')}</div>`;
-    
-    let statusClass = '';
-    let statusText = '';
-    if (p.status === 'pending') { statusClass = 'status-pending'; statusText = '⏳ Ожидает'; }
-    else if (p.status === 'approved') { statusClass = 'status-approved'; statusText = '✅ Принято'; }
-    else if (p.status === 'rejected') { statusClass = 'status-rejected'; statusText = '❌ Отклонено'; }
+    if (p.type === 'block') targetInfo = `<div class="muted">📍 Блок: ${esc(p.targetName || '')}</div>`;
+    if (p.type === 'section') targetInfo = `<div class="muted">📍 Раздел: ${esc(p.targetName || '')}</div>`;
     
     div.innerHTML = `
       <div class="proposal-title">
         ${typeText}
-        <span class="proposal-status ${statusClass}">${statusText}</span>
+        <span class="proposal-status status-pending">⏳ Ожидает</span>
       </div>
       ${targetInfo}
       <div class="muted" style="margin-bottom: 4px;"><b>📌 Назначение:</b> ${esc(p.condition)}</div>
       <div class="muted" style="margin-bottom: 8px;"><b>💬 Текст:</b> ${esc(p.text.substring(0, 100))}${p.text.length > 100 ? '...' : ''}</div>
-      ${p.githubIssueUrl ? `<div class="muted" style="font-size: 11px;">🔗 <a href="${p.githubIssueUrl}" target="_blank">Issue #${p.githubIssueId}</a></div>` : ''}
-      <div class="muted" style="font-size: 11px;">📅 ${new Date(p.createdAt).toLocaleString()}</div>
+      <div class="muted" style="font-size: 11px;">🔗 <a href="${p.githubIssueUrl}" target="_blank">Issue #${p.githubIssueId}</a> | 📅 ${new Date(p.createdAt).toLocaleString()}</div>
     `;
     
     const tools = document.createElement('div');
     tools.className = 'toolbar';
     
-    if (isOwner() && isPending) {
+    if (isOwner()) {
       const addBtn = document.createElement('button');
       addBtn.className = 'small-btn gold-btn';
       addBtn.textContent = '✅ Принять';
@@ -709,7 +786,7 @@ function renderProposals() {
       rejectBtn.textContent = '❌ Отклонить';
       rejectBtn.onclick = () => rejectProposal(p);
       tools.appendChild(rejectBtn);
-    } else if (!isOwner() && isPending) {
+    } else {
       const infoBtn = document.createElement('button');
       infoBtn.className = 'small-btn';
       infoBtn.textContent = '📖 Подробнее';
@@ -722,137 +799,224 @@ function renderProposals() {
   });
 }
 
-// ==================== ФУНКЦИИ ДЛЯ СОЗДАНИЯ ПРЕДЛОЖЕНИЙ ====================
-async function createProposal(targetType, targetName) {
-  if (targetType === 'main-list') {
-    const result = await showTripleFieldModal('Предложить блок', 'Название блока', 'Назначение / когда использовать', 'Текст первого сообщения');
-    if (!result || !result.f1.trim() || !result.f2.trim() || !result.f3.trim()) return;
-    createProposalWithGitHub({
-      type: 'main-list',
-      targetName: targetName,
-      blockName: result.f1.trim(),
-      condition: result.f2.trim(),
-      text: result.f3.trim()
-    });
-    return;
-  }
-  
-  if (targetType === 'section') {
-    const result = await showTripleFieldModal('Предложить элемент', 'Название элемента', 'Назначение / когда использовать', 'Текст первого сообщения');
-    if (!result || !result.f1.trim() || !result.f2.trim() || !result.f3.trim()) return;
-    createProposalWithGitHub({
-      type: 'section',
-      targetName: targetName,
-      blockName: result.f1.trim(),
-      condition: result.f2.trim(),
-      text: result.f3.trim()
-    });
-    return;
-  }
-  
-  if (targetType === 'new-section') {
-    const result = await showQuadFieldModal('Предложить раздел', 'Название раздела', 'Название первого элемента', 'Назначение / когда использовать', 'Текст первого сообщения');
-    if (!result || !result.f1.trim() || !result.f2.trim() || !result.f3.trim() || !result.f4.trim()) return;
-    createProposalWithGitHub({
-      type: 'new-section',
-      targetName: targetName,
-      sectionName: result.f1.trim(),
-      blockName: result.f2.trim(),
-      condition: result.f3.trim(),
-      text: result.f4.trim()
-    });
-    return;
-  }
-  
-  const result = await showTripleFieldModal('Предложить изменение', 'Назначение / когда использовать', 'Текущий блок', 'Текст ответа', '', targetName || '', '');
-  if (!result || !result.f1.trim() || !result.f3.trim()) return;
-  createProposalWithGitHub({
-    type: 'block',
-    targetName: targetName,
-    condition: result.f1.trim(),
-    text: result.f3.trim(),
-    mode: 'add'
+function renderMain() {
+  const el = document.getElementById('mainList');
+  el.innerHTML = '';
+  state.mainOrder.forEach(name => {
+    const active = state.currentBlock === name ? 'active' : '';
+    const div = document.createElement('div');
+    div.className = `item ${active}`;
+    div.onclick = () => openBlock(name);
+    div.innerHTML = `<div class="item-row"><div class="item-title">${esc(name)}</div></div>`;
+    el.appendChild(div);
   });
+  
+  const btn = document.createElement('button');
+  btn.className = 'small-btn gold-btn';
+  btn.textContent = isOwner() ? '+ блок' : '+ предложить блок';
+  btn.onclick = async () => {
+    if (isOwner()) {
+      const n = await showPromptModal('Новый блок', 'Название блока');
+      if (n && n.trim()) {
+        const name = n.trim();
+        state.mainOrder.push(name);
+        state.blocks[name] = { kind: 'main', note: '', hint: '', messages: [] };
+        save();
+        render();
+      }
+    } else {
+      const result = await showTripleFieldModal('Предложить блок', 'Название блока', 'Назначение', 'Текст первого сообщения');
+      if (result && result.f1.trim() && result.f2.trim() && result.f3.trim()) {
+        await createProposal('main-list', 'Магистраль', {
+          blockName: result.f1.trim(),
+          condition: result.f2.trim(),
+          text: result.f3.trim()
+        });
+      }
+    }
+  };
+  el.appendChild(btn);
 }
 
-function saveNewVariantProposal() {
-  const condition = (document.getElementById('prop-name')?.value || '').trim();
-  const text = (document.getElementById('prop-text')?.value || '').trim();
-  if (!condition || !text) return;
-  createProposalWithGitHub({
-    type: 'block',
-    targetName: state.currentBlock,
-    condition: condition,
-    text: text,
-    mode: 'add'
+function renderRight() {
+  const wrap = document.getElementById('right');
+  wrap.innerHTML = '';
+  state.sectionOrder.forEach(section => {
+    const group = document.createElement('div');
+    group.style.marginBottom = '16px';
+    group.innerHTML = `<div class="section-title">${esc(section)}</div>`;
+    const list = document.createElement('div');
+    list.className = 'list';
+    (state.sections[section] || []).forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.onclick = () => openBlock(name);
+      div.innerHTML = `<div class="item-row"><div class="item-title">${esc(name)}</div></div>`;
+      list.appendChild(div);
+    });
+    group.appendChild(list);
+    
+    const btn = document.createElement('button');
+    btn.className = 'small-btn gold-btn';
+    btn.textContent = isOwner() ? '+ элемент' : '+ предложить элемент';
+    btn.onclick = async () => {
+      if (isOwner()) {
+        const n = await showPromptModal('Новый элемент', 'Название элемента');
+        if (n && n.trim()) {
+          const name = n.trim();
+          state.blocks[name] = { kind: 'side', note: '', hint: '', messages: [] };
+          state.sections[section].push(name);
+          save();
+          render();
+        }
+      } else {
+        const result = await showTripleFieldModal('Предложить элемент', 'Название элемента', 'Назначение', 'Текст первого сообщения');
+        if (result && result.f1.trim() && result.f2.trim() && result.f3.trim()) {
+          await createProposal('section', section, {
+            blockName: result.f1.trim(),
+            condition: result.f2.trim(),
+            text: result.f3.trim()
+          });
+        }
+      }
+    };
+    group.appendChild(btn);
+    wrap.appendChild(group);
   });
-  if (document.getElementById('prop-name')) document.getElementById('prop-name').value = '';
-  if (document.getElementById('prop-text')) document.getElementById('prop-text').value = '';
+  
+  const addSec = document.createElement('button');
+  addSec.className = 'small-btn gold-btn';
+  addSec.textContent = isOwner() ? '+ раздел' : '+ предложить раздел';
+  addSec.onclick = async () => {
+    if (isOwner()) {
+      const n = await showPromptModal('Новый раздел', 'Название раздела');
+      if (n && n.trim()) {
+        const name = n.trim();
+        state.sectionOrder.push(name);
+        state.sections[name] = [];
+        save();
+        render();
+      }
+    } else {
+      const result = await showQuadFieldModal('Предложить раздел', 'Название раздела', 'Название первого элемента', 'Назначение', 'Текст первого сообщения');
+      if (result && result.f1.trim() && result.f2.trim() && result.f3.trim() && result.f4.trim()) {
+        await createProposal('new-section', 'Новый раздел', {
+          sectionName: result.f1.trim(),
+          blockName: result.f2.trim(),
+          condition: result.f3.trim(),
+          text: result.f4.trim()
+        });
+      }
+    }
+  };
+  wrap.appendChild(addSec);
 }
 
-function saveInlineProposal(i) {
-  const condition = (document.getElementById('inline-name-'+i)?.value || '').trim();
-  const text = (document.getElementById('inline-text-'+i)?.value || '').trim();
-  if (!condition || !text) return;
-  createProposalWithGitHub({
-    type: 'block',
-    targetName: state.currentBlock,
-    condition: condition,
-    text: text,
-    mode: 'replace',
-    sourceIndex: i
+function renderCenter() {
+  const block = state.blocks[state.currentBlock];
+  const el = document.getElementById('center');
+  if (!block) {
+    el.innerHTML = '<div class="empty">Блок не найден</div>';
+    return;
+  }
+  
+  let html = `<div class="center-title">${esc(state.currentBlock)}</div>`;
+  html += `<div class="center-sub ${block.kind === 'main' ? 'main' : 'side'}">${block.kind === 'main' ? '● Магистраль' : '● Ветка сценария'}</div>`;
+  
+  if (block.kind !== 'main') {
+    html += `<div class="toolbar"><button class="small-btn return-btn" onclick="returnToMain()">⬅ Вернуться в магистраль</button></div>`;
+  }
+  
+  if (block.note) {
+    html += `<div class="info-box gold-box">${esc(block.note)}</div>`;
+  }
+  
+  (block.messages || []).forEach((msg, i) => {
+    html += `
+      <div class="card">
+        <div class="card-head">
+          <div class="card-label">${esc(msg.label)}</div>
+        </div>
+        <div class="card-text">${esc(msg.text)}</div>
+        <div class="toolbar">
+          <button class="small-btn copy-btn" onclick="copyMessage(${i})">📋 Скопировать</button>
+          ${!isOwner() ? `<button class="small-btn" onclick="startInlineProposal(${i})">✏️ Предложить изменение</button>` : ''}
+        </div>
+      </div>
+    `;
   });
-  inlineProposalIndex = null;
+  
+  if (!isOwner()) {
+    html += `
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:10px">💡 Предложить новый вариант</div>
+        <input id="prop-name" class="input" placeholder="Назначение / когда использовать">
+        <textarea id="prop-text" class="textarea" placeholder="Текст ответа"></textarea>
+        <div class="toolbar">
+          <button class="small-btn gold-btn" onclick="saveNewVariantProposal()">📤 Отправить предложение</button>
+        </div>
+      </div>
+    `;
+  }
+  
+  el.innerHTML = html;
+}
+
+function openBlock(name) {
+  state.currentBlock = name;
+  save();
   render();
 }
 
-// ==================== ОСТАЛЬНЫЕ ФУНКЦИИ (drag&drop, рендеринг и т.д.) ====================
-// ... (сохраняем все функции из предыдущей версии, но убираем дублирование)
-// Для краткости оставляем основные, остальные такие же как в предыдущей версии
+function returnToMain() {
+  state.currentBlock = state.lastMain || state.mainOrder[0];
+  save();
+  render();
+}
 
-function renderMain() { /* как в предыдущей версии */ }
-function renderRight() { /* как в предыдущей версии */ }
-function renderCenter() { /* как в предыдущей версии */ }
-function renderManagerReply() { /* как в предыдущей версии */ }
-function openBlock(name) { state.currentBlock = name; save(); render(); }
-function returnToMain() { state.currentBlock = state.lastMain; save(); render(); }
-function copyMessage(i) { navigator.clipboard.writeText(state.blocks[state.currentBlock].messages[i].text); }
-function startInlineProposal(i) { inlineProposalIndex = i; renderCenter(); }
-function cancelInlineProposal() { inlineProposalIndex = null; renderCenter(); }
-function startEditMessage(i) { editMessageIndex = i; renderCenter(); }
-function cancelMessageEdit() { editMessageIndex = null; renderCenter(); }
-function saveMessage(i) { /* как в предыдущей */ }
-function deleteMessage(i) { /* как в предыдущей */ }
-function saveMeta() { /* как в предыдущей */ }
-function addOwnerMessage() { /* как в предыдущей */ }
-function startEditBlock(name) { editBlockName = name; render(); }
-function startEditSection(name) { editSectionName = name; render(); }
-function cancelInline() { editBlockName = null; editSectionName = null; render(); }
-function saveBlockName(oldName) { /* как в предыдущей */ }
-function saveSectionName(oldName) { /* как в предыдущей */ }
-function deleteBlock(name) { /* как в предыдущей */ }
-function deleteSection(name) { /* как в предыдущей */ }
-function toggleAttachmentEditor(i) { assetEditIndex = assetEditIndex === i ? null : i; renderCenter(); }
-function downloadProjectFile() { /* как в предыдущей */ }
-function exportDatabase() { /* как в предыдущей */ }
-function saveToGitHub() { /* как в предыдущей */ }
-function loadFromGitHub() { /* как в предыдущей */ }
+function copyMessage(i) {
+  const text = state.blocks[state.currentBlock].messages[i].text;
+  navigator.clipboard.writeText(text);
+  showAlertModal('Скопировано', 'Текст сообщения скопирован в буфер обмена');
+}
+
+let inlineProposalIndex = null;
+function startInlineProposal(i) {
+  inlineProposalIndex = i;
+  renderCenter();
+}
 
 // ==================== АВТОРИЗАЦИЯ ====================
-function saveAuth(role) { localStorage.setItem(AUTH_KEY, JSON.stringify({ role, timestamp: Date.now() })); }
-function checkAuth() { try { const auth = JSON.parse(localStorage.getItem(AUTH_KEY)); if (auth && auth.role && (auth.role === 'manager' || auth.role === 'owner')) { if (Date.now() - auth.timestamp < 24 * 60 * 60 * 1000) { state.role = auth.role; return true; } } } catch(e) {} return false; }
-function logout() { localStorage.removeItem(AUTH_KEY); state.role = 'manager'; save(); render(); showLoginModal(); }
+function saveAuth(role) {
+  localStorage.setItem(AUTH_KEY, JSON.stringify({ role, timestamp: Date.now() }));
+}
+
+function checkAuth() {
+  try {
+    const auth = JSON.parse(localStorage.getItem(AUTH_KEY));
+    if (auth && auth.role && (auth.role === 'manager' || auth.role === 'owner')) {
+      if (Date.now() - auth.timestamp < 24 * 60 * 60 * 1000) {
+        state.role = auth.role;
+        return true;
+      }
+    }
+  } catch (e) {}
+  return false;
+}
+
+function logout() {
+  localStorage.removeItem(AUTH_KEY);
+  state.role = 'manager';
+  save();
+  render();
+  showLoginModal();
+}
 
 function showLoginModal() {
   const backdrop = document.getElementById('appModalBackdrop');
-  const modalTitle = document.getElementById('appModalTitle');
-  const modalText = document.getElementById('appModalText');
-  const modalFields = document.getElementById('appModalFields');
-  const modalActions = document.getElementById('appModalActions');
-  backdrop.className = 'app-modal-backdrop login-modal show';
-  modalTitle.textContent = 'Вход в систему';
-  modalText.textContent = 'Выберите роль и введите пароль';
-  modalFields.innerHTML = `
+  document.getElementById('appModalTitle').textContent = '🔐 Вход в систему';
+  document.getElementById('appModalText').innerHTML = 'Выберите роль и введите пароль';
+  document.getElementById('appModalFields').innerHTML = `
     <div class="role-buttons">
       <button id="loginRoleManager" class="role-btn active">Менеджер</button>
       <button id="loginRoleOwner" class="role-btn">Руководитель</button>
@@ -861,87 +1025,84 @@ function showLoginModal() {
       <input type="password" id="loginPassword" class="app-modal-input" placeholder="Введите пароль">
     </div>
     <div style="margin-top: 12px;">
-      <button id="githubSetupBtn" class="small-btn" style="width: 100%;">🔧 Настроить GitHub (только для руководителя)</button>
+      <button id="githubSetupBtn" class="small-btn" style="width: 100%;">🔧 Настроить GitHub (для отправки предложений)</button>
     </div>
   `;
-  modalActions.innerHTML = '';
+  const actions = document.getElementById('appModalActions');
+  actions.innerHTML = '';
+  
   const cancelBtn = document.createElement('button');
   cancelBtn.className = 'small-btn';
   cancelBtn.textContent = 'Отмена';
   cancelBtn.onclick = () => { closeAppModal(); showLoginModal(); };
+  
   const loginBtn = document.createElement('button');
   loginBtn.className = 'small-btn gold-btn';
   loginBtn.textContent = 'Войти';
   loginBtn.onclick = () => {
     const selectedRole = document.querySelector('.role-btn.active').textContent;
     const password = document.getElementById('loginPassword').value;
-    if (selectedRole === 'Менеджер') {
-      if (password === '4007') {
-        state.role = 'manager';
-        saveAuth('manager');
-        closeAppModal();
-        save();
-        render();
-        syncProposalsFromGitHub();
-      } else { alert('Неверный пароль для менеджера'); }
-    } else if (selectedRole === 'Руководитель') {
-      if (password === '7004') {
-        state.role = 'owner';
-        saveAuth('owner');
-        closeAppModal();
-        save();
-        render();
-        syncProposalsFromGitHub();
-      } else { alert('Неверный пароль для руководителя'); }
+    if (selectedRole === 'Менеджер' && password === '4007') {
+      state.role = 'manager';
+      saveAuth('manager');
+      closeAppModal();
+      save();
+      render();
+      syncProposals();
+    } else if (selectedRole === 'Руководитель' && password === '7004') {
+      state.role = 'owner';
+      saveAuth('owner');
+      closeAppModal();
+      save();
+      render();
+      syncProposals();
+    } else {
+      alert('Неверный пароль');
     }
   };
-  modalActions.appendChild(cancelBtn);
-  modalActions.appendChild(loginBtn);
+  
+  actions.appendChild(cancelBtn);
+  actions.appendChild(loginBtn);
   backdrop.classList.add('show');
   
   setTimeout(() => {
     const managerBtn = document.getElementById('loginRoleManager');
     const ownerBtn = document.getElementById('loginRoleOwner');
     const passwordField = document.getElementById('loginPasswordField');
-    const githubSetupBtn = document.getElementById('githubSetupBtn');
-    managerBtn.onclick = () => { managerBtn.classList.add('active'); ownerBtn.classList.remove('active'); passwordField.classList.add('show'); };
-    ownerBtn.onclick = () => { ownerBtn.classList.add('active'); managerBtn.classList.remove('active'); passwordField.classList.add('show'); };
-    githubSetupBtn.onclick = async () => {
+    const githubBtn = document.getElementById('githubSetupBtn');
+    
+    managerBtn.onclick = () => {
+      managerBtn.classList.add('active');
+      ownerBtn.classList.remove('active');
+      passwordField.classList.add('show');
+    };
+    ownerBtn.onclick = () => {
+      ownerBtn.classList.add('active');
+      managerBtn.classList.remove('active');
+      passwordField.classList.add('show');
+    };
+    githubBtn.onclick = async () => {
       const token = await requestGitHubToken();
-      if (token) { saveGitHubToken(token); showAlertModal('Успешно', 'GitHub настроен. Теперь предложения будут синхронизироваться.'); await syncProposalsFromGitHub(); render(); }
+      if (token) {
+        saveGitHubToken(token);
+        showAlertModal('✅ Успешно', 'GitHub настроен! Теперь предложения будут отправляться.');
+      }
     };
   }, 0);
 }
 
 // ==================== ГЛАВНЫЙ РЕНДЕР ====================
 function render() {
-  roleSelect.value = state.role || 'manager';
+  roleSelect.value = state.role;
   const isOwnerMode = isOwner();
-  downloadProjectBtn.style.display = isOwnerMode ? 'inline-block' : 'none';
-  exportBtn.style.display = isOwnerMode ? 'inline-block' : 'none';
+  
   saveProjectBtn.style.display = isOwnerMode ? 'inline-block' : 'none';
   syncIssuesBtn.style.display = isOwnerMode ? 'inline-block' : 'none';
   
-  // Простой рендеринг для остальных частей
-  const mainEl = document.getElementById('mainList');
-  if (mainEl) mainEl.innerHTML = '<div class="empty">Загрузка...</div>';
-  const rightEl = document.getElementById('right');
-  if (rightEl) rightEl.innerHTML = '<div class="empty">Загрузка...</div>';
-  const centerEl = document.getElementById('center');
-  if (centerEl && state.blocks[state.currentBlock]) {
-    centerEl.innerHTML = `<div class="center-title">${esc(state.currentBlock)}</div><div class="card-text">Загрузка сообщений...</div>`;
-  }
-  
-  // Полный рендеринг
-  if (typeof renderFull === 'undefined') {
-    // Быстрый рендеринг для отображения
-    document.getElementById('mainList').innerHTML = (state.mainOrder || []).map(name => `<div class="item ${state.currentBlock === name ? 'active' : ''}" onclick="openBlock('${escJs(name)}')"><div class="item-row"><div class="item-title">${esc(name)}</div></div></div>`).join('');
-    document.getElementById('right').innerHTML = (state.sectionOrder || []).map(section => `<div><div class="section-title">${esc(section)}</div><div class="list">${(state.sections[section] || []).map(name => `<div class="item" onclick="openBlock('${escJs(name)}')">${esc(name)}</div>`).join('')}</div></div>`).join('');
-    if (centerEl && state.blocks[state.currentBlock]) {
-      const block = state.blocks[state.currentBlock];
-      centerEl.innerHTML = `<div class="center-title">${esc(state.currentBlock)}</div>${(block.messages || []).map(msg => `<div class="card"><div class="card-label">${esc(msg.label)}</div><div class="card-text">${esc(msg.text)}</div><button class="small-btn copy-btn" onclick="copyMessage(${msg.index})">Скопировать</button></div>`).join('')}`;
-    }
-  }
+  renderMain();
+  renderRight();
+  renderCenter();
+  renderProposals();
   save();
 }
 
@@ -950,40 +1111,52 @@ window.addEventListener('load', async () => {
   if (!checkAuth()) {
     showLoginModal();
   } else {
-    await syncProposalsFromGitHub();
     render();
+    await syncProposals();
   }
 });
 
-logoutBtn.addEventListener('click', logout);
 roleSelect.addEventListener('change', e => {
   const nextRole = e.target.value;
   if (nextRole === 'owner') {
     const code = prompt('Введите код руководителя');
-    if (code !== '7004') {
+    if (code === '7004') {
+      state.role = 'owner';
+      saveAuth('owner');
+    } else {
       alert('Неверный код');
       state.role = 'manager';
       roleSelect.value = 'manager';
       saveAuth('manager');
-      save();
-      render();
-      return;
     }
-    state.role = 'owner';
-    saveAuth('owner');
   } else {
     state.role = 'manager';
     saveAuth('manager');
   }
   save();
   render();
-  syncProposalsFromGitHub();
+  syncProposals();
 });
 
-exportBtn.addEventListener('click', () => exportDatabase());
-downloadProjectBtn.addEventListener('click', () => downloadProjectFile());
-saveProjectBtn.addEventListener('click', async () => { if (await showConfirmModal('Сохранить изменения', 'Сохранить текущую базу в GitHub?')) await saveToGitHub(); });
-syncIssuesBtn.addEventListener('click', async () => { await syncProposalsFromGitHub(); showAlertModal('Синхронизация', `Загружено ${githubIssuesProposals.length} предложений`); render(); });
+logoutBtn.addEventListener('click', logout);
+saveProjectBtn.addEventListener('click', async () => {
+  if (await showConfirmModal('Сохранить изменения', 'Сохранить текущую базу в GitHub?')) {
+    await saveToGitHub();
+  }
+});
+syncIssuesBtn.addEventListener('click', async () => {
+  await syncProposals();
+  showAlertModal('Синхронизация', `Загружено ${pendingProposals.length} предложений`);
+});
+
+// Глобальные функции для onclick
+window.openBlock = openBlock;
+window.returnToMain = returnToMain;
+window.copyMessage = copyMessage;
+window.startInlineProposal = startInlineProposal;
+window.saveNewVariantProposal = saveNewVariantProposal;
+window.saveInlineProposal = saveInlineProposal;
+window.createProposal = createProposal;
 </script>
 
 <div id="appModalBackdrop" class="app-modal-backdrop">
