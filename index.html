@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BORZO - Script Navigator с GitHub</title>
+<title>BORZO - Script Navigator</title>
 <style>
 :root{
   --bg:#3a3a3a; --bg2:#474747; --panel:#f8f7f3; --white:#fff; --line:#ddd8cf;
@@ -31,7 +31,7 @@ header{height:82px;display:flex;align-items:center;justify-content:space-between
 .input,.textarea{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px 12px;background:#fff;font:inherit}
 .textarea{min-height:120px;resize:vertical}
 .small-btn,.copy-btn{border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;padding:10px 12px;font-size:13px;transition:all 0.2s}
-.small-btn:hover{opacity:0.85}
+.small-btn:hover{opacity:0.85;transform:scale(0.98)}
 .copy-btn{background:var(--gold);border-color:var(--gold2);color:#fff;font-weight:800}
 .gold-btn{background:var(--gold);border-color:var(--gold2);color:#fff}
 .blue-btn{background:var(--blue);border-color:#3a5a8a;color:#fff}
@@ -115,7 +115,7 @@ let pendingProposals = [];
 let localProposals = [];
 
 // ==================== ОСНОВНЫЕ ДАННЫЕ ====================
-const KEY = 'borzo_v10';
+const KEY = 'borzo_v11';
 const AUTH_KEY = 'borzo_auth';
 
 const defaults = {
@@ -195,7 +195,7 @@ async function requestGitHubToken() {
   return new Promise(resolve => {
     const backdrop = document.getElementById('appModalBackdrop');
     document.getElementById('appModalTitle').textContent = '🔐 Настройка GitHub';
-    document.getElementById('appModalText').innerHTML = 'Введите Personal Access Token для отправки предложений руководителю.\n\n<strong>Требуемые права:</strong> Issues (read/write)\n\nТокен нужен ТОЛЬКО для отправки предложений. Без него руководитель не увидит ваши предложения!';
+    document.getElementById('appModalText').innerHTML = 'Введите Personal Access Token для отправки предложений руководителю.\n\n<strong>Требуемые права:</strong> Issues (read/write)\n\nТокен нужен ТОЛЬКО для отправки предложений.';
     document.getElementById('appModalFields').innerHTML = `
       <input id="githubTokenInput" class="app-modal-input" type="password" placeholder="GitHub Personal Access Token">
       <div class="toolbar" style="margin-top: 8px;">
@@ -228,7 +228,6 @@ async function requestGitHubToken() {
 async function createGitHubIssue(proposal) {
   const token = getGitHubToken();
   if (!token) {
-    // Сохраняем локально с пометкой
     const localProposal = {
       id: Date.now(),
       ...proposal,
@@ -238,9 +237,9 @@ async function createGitHubIssue(proposal) {
     };
     localProposals.unshift(localProposal);
     saveLocalProposals();
-    
+    await syncProposals();
     showAlertModal('⚠️ GitHub не настроен', 
-      '❌ Предложение НЕ ОТПРАВЛЕНО руководителю!\n\n✅ Сохранено ЛОКАЛЬНО (только на вашем компьютере).\n\n📌 Чтобы руководитель увидел предложение:\n1. Нажмите "🔧 Настроить GitHub" в окне входа\n2. Введите токен\n3. Отправьте предложение заново');
+      '❌ Предложение НЕ ОТПРАВЛЕНО руководителю!\n\n✅ Сохранено ЛОКАЛЬНО.\n\n📌 Чтобы руководитель увидел предложение:\n1. Нажмите "🔧 Настроить GitHub" в окне входа\n2. Введите токен\n3. Отправьте предложение заново');
     return null;
   }
   
@@ -289,6 +288,7 @@ async function createGitHubIssue(proposal) {
       const issue = await response.json();
       showAlertModal('✅ Предложение отправлено!', 
         `✅ Ваше предложение успешно отправлено руководителю!\n\n📌 Номер: #${issue.number}\n\n👨‍💼 Руководитель увидит его после синхронизации.`);
+      await syncProposals();
       return issue;
     } else {
       const error = await response.json();
@@ -296,7 +296,7 @@ async function createGitHubIssue(proposal) {
       return null;
     }
   } catch (e) {
-    showAlertModal('❌ Ошибка', `Ошибка соединения: ${e.message}\n\nПроверьте интернет-соединение.`);
+    showAlertModal('❌ Ошибка', `Ошибка соединения: ${e.message}`);
     return null;
   }
 }
@@ -527,7 +527,7 @@ async function rejectProposal(proposal) {
   showAlertModal('❌ Отклонено', `Предложение отклонено.\nПричина: ${comment || 'Не указана'}`);
 }
 
-// ==================== СОЗДАНИЕ ПРЕДЛОЖЕНИЙ ====================
+// ==================== СОЗДАНИЕ ПРЕДЛОЖЕНИЙ (ГЛАВНЫЕ ФУНКЦИИ) ====================
 async function createProposal(type, targetName, data = {}) {
   const proposalData = { type, targetName, ...data };
   await createGitHubIssue(proposalData);
@@ -544,6 +544,7 @@ async function saveNewVariantProposal() {
   await createProposal('block', state.currentBlock, { condition, text, mode: 'add' });
   if (document.getElementById('prop-name')) document.getElementById('prop-name').value = '';
   if (document.getElementById('prop-text')) document.getElementById('prop-text').value = '';
+  render();
 }
 
 async function saveInlineProposal(i) {
@@ -766,9 +767,9 @@ function renderProposals() {
     } else if (p.status === 'local') {
       const infoBtn = document.createElement('button');
       infoBtn.className = 'small-btn';
-      infoBtn.textContent = '⚠️ Не отправлено руководителю';
+      infoBtn.textContent = '⚠️ Не отправлено';
       infoBtn.onclick = () => showAlertModal('⚠️ Локальное предложение', 
-        '❌ Это предложение НЕ отправлено руководителю!\n\n✅ Оно сохранено только на вашем компьютере.\n\n📌 Чтобы руководитель увидел предложение:\n1. Настройте GitHub (кнопка в окне входа)\n2. Создайте предложение заново\n3. После настройки все новые предложения будут отправляться автоматически');
+        '❌ Это предложение НЕ отправлено руководителю!\n\n✅ Оно сохранено только на вашем компьютере.\n\n📌 Чтобы руководитель увидел предложение:\n1. Настройте GitHub (кнопка в окне входа)\n2. Создайте предложение заново');
       tools.appendChild(infoBtn);
     } else {
       const infoBtn = document.createElement('button');
@@ -896,6 +897,8 @@ function renderRight() {
   wrap.appendChild(addSec);
 }
 
+let inlineProposalIndex = null;
+
 function renderCenter() {
   const block = state.blocks[state.currentBlock];
   const el = document.getElementById('center');
@@ -904,7 +907,6 @@ function renderCenter() {
     return;
   }
   
-  // Показываем предупреждение о GitHub если нет токена
   let githubWarning = '';
   if (!isOwner() && !getGitHubToken()) {
     githubWarning = `
@@ -912,7 +914,7 @@ function renderCenter() {
         <div class="github-warning-text">
           ⚠️ <strong>GitHub не настроен!</strong> Ваши предложения будут сохраняться ТОЛЬКО ЛОКАЛЬНО, руководитель их НЕ УВИДИТ.
         </div>
-        <button onclick="showGitHubSetup()">🔧 Настроить GitHub</button>
+        <button onclick="window.showGitHubSetup()">🔧 Настроить GitHub</button>
       </div>
     `;
   }
@@ -922,7 +924,7 @@ function renderCenter() {
   html += `<div class="center-sub ${block.kind === 'main' ? 'main' : 'side'}">${block.kind === 'main' ? '● Магистраль' : '● Ветка сценария'}</div>`;
   
   if (block.kind !== 'main') {
-    html += `<div class="toolbar"><button class="small-btn return-btn" onclick="returnToMain()">⬅ Вернуться в магистраль</button></div>`;
+    html += `<div class="toolbar"><button class="small-btn return-btn" onclick="window.returnToMain()">⬅ Вернуться в магистраль</button></div>`;
   }
   
   if (block.note) {
@@ -930,18 +932,32 @@ function renderCenter() {
   }
   
   (block.messages || []).forEach((msg, i) => {
-    html += `
-      <div class="card">
-        <div class="card-head">
-          <div class="card-label">${esc(msg.label)}</div>
+    if (!isOwner() && inlineProposalIndex === i) {
+      html += `
+        <div class="card">
+          <div class="card-head"><div class="card-label">✏️ Редактирование предложения</div></div>
+          <input id="inline-name-${i}" class="input" placeholder="Назначение / когда использовать" value="${escAttr(msg.label)}">
+          <textarea id="inline-text-${i}" class="textarea" placeholder="Текст ответа">${esc(msg.text)}</textarea>
+          <div class="toolbar">
+            <button class="small-btn gold-btn" onclick="window.saveInlineProposal(${i})">📤 Отправить предложение</button>
+            <button class="small-btn" onclick="window.cancelInlineProposal()">Отмена</button>
+          </div>
         </div>
-        <div class="card-text">${esc(msg.text)}</div>
-        <div class="toolbar">
-          <button class="small-btn copy-btn" onclick="copyMessage(${i})">📋 Скопировать</button>
-          ${!isOwner() ? `<button class="small-btn" onclick="startInlineProposal(${i})">✏️ Предложить изменение</button>` : ''}
+      `;
+    } else {
+      html += `
+        <div class="card">
+          <div class="card-head">
+            <div class="card-label">${esc(msg.label)}</div>
+          </div>
+          <div class="card-text">${esc(msg.text)}</div>
+          <div class="toolbar">
+            <button class="small-btn copy-btn" onclick="window.copyMessage(${i})">📋 Скопировать</button>
+            ${!isOwner() ? `<button class="small-btn" onclick="window.startInlineProposal(${i})">✏️ Предложить изменение</button>` : ''}
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
   });
   
   if (!isOwner()) {
@@ -951,7 +967,7 @@ function renderCenter() {
         <input id="prop-name" class="input" placeholder="Назначение / когда использовать">
         <textarea id="prop-text" class="textarea" placeholder="Текст ответа"></textarea>
         <div class="toolbar">
-          <button class="small-btn gold-btn" onclick="saveNewVariantProposal()">📤 Отправить предложение</button>
+          <button class="small-btn gold-btn" onclick="window.saveNewVariantProposal()">📤 Отправить предложение</button>
         </div>
       </div>
     `;
@@ -986,9 +1002,13 @@ function copyMessage(i) {
   showAlertModal('Скопировано', 'Текст сообщения скопирован в буфер обмена');
 }
 
-let inlineProposalIndex = null;
 function startInlineProposal(i) {
   inlineProposalIndex = i;
+  renderCenter();
+}
+
+function cancelInlineProposal() {
+  inlineProposalIndex = null;
   renderCenter();
 }
 
@@ -1158,6 +1178,17 @@ function render() {
   save();
 }
 
+// ==================== ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ onclick ====================
+window.openBlock = openBlock;
+window.returnToMain = returnToMain;
+window.copyMessage = copyMessage;
+window.startInlineProposal = startInlineProposal;
+window.cancelInlineProposal = cancelInlineProposal;
+window.saveNewVariantProposal = saveNewVariantProposal;
+window.saveInlineProposal = saveInlineProposal;
+window.showGitHubSetup = showGitHubSetup;
+
+// ==================== ЗАПУСК ====================
 window.addEventListener('load', async () => {
   loadLocalProposals();
   if (!checkAuth()) {
@@ -1200,14 +1231,6 @@ syncIssuesBtn.addEventListener('click', async () => {
   await syncProposals();
   showAlertModal('Синхронизация', `Загружено ${pendingProposals.length} предложений`);
 });
-
-window.openBlock = openBlock;
-window.returnToMain = returnToMain;
-window.copyMessage = copyMessage;
-window.startInlineProposal = startInlineProposal;
-window.saveNewVariantProposal = saveNewVariantProposal;
-window.saveInlineProposal = saveInlineProposal;
-window.showGitHubSetup = showGitHubSetup;
 </script>
 
 <div id="appModalBackdrop" class="app-modal-backdrop">
