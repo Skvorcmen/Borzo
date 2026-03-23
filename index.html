@@ -1,139 +1,557 @@
-// BORZO-Project/src/BlockEditor.js
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BORZO - Коллаборативный навигатор скриптов</title>
+  <style>
+  :root{
+    --bg:#3a3a3a; --bg2:#474747; --panel:#f8f7f3; --white:#fff; --line:#ddd8cf;
+    --text:#222; --muted:#6f6a63; --gold:#c9a24a; --gold2:#a9852f; --goldsoft:#f7edd6;
+    --bluesoft:#edf4ff; --danger:#c64c4c; --green:#189c54; --warning:#e67e22;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
+  header{height:82px;display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:rgba(20,20,20,.18);border-bottom:1px solid rgba(201,162,74,.35)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{border:2px solid var(--gold);color:var(--gold);padding:6px 14px;border-radius:8px;font-weight:800;letter-spacing:2px;font-size:28px;background:#2f2f2f}
+  .header-title{font-size:20px;font-weight:700;color:#fff}.header-sub{font-size:12px;color:#ddd;margin-top:4px}
+  .role-select{border:1px solid rgba(201,162,74,.45);background:#2f2f2f;color:#fff;border-radius:10px;padding:10px 12px}
+  .layout{display:grid;grid-template-columns:300px 1fr 340px;gap:16px;padding:16px;min-height:calc(100vh - 82px)}
+  .panel{background:var(--panel);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.15)}
+  .white{background:var(--white)}
+  .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+  .section-title{font-size:22px;font-weight:800}.muted{font-size:12px;color:var(--muted)}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .item{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;transition:all .15s ease;position:relative}
+  .item:hover{border-color:var(--gold);background:#fffaf1;box-shadow:0 0 0 2px rgba(201,162,74,.08) inset}
+  .item.active{border-color:var(--gold);background:#fff7e8;box-shadow:0 0 0 2px rgba(201,162,74,.12) inset}
+  .item.drag-over{border-color:#2f3237 !important; box-shadow:0 0 0 2px rgba(47,50,55,.14) inset !important}
+  .item.pending-change{border-left:4px solid var(--warning);background:#fff8f0}
+  .item-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .item-title{flex:1;font-weight:700;cursor:pointer}
+  .hidden-actions{
+    display:flex;
+    gap:6px;
+    min-width:74px;
+    justify-content:flex-end;
+    visibility:hidden;
+    opacity:0;
+    pointer-events:none;
+  }
+  .item:hover .hidden-actions,.item.active .hidden-actions,.item.show .hidden-actions{
+    visibility:visible;
+    opacity:1;
+    pointer-events:auto;
+  }
+  .proposal-badge{
+    position:absolute;
+    top:-8px;
+    right:-8px;
+    background:var(--warning);
+    color:white;
+    border-radius:20px;
+    padding:2px 8px;
+    font-size:10px;
+    font-weight:bold;
+  }
+  .input,.textarea,.item-input{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px 12px;background:#fff;font:inherit}
+  .textarea{min-height:120px;resize:vertical}
+  .icon-btn,.small-btn,.copy-btn{border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font:inherit;transition:all .2s}
+  .icon-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .small-btn{padding:10px 12px;font-size:13px}
+  .small-btn:hover{transform:translateY(-1px);box-shadow:0 2px 6px rgba(0,0,0,.1)}
+  .copy-btn{min-height:48px;min-width:148px;padding:12px 20px;font-size:16px;font-weight:800;background:var(--gold);border-color:var(--gold2);color:#fff;box-shadow:0 4px 12px rgba(201,162,74,.18)}
+  .gold-btn{background:var(--gold);border-color:var(--gold2);color:#fff}
+  .danger-btn{color:var(--danger)}
+  .warning-btn{background:var(--warning);border-color:#d35400;color:#fff}
+  .return-btn{background:var(--danger);border-color:#b54444;color:#fff;font-size:20px;font-weight:800;padding:16px 20px;min-width:320px}
+  .center-title{font-size:34px;font-weight:800;margin-bottom:4px}
+  .center-sub{font-size:18px;font-weight:800;margin-bottom:14px}
+  .center-sub.main{color:var(--green)}
+  .center-sub.side{color:var(--muted)}
+  .info-box{border-radius:14px;padding:12px 14px;margin-bottom:12px;line-height:1.45}.gold-box{background:var(--goldsoft);border:1px solid #ead39f}.blue-box{background:var(--bluesoft);border:1px solid #c7d8ff}
+  .card{border:2px solid #2f3237;background:#ffffff;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .card-main{display:block}
+  .drag-handle{
+  width:24px;height:24px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;
+  background:#fff;
+  color:#666;
+  cursor:grab;
+  user-select:none;-webkit-user-select:none;
+  flex:0 0 auto;
+  }
+  .drag-handle:active{cursor:grabbing}
+  .card-body{flex:1;min-width:0}
+  .card-text{user-select:text;-webkit-user-select:text;cursor:text}
+  .material-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .card-label{font-size:12px;font-weight:900;color:var(--gold2);text-transform:uppercase;letter-spacing:.6px}
+  .card-text{white-space:pre-wrap;line-height:1.62;font-size:18px;color:#2a2a2a}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .divider{height:1px;background:#e7e3da;margin:14px 0}.empty{padding:14px;border:1px dashed #cfcac0;border-radius:12px;background:#fff;color:var(--muted)}
+  .badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--danger);color:#fff;font-size:12px;font-weight:700}
+  .proposal-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff;margin-bottom:12px}
+  .proposal-title{font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+  .proposal-meta{font-size:11px;color:var(--muted);margin-bottom:8px}
+  .proposal-diff{background:#f5f5f5;padding:8px;border-radius:8px;font-family:monospace;font-size:12px;margin:8px 0;white-space:pre-wrap}
+  .proposal-actions{display:flex;gap:8px;margin-top:8px}
+  .moderation-panel{max-height:500px;overflow-y:auto}
+  .pending-count{background:var(--warning);color:white;border-radius:20px;padding:2px 8px;font-size:12px;margin-left:8px}
+  @media (max-width:1150px){.layout{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">BORZO</div>
+    <div><div class="header-title">Script Navigator</div><div class="header-sub">Коллаборативный навигатор скриптов</div></div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button id="downloadProjectBtn" class="small-btn gold-btn">Скачать проект</button>
+    <button id="exportBtn" class="small-btn gold-btn">Экспорт базы</button>
+    <select id="roleSelect" class="role-select"><option value="manager">Менеджер</option><option value="owner">Руководитель</option></select>
+    <button id="logoutBtn" class="small-btn" style="background:#2f2f2f; border-color:#666; color:#fff;">Выйти</button>
+  </div>
+</header>
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useAuth } from './authContext'; // Предполагаем наличие контекста аутентификации
+<div class="layout">
+  <aside class="panel">
+    <div class="section-head"><div class="section-title">Магистраль</div></div>
+    <div id="mainList" class="list"></div>
+    <div class="divider"></div>
+    <div class="section-head"><div class="section-title" style="font-size:18px">Предложения</div><div id="propBadge"></div></div>
+    <div id="managerReplyArea" class="list"></div>
+    <div id="proposalList" class="list"></div>
+  </aside>
+  <main class="panel white"><div id="center"></div></main>
+  <aside class="panel">
+    <div id="right"></div>
+    <button id="addSectionBtn" class="small-btn gold-btn" style="margin-top:16px;width:100%">+ раздел</button>
+    <div id="moderationPanel" style="margin-top:16px;display:none">
+      <div class="section-head"><div class="section-title">📋 Модерация</div><span id="pendingCount" class="pending-count">0</span></div>
+      <div id="proposalsList" class="moderation-panel"></div>
+    </div>
+  </aside>
+</div>
 
-const BlockEditor = () => {
-  const { user } = useAuth();
-  const [blocks, setBlocks] = useState([]);
-  const [editingBlock, setEditingBlock] = useState(null);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState('');
+<script>
+// ==================== СОСТОЯНИЕ ====================
+let state = {
+  role: 'owner',
+  currentBlock: 'Сомнение в упаковку',
+  lastMain: 'Город клиента',
+  mainOrder: ["Входящий старт", "Выбор модели", "Размер и цвет", "Город клиента", "Доставка и оплата", "Финальное подтверждение"],
+  sectionOrder: ["Вопросы клиентов", "Обработка возражений", "Пауза", "Закрытие клиента"],
+  sections: {
+    "Вопросы клиентов": ["Где посмотреть", "Разница моделей", "Нестандартный размер", "Другой цвет"],
+    "Обработка возражений": ["Дорого", "Сомнение в упаковку", "Сомнение в прочности", "Сомнение в качестве", "Доставка после 18:00"],
+    "Пауза": ["Подумаю / позже", "Молчание после фильтра", "Выбрал модель и пропал", "Пропал после ссылки на оплату"],
+    "Закрытие клиента": ["Дорого — закрытие", "Не сейчас"]
+  },
+  blocks: {
+    "Входящий старт": { kind: "main", note: "Если клиент сразу ушёл в уточняющий вопрос, после ответа его нужно вернуть в магистраль.", hint: "", messages: [/* ... */] },
+    "Сомнение в упаковку": { kind: "side", note: "", hint: "", messages: [/* ... */] }
+    // ... остальные блоки
+  },
+  pendingProposals: [] // Массив предложений изменений
+};
+
+// ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+function saveToLocalStorage() {
+  localStorage.setItem('borzo_v8', JSON.stringify(state));
+}
+
+function loadFromLocalStorage() {
+  const saved = localStorage.getItem('borzo_v8');
+  if (saved) {
+    try {
+      const loaded = JSON.parse(saved);
+      state = { ...state, ...loaded };
+    } catch(e) { console.error('Ошибка загрузки', e); }
+  }
+}
+
+// Генерация ID для предложения
+function generateProposalId() {
+  return Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+// ==================== СИСТЕМА ПРЕДЛОЖЕНИЙ ====================
+function createProposal(type, target, newValue, oldValue, metadata = {}) {
+  return {
+    id: generateProposalId(),
+    type: type, // 'add_block', 'delete_block', 'edit_block', 'add_section', 'delete_section', 'edit_section', 'edit_message', 'add_message', 'delete_message'
+    target: target,
+    newValue: newValue,
+    oldValue: oldValue,
+    metadata: metadata,
+    createdAt: new Date().toISOString(),
+    status: 'pending', // pending, approved, rejected
+    reviewedBy: null,
+    reviewedAt: null
+  };
+}
+
+// Отправить предложение (только для менеджеров)
+function submitProposal(proposal) {
+  if (state.role !== 'manager') {
+    alert('Только менеджеры могут предлагать изменения');
+    return false;
+  }
   
-  useEffect(() => {
-    loadBlocks();
-  }, []);
+  state.pendingProposals.push(proposal);
+  saveToLocalStorage();
+  alert('✅ Предложение отправлено руководителю на рассмотрение');
+  render(); // Обновляем интерфейс для отображения статуса
+  return true;
+}
 
-  const loadBlocks = async () => {
-    try {
-      const response = await axios.get('/api/blocks');
-      setBlocks(response.data);
-    } catch (err) {
-      setError('Ошибка загрузки блоков');
+// Одобрить предложение (только для руководителя)
+function approveProposal(proposalId) {
+  if (state.role !== 'owner') {
+    alert('Только руководитель может одобрять изменения');
+    return false;
+  }
+  
+  const proposal = state.pendingProposals.find(p => p.id === proposalId);
+  if (!proposal) return false;
+  
+  // Применяем изменение в зависимости от типа
+  try {
+    switch(proposal.type) {
+      case 'add_block':
+        if (proposal.target.section) {
+          if (!state.sections[proposal.target.section]) state.sections[proposal.target.section] = [];
+          state.sections[proposal.target.section].push(proposal.newValue.name);
+          state.blocks[proposal.newValue.name] = proposal.newValue.data;
+        } else if (proposal.target.main) {
+          state.mainOrder.push(proposal.newValue.name);
+          state.blocks[proposal.newValue.name] = proposal.newValue.data;
+        }
+        break;
+        
+      case 'delete_block':
+        if (proposal.target.section) {
+          const idx = state.sections[proposal.target.section].indexOf(proposal.target.blockName);
+          if (idx !== -1) state.sections[proposal.target.section].splice(idx, 1);
+        } else if (proposal.target.main) {
+          const idx = state.mainOrder.indexOf(proposal.target.blockName);
+          if (idx !== -1) state.mainOrder.splice(idx, 1);
+        }
+        delete state.blocks[proposal.target.blockName];
+        break;
+        
+      case 'edit_block':
+        if (state.blocks[proposal.target.blockName]) {
+          state.blocks[proposal.target.blockName] = { 
+            ...state.blocks[proposal.target.blockName], 
+            ...proposal.newValue 
+          };
+        }
+        break;
+        
+      case 'add_section':
+        state.sections[proposal.newValue.name] = [];
+        state.sectionOrder.push(proposal.newValue.name);
+        break;
+        
+      case 'delete_section':
+        delete state.sections[proposal.target.sectionName];
+        const idx = state.sectionOrder.indexOf(proposal.target.sectionName);
+        if (idx !== -1) state.sectionOrder.splice(idx, 1);
+        break;
+        
+      case 'edit_section':
+        // Переименование секции
+        const oldName = proposal.target.oldName;
+        const newName = proposal.newValue.name;
+        state.sections[newName] = state.sections[oldName];
+        delete state.sections[oldName];
+        const orderIdx = state.sectionOrder.indexOf(oldName);
+        if (orderIdx !== -1) state.sectionOrder[orderIdx] = newName;
+        break;
+        
+      case 'edit_message':
+        const block = state.blocks[proposal.target.blockName];
+        if (block && block.messages[proposal.target.messageIndex]) {
+          block.messages[proposal.target.messageIndex] = { 
+            ...block.messages[proposal.target.messageIndex], 
+            ...proposal.newValue 
+          };
+        }
+        break;
+        
+      case 'add_message':
+        const targetBlock = state.blocks[proposal.target.blockName];
+        if (targetBlock) {
+          if (!targetBlock.messages) targetBlock.messages = [];
+          targetBlock.messages.push(proposal.newValue);
+        }
+        break;
+        
+      case 'delete_message':
+        const delBlock = state.blocks[proposal.target.blockName];
+        if (delBlock && delBlock.messages[proposal.target.messageIndex]) {
+          delBlock.messages.splice(proposal.target.messageIndex, 1);
+        }
+        break;
     }
-  };
+    
+    // Обновляем статус предложения
+    proposal.status = 'approved';
+    proposal.reviewedAt = new Date().toISOString();
+    proposal.reviewedBy = state.role;
+    
+    saveToLocalStorage();
+    alert('✅ Изменение одобрено и применено');
+    render();
+    return true;
+    
+  } catch(e) {
+    console.error('Ошибка применения предложения:', e);
+    alert('❌ Ошибка при применении изменения');
+    return false;
+  }
+}
 
-  const startEditing = (blockId) => {
-    setEditingBlock(blockId);
-  };
+// Отклонить предложение
+function rejectProposal(proposalId) {
+  if (state.role !== 'owner') {
+    alert('Только руководитель может отклонять изменения');
+    return false;
+  }
+  
+  const proposal = state.pendingProposals.find(p => p.id === proposalId);
+  if (proposal) {
+    proposal.status = 'rejected';
+    proposal.reviewedAt = new Date().toISOString();
+    proposal.reviewedBy = state.role;
+    saveToLocalStorage();
+    alert('❌ Предложение отклонено');
+    render();
+  }
+}
 
-  const saveChanges = async (blockId, newContent) => {
-    setIsSaving(true);
-    setError('');
-
+// Редактировать предложение перед принятием
+function editProposal(proposalId) {
+  const proposal = state.pendingProposals.find(p => p.id === proposalId);
+  if (!proposal) return;
+  
+  const newValue = prompt('Редактируйте значение:', JSON.stringify(proposal.newValue, null, 2));
+  if (newValue) {
     try {
-      // Проверка прав доступа
-      if (!user || !user.role?.includes('director')) {
-        throw new Error('Нет прав на сохранение');
-      }
-
-      const response = await axios.put(
-        `/api/blocks/${blockId}`,
-        { content: newContent }
-      );
-
-      // Обновление статуса всех блоков
-      await axios.post('/api/blocks/updateStatus', {
-        blockId,
-        status: 'published'
-      });
-
-      // Уведомление всех пользователей
-      notifyUsers(blockId);
-
-      // Перезагрузка данных
-      await loadBlocks();
-      setEditingBlock(null);
-    } catch (err) {
-      setError(err.message || 'Произошла ошибка');
-    } finally {
-      setIsSaving(false);
+      proposal.newValue = JSON.parse(newValue);
+      saveToLocalStorage();
+      render();
+      alert('Предложение отредактировано');
+    } catch(e) {
+      alert('Ошибка парсинга JSON');
     }
-  };
+  }
+}
 
-  const notifyUsers = async (blockId) => {
-    try {
-      await axios.post('/api/notifications', {
-        blockId,
-        message: 'Изменения сохранены и применены'
-      });
-    } catch (err) {}
-  };
+// ==================== ОБЕРТКИ ДЛЯ ДЕЙСТВИЙ (с отправкой предложений) ====================
+function proposeAddBlock(listType, parentName = null) {
+  const blockName = prompt('Введите название нового блока:');
+  if (!blockName) return;
+  
+  const proposal = createProposal('add_block', 
+    listType === 'main' ? { main: true } : { section: parentName },
+    { name: blockName, data: { kind: listType === 'main' ? 'main' : 'side', note: '', hint: '', messages: [] } },
+    null,
+    { blockName, parentName }
+  );
+  
+  if (state.role === 'owner') {
+    // Руководитель сразу применяет
+    approveProposal(proposal.id);
+  } else {
+    // Менеджер отправляет предложение
+    submitProposal(proposal);
+  }
+}
 
-  const renderBlock = (block) => {
-    if (editingBlock === block.id) {
-      return (
-        <div
-          key={block.id}
-          className="block-editor"
-          data-status={block.status}
-        >
-          <textarea
-            value={block.content}
-            onChange={(e) => 
-              setBlocks(prev => 
-                prev.map(b => 
-                  b.id === block.id ? { ...b, content: e.target.value } : b
-                )
-              )
-            }
-          />
-          <div className="editor-controls">
-            <button
-              disabled={isSaving}
-              onClick={() => 
-                saveChanges(block.id, block.content)
-              }
-            >
-              {isSaving ? 'Сохраняю...' : 'Сохранить'}
-            </button>
-            <button onClick={() => setEditingBlock(null)}>
-              Отмена
-            </button>
-          </div>
-          {error && <div className="error">{error}</div>}
-        </div>
-      );
-    }
+function proposeDeleteBlock(blockName, isMain, sectionName = null) {
+  if (!confirm(`Предложить удалить блок "${blockName}"?`)) return;
+  
+  const proposal = createProposal('delete_block',
+    isMain ? { main: true, blockName } : { section: sectionName, blockName },
+    null,
+    state.blocks[blockName],
+    { blockName, isMain, sectionName }
+  );
+  
+  if (state.role === 'owner') {
+    approveProposal(proposal.id);
+  } else {
+    submitProposal(proposal);
+  }
+}
 
-    return (
-      <div
-        key={block.id}
-        className={`block-view ${block.status}`}
-        onClick={() => startEditing(block.id)}
-      >
-        <h3>{block.title}</h3>
-        <div 
-          dangerouslySetInnerHTML={{__html: block.content}}
-        />
-        <span className="status-label">
-          {block.status === 'draft' ? 'Черновик' : 'Одобрено'}
-        </span>
+function proposeEditBlock(blockName, updates) {
+  const proposal = createProposal('edit_block',
+    { blockName },
+    updates,
+    state.blocks[blockName],
+    { blockName }
+  );
+  
+  if (state.role === 'owner') {
+    approveProposal(proposal.id);
+  } else {
+    submitProposal(proposal);
+  }
+}
+
+function proposeAddSection() {
+  const sectionName = prompt('Введите название нового раздела:');
+  if (!sectionName) return;
+  
+  const proposal = createProposal('add_section',
+    null,
+    { name: sectionName, blocks: [] },
+    null,
+    { sectionName }
+  );
+  
+  if (state.role === 'owner') {
+    approveProposal(proposal.id);
+  } else {
+    submitProposal(proposal);
+  }
+}
+
+function proposeDeleteSection(sectionName) {
+  if (!confirm(`Предложить удалить раздел "${sectionName}" со всеми блоками?`)) return;
+  
+  const proposal = createProposal('delete_section',
+    { sectionName },
+    null,
+    { sectionName, blocks: state.sections[sectionName] },
+    { sectionName }
+  );
+  
+  if (state.role === 'owner') {
+    approveProposal(proposal.id);
+  } else {
+    submitProposal(proposal);
+  }
+}
+
+// ==================== РЕНДЕРИНГ ИНТЕРФЕЙСА ====================
+function renderProposalsList() {
+  const container = document.getElementById('proposalsList');
+  const pendingCountSpan = document.getElementById('pendingCount');
+  const pendingProposals = state.pendingProposals.filter(p => p.status === 'pending');
+  
+  if (pendingCountSpan) pendingCountSpan.textContent = pendingProposals.length;
+  
+  if (!container) return;
+  
+  if (pendingProposals.length === 0) {
+    container.innerHTML = '<div class="empty">Нет предложений на рассмотрение</div>';
+    return;
+  }
+  
+  container.innerHTML = pendingProposals.map(prop => `
+    <div class="proposal-card">
+      <div class="proposal-title">
+        <strong>${getProposalTypeName(prop.type)}</strong>
+        <small>${new Date(prop.createdAt).toLocaleString()}</small>
       </div>
-    );
-  };
+      <div class="proposal-meta">
+        Цель: ${formatProposalTarget(prop.target)}
+      </div>
+      <div class="proposal-diff">
+        <strong>Предлагаемое изменение:</strong><br>
+        ${JSON.stringify(prop.newValue, null, 2).substring(0, 200)}${JSON.stringify(prop.newValue, null, 2).length > 200 ? '...' : ''}
+      </div>
+      <div class="proposal-actions">
+        <button class="small-btn gold-btn" onclick="approveProposal('${prop.id}')">✅ Принять</button>
+        <button class="small-btn warning-btn" onclick="editProposal('${prop.id}')">✏️ Редактировать</button>
+        <button class="small-btn danger-btn" onclick="rejectProposal('${prop.id}')">❌ Отклонить</button>
+      </div>
+    </div>
+  `).join('');
+}
 
-  return (
-    <div className="blocks-container">
-      <h2>Редактор блоков</h2>
-      <div className="blocks-list">
-        {blocks.map(renderBlock)}
-      </div>
-      <div className="actions">
-        {user.role?.includes('director') && (
-          <button onClick={() => setEditingBlock('new')}>
-            Добавить новый блок
-          </button>
-        )}
-      </div>
+function getProposalTypeName(type) {
+  const names = {
+    'add_block': '➕ Добавление блока',
+    'delete_block': '🗑 Удаление блока',
+    'edit_block': '✏️ Редактирование блока',
+    'add_section': '📁 Добавление раздела',
+    'delete_section': '📁 Удаление раздела',
+    'edit_section': '✏️ Редактирование раздела',
+    'edit_message': '💬 Редактирование сообщения',
+    'add_message': '💬 Добавление сообщения',
+    'delete_message': '💬 Удаление сообщения'
+  };
+  return names[type] || type;
+}
+
+function formatProposalTarget(target) {
+  if (!target) return '—';
+  if (target.blockName) return `Блок: ${target.blockName}`;
+  if (target.section) return `Раздел: ${target.section}`;
+  if (target.sectionName) return `Раздел: ${target.sectionName}`;
+  if (target.main) return 'Магистраль';
+  return JSON.stringify(target);
+}
+
+// ==================== ИНИЦИАЛИЗАЦИЯ ====================
+function init() {
+  loadFromLocalStorage();
+  
+  // Настройка роли
+  const roleSelect = document.getElementById('roleSelect');
+  roleSelect.value = state.role;
+  roleSelect.addEventListener('change', (e) => {
+    state.role = e.target.value;
+    saveToLocalStorage();
+    render();
+  });
+  
+  // Показываем панель модерации только для руководителя
+  const moderationPanel = document.getElementById('moderationPanel');
+  if (moderationPanel) {
+    moderationPanel.style.display = state.role === 'owner' ? 'block' : 'none';
+  }
+  
+  // Кнопки экспорта
+  document.getElementById('downloadProjectBtn')?.addEventListener('click', () => {
+    const dataStr = JSON.stringify(state, null, 2);
+    const blob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `borzo_backup_${new Date().toISOString().slice(0,19)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+  
+  document.getElementById('exportBtn')?.addEventListener('click', () => {
+    const dataStr = JSON.stringify(state, null, 2);
+    const blob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `borzo_export_${new Date().toISOString().slice(0,19)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+  
+  document.getElementById('addSectionBtn')?.addEventListener('click', () => proposeAddSection());
+  
+  render();
+}
+
+// Запускаем при загрузке
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
