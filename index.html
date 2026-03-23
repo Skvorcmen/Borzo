@@ -17,88 +17,38 @@ header{height:60px;display:flex;align-items:center;justify-content:space-between
 .logo{border:2px solid var(--gold);color:var(--gold);padding:4px 10px;border-radius:8px;font-weight:800;letter-spacing:2px;font-size:22px;background:#2f2f2f}
 .header-title{font-size:16px;font-weight:700;color:#fff}.header-sub{font-size:10px;color:#ddd;margin-top:2px}
 .menu-buttons{display:flex;gap:8px;align-items:center}
-.menu-icon {
-    background: rgba(201,162,74,.2);
-    border: 1px solid var(--gold);
-    border-radius: 40px;
-    padding: 8px 14px;
-    cursor: pointer;
-    color: var(--gold);
-    font-size: 16px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: all 0.2s ease;
-    font-weight: 500;
-}
-.menu-icon:hover {
-    background: rgba(201,162,74,.35);
-    transform: scale(1.02);
-}
-.user-menu-btn {
-    background: rgba(201,162,74,.2);
-    border: 1px solid var(--gold);
-    border-radius: 40px;
-    padding: 8px 14px;
-    cursor: pointer;
-    color: var(--gold);
-    font-size: 16px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-.user-menu-btn:hover {
-    background: rgba(201,162,74,.35);
-}
-.mobile-buttons-container {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-}
-.role-select{display:none}
-.user-dropdown { position: relative; }
-.user-dropdown-menu {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    background: var(--panel);
-    border-radius: 16px;
-    border: 1px solid var(--line);
-    box-shadow: 0 10px 30px rgba(0,0,0,.2);
-    min-width: 180px;
-    z-index: 1000;
-    display: none;
-    overflow: hidden;
-}
-.user-dropdown-menu.show { display: block; }
-.user-dropdown-item { padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; color: var(--text); transition: background 0.2s; }
-.user-dropdown-item:hover { background: var(--goldsoft); }
-.user-dropdown-item.active { background: var(--goldsoft); color: var(--gold2); font-weight: 600; }
-.user-dropdown-item.active::after { content: "✓"; margin-left: auto; color: var(--gold); }
-.user-dropdown-divider { height: 1px; background: var(--line); margin: 4px 0; }
-.user-dropdown-item.logout { color: var(--danger); }
+.menu-icon{background:rgba(201,162,74,.2);border:1px solid var(--gold);border-radius:40px;padding:8px 14px;cursor:pointer;color:var(--gold);font-size:16px;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s}
+.menu-icon:hover{background:rgba(201,162,74,.35)}
+.user-menu-btn{background:rgba(201,162,74,.2);border:1px solid var(--gold);border-radius:40px;padding:8px 14px;cursor:pointer;color:var(--gold)}
+.mobile-buttons-container{display:flex;flex-direction:row;gap:8px;align-items:center}
+.user-dropdown{position:relative}
+.user-dropdown-menu{position:absolute;top:50px;right:0;background:var(--panel);border-radius:16px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.2);min-width:180px;z-index:1000;display:none}
+.user-dropdown-menu.show{display:block}
+.user-dropdown-item{padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;color:var(--text)}
+.user-dropdown-item:hover{background:var(--goldsoft)}
+.user-dropdown-item.active{background:var(--goldsoft);color:var(--gold2);font-weight:600}
+.user-dropdown-item.active::after{content:"✓";margin-left:auto;color:var(--gold)}
+.user-dropdown-divider{height:1px;background:var(--line);margin:4px 0}
+.user-dropdown-item.logout{color:var(--danger)}
 .layout{display:grid;grid-template-columns:300px 1fr 340px;gap:16px;padding:16px;min-height:calc(100vh - 60px)}
 .panel{background:var(--panel);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.15)}
 .white{background:var(--white)}
 .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
 .section-title{font-size:22px;font-weight:800}
 .list{display:flex;flex-direction:column;gap:8px}
-.item{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;transition:background .15s}
+.item{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;transition:all .15s}
 .item:hover{border-color:var(--gold);background:#fffaf1}
 .item.active{border-color:var(--gold);background:#fff7e8}
 .item-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .item-title{flex:1;font-weight:700;cursor:pointer}
-.hidden-actions{display:flex;gap:6px;min-width:74px;justify-content:flex-end;visibility:hidden;opacity:0}
+.hidden-actions{display:flex;gap:6px;visibility:hidden;opacity:0}
 .item:hover .hidden-actions,.item.active .hidden-actions{visibility:visible;opacity:1}
 .input,.textarea{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px 12px;background:#fff;font:inherit}
 .textarea{min-height:120px;resize:vertical}
 .icon-btn,.small-btn,.copy-btn{border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer}
 .icon-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px}
 .small-btn{padding:8px 12px;font-size:12px}
-.copy-btn{min-height:44px;min-width:120px;padding:10px 16px;font-size:14px;font-weight:800;background:var(--gold);border-color:var(--gold2);color:#fff}
+.copy-btn{padding:10px 16px;font-size:14px;font-weight:800;background:var(--gold);border-color:var(--gold2);color:#fff}
 .gold-btn{background:var(--gold);border-color:var(--gold2);color:#fff}
 .danger-btn{color:var(--danger)}
 .return-btn{background:var(--danger);border-color:#b54444;color:#fff;font-weight:800;padding:12px 16px}
@@ -109,29 +59,31 @@ header{height:60px;display:flex;align-items:center;justify-content:space-between
 .info-box{border-radius:14px;padding:12px 14px;margin-bottom:12px}
 .gold-box{background:var(--goldsoft);border:1px solid #ead39f}
 .blue-box{background:var(--bluesoft);border:1px solid #c7d8ff}
-.card{border:2px solid #2f3237;background:#ffffff;border-radius:14px;padding:14px;margin-bottom:14px}
-.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card{border:2px solid #2f3237;background:#fff;border-radius:14px;padding:14px;margin-bottom:14px}
+.card-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .card-text{white-space:pre-wrap;line-height:1.62;font-size:16px}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .divider{height:1px;background:#e7e3da;margin:14px 0}
-.empty{padding:14px;border:1px dashed #cfcac0;border-radius:12px;background:#fff;color:var(--muted)}
+.empty{padding:14px;border:1px dashed #cfcac0;border-radius:12px;background:#fff;color:var(--muted);text-align:center}
 .badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--danger);color:#fff;font-size:12px;font-weight:700}
 .proposal-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff;margin-bottom:12px}
 .proposal-title{font-weight:700;margin-bottom:6px}
 .attachments-row{display:flex;gap:10px;overflow-x:auto;margin-top:8px}
 .asset-chip{min-width:100px;border:1px solid #d7d2c7;border-radius:10px;padding:6px;background:#fafafa}
-.app-modal-backdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:9999}
+.app-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999}
 .app-modal-backdrop.show{display:flex}
-.app-modal{width:min(500px, calc(100vw - 32px)); background:#fff; border-radius:16px; padding:16px}
-.app-modal-title{font-size:18px; font-weight:800}
-.app-modal-input,.app-modal-textarea{width:100%; border:1px solid #d7d2c7; border-radius:10px; padding:10px; margin:8px 0}
-.mobile-menu-panel{position:fixed; top:0; bottom:0; width:85%; max-width:320px; background:var(--panel); z-index:1001; overflow-y:auto; padding:16px; transition:transform 0.3s; transform:translateX(-100%)}
+.app-modal{width:min(500px,calc(100vw - 32px));background:#fff;border-radius:16px;padding:16px}
+.app-modal-title{font-size:18px;font-weight:800}
+.app-modal-input,.app-modal-textarea{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px;margin:8px 0}
+.mobile-menu-panel{position:fixed;top:0;bottom:0;width:85%;max-width:320px;background:var(--panel);z-index:1001;overflow-y:auto;padding:16px;transition:transform 0.3s;transform:translateX(-100%)}
 .mobile-menu-panel.right{transform:translateX(100%)}
 .mobile-menu-panel.show{transform:translateX(0)}
-.mobile-menu-overlay{position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; display:none}
+.mobile-menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none}
 .mobile-menu-overlay.show{display:block}
 @media (max-width:768px){.layout{display:block}.desktop-only{display:none!important}.mobile-only{display:block!important}}
 @media (min-width:769px){.mobile-only{display:none!important}.desktop-only{display:flex!important}}
+.drag-handle{width:24px;height:24px;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;background:#fff;cursor:grab}
+.material-row{display:flex;align-items:center;gap:8px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -139,18 +91,18 @@ header{height:60px;display:flex;align-items:center;justify-content:space-between
   <div class="brand"><div class="logo">BORZO</div><div><div class="header-title">Script Navigator</div><div class="header-sub">GitHub Issues</div></div></div>
   <div class="menu-buttons">
     <div class="desktop-only" style="display:flex;gap:8px">
-        <button id="downloadProjectBtn" class="small-btn gold-btn" style="display:none">Скачать проект</button>
-        <button id="exportBtn" class="small-btn gold-btn" style="display:none">Экспорт базы</button>
-        <button id="logoutBtn" class="small-btn" style="background:#2f2f2f; border-color:#666; color:#fff;">Выйти</button>
+        <button id="downloadProjectBtn" class="small-btn gold-btn" style="display:none">📥 Скачать проект</button>
+        <button id="exportBtn" class="small-btn gold-btn" style="display:none">📄 Экспорт базы</button>
+        <button id="logoutBtn" class="small-btn" style="background:#2f2f2f;color:#fff">🚪 Выйти</button>
     </div>
-    <div class="mobile-only mobile-buttons-container" style="display:none;flex-direction:row;gap:8px">
+    <div class="mobile-only mobile-buttons-container" style="display:none">
         <button id="mobileMenuLeftBtn" class="menu-icon">☰ Меню</button>
         <button id="mobileMenuRightBtn" class="menu-icon">📁 Разделы</button>
         <div class="user-dropdown">
-            <button id="userMenuBtn" class="user-menu-btn">👤 Профиль</button>
+            <button id="userMenuBtn" class="user-menu-btn">👤</button>
             <div id="userDropdownMenu" class="user-dropdown-menu">
-                <div id="userDropdownRoleManager" class="user-dropdown-item" data-role="manager">👤 Менеджер</div>
-                <div id="userDropdownRoleOwner" class="user-dropdown-item" data-role="owner">🧑‍💼 Руководитель</div>
+                <div id="userDropdownRoleManager" class="user-dropdown-item">👤 Менеджер</div>
+                <div id="userDropdownRoleOwner" class="user-dropdown-item">🧑‍💼 Руководитель</div>
                 <div class="user-dropdown-divider"></div>
                 <div id="userDropdownLogout" class="user-dropdown-item logout">🚪 Выйти</div>
             </div>
@@ -159,364 +111,419 @@ header{height:60px;display:flex;align-items:center;justify-content:space-between
   </div>
 </header>
 <div class="layout desktop-only">
-  <aside class="panel"><div class="section-head"><div class="section-title">Магистраль</div></div><div id="mainList" class="list"></div><div class="divider"></div><div class="section-head"><div class="section-title" style="font-size:18px">Предложения (GitHub)</div><div id="propBadge"></div></div><div id="proposalList" class="list"></div></aside>
+  <aside class="panel"><div class="section-head"><div class="section-title">📋 Магистраль</div></div><div id="mainList" class="list"></div><div class="divider"></div><div class="section-head"><div class="section-title" style="font-size:18px">💡 Предложения (GitHub)</div><div id="propBadge"></div></div><div id="proposalList" class="list"></div></aside>
   <main class="panel white" id="centerPanel"><div id="center"></div></main>
-  <aside class="panel" id="desktopRightPanel"><div id="right"></div></aside>
+  <aside class="panel"><div class="section-head"><div class="section-title">📂 Разделы сценария</div></div><div id="right"></div></aside>
 </div>
 <div class="mobile-only"><main class="panel white"><div id="mobileCenter"></div></main></div>
-<div id="mobileMenuLeft" class="mobile-menu-panel left"><div class="mobile-menu-header"><h3>Магистраль</h3><button class="mobile-menu-close" id="closeLeftMenu">✕</button></div><div id="mobileMainList" class="list"></div><div class="divider"></div><div id="mobileProposalList" class="list"></div></div>
-<div id="mobileMenuRight" class="mobile-menu-panel right"><div class="mobile-menu-header"><h3>Разделы</h3><button class="mobile-menu-close" id="closeRightMenu">✕</button></div><div id="mobileRight"></div></div>
+<div id="mobileMenuLeft" class="mobile-menu-panel left"><div class="mobile-menu-header"><h3>📋 Магистраль</h3><button class="mobile-menu-close" id="closeLeftMenu">✕</button></div><div id="mobileMainList" class="list"></div><div class="divider"></div><div id="mobileProposalList" class="list"></div></div>
+<div id="mobileMenuRight" class="mobile-menu-panel right"><div class="mobile-menu-header"><h3>📂 Разделы</h3><button class="mobile-menu-close" id="closeRightMenu">✕</button></div><div id="mobileRight"></div></div>
 <div id="mobileMenuOverlay" class="mobile-menu-overlay"></div>
 <div id="appModalBackdrop" class="app-modal-backdrop"><div class="app-modal"><div id="appModalTitle" class="app-modal-title"></div><div id="appModalText" class="app-modal-text"></div><div id="appModalFields"></div><div class="app-modal-actions" id="appModalActions"></div></div></div>
 
 <script>
 // ======================== GITHUB CONFIG ==========================
-// ⚠️ ЗАМЕНИТЕ НА ВАШИ ДАННЫЕ (репозиторий должен быть публичным, токен с правами issues)
-const GITHUB_REPO_OWNER = "skvorcmen";     // ваш username
-const GITHUB_REPO_NAME = "Borzo";          // репозиторий
-const GITHUB_TOKEN = "";                   // если публичный репозиторий — можно пусто, но для создания issues нужен токен. Рекомендуем создать классический токен (repo scope) и вставить сюда. Для безопасности пользователи могут ввести токен при старте. Сделаем fallback: если токен не задан — запросим у руководителя при первом действии.
+const GITHUB_REPO_OWNER = "skvorcmen";
+const GITHUB_REPO_NAME = "Borzo";
+let githubToken = localStorage.getItem('github_token') || '';
 
-// ----------------------------------------------------------------
+// ======================== DATA ==========================
 const STORAGE_KEY = 'borzo_v7_github';
 const AUTH_KEY = 'borzo_auth';
-let state = null;
-let githubToken = localStorage.getItem('github_token') || GITHUB_TOKEN;
 
-// Функция сохранения токена
-function setGithubToken(token) {
-    githubToken = token;
-    if(token) localStorage.setItem('github_token', token);
-    else localStorage.removeItem('github_token');
-}
-
-// Дефолтная структура
 const defaults = {
- role:'manager',
- currentBlock:'Входящий старт',
- lastMain:'Входящий старт',
- mainOrder:['Входящий старт','Выбор модели','Размер и цвет','Город клиента','Доставка и оплата','Финальное подтверждение'],
- sectionOrder:['Вопросы клиентов','Обработка возражений','Пауза','Закрытие клиента'],
- sections:{
-   'Вопросы клиентов':['Где посмотреть','Разница моделей','Нестандартный размер','Другой цвет'],
-   'Обработка возражений':['Дорого','Сомнение в прочности','Сомнение в качестве'],
-   'Пауза':['Подумаю / позже','Молчание после фильтра'],
-   'Закрытие клиента':['Дорого — закрытие','Не сейчас']
+ role: 'manager',
+ currentBlock: 'Входящий старт',
+ lastMain: 'Входящий старт',
+ mainOrder: ['Входящий старт','Выбор модели','Размер и цвет','Город клиента','Доставка и оплата','Финальное подтверждение'],
+ sectionOrder: ['Вопросы клиентов','Обработка возражений','Пауза','Закрытие клиента'],
+ sections: {
+   'Вопросы клиентов': ['Где посмотреть','Разница моделей','Нестандартный размер','Другой цвет'],
+   'Обработка возражений': ['Дорого','Сомнение в прочности','Сомнение в качестве'],
+   'Пауза': ['Подумаю / позже','Молчание после фильтра'],
+   'Закрытие клиента': ['Дорого — закрытие','Не сейчас']
  },
- blocks:{
-  'Входящий старт':{kind:'main',note:'',hint:'',messages:[{label:'Стандартный входящий',text:'Здравствуйте. Меня зовут Ульяна, менеджер BORZO.\n\nСейчас отправлю цены и краткое описание.'}]},
-  'Выбор модели':{kind:'main',note:'',hint:'',messages:[{label:'Основное',text:'Какой вариант вам ближе — LUX или GEOMETRY?'}]},
-  'Размер и цвет':{kind:'main',note:'',hint:'',messages:[{label:'Основное',text:'Отлично 👍 У наших столов стандартные размеры: 3м/3,5м/4м. Подскажите размер и цвет?'}]},
-  'Город клиента':{kind:'main',note:'',hint:'',messages:[{label:'Сообщение',text:'Ваш вариант доступен. Подскажите, с какого вы города?'}]},
-  'Доставка и оплата':{kind:'main',note:'',hint:'',messages:[{label:'Если Астана',text:'По Астане доставка бесплатная. Адрес?'}]},
-  'Финальное подтверждение':{kind:'main',note:'',hint:'',messages:[{label:'Подтверждение',text:'Подтверждаю: модель, размер, цвет, город, оплата. Всё верно?'}]},
-  'Где посмотреть':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Работаем онлайн, отправить видеообзор?'}]},
-  'Разница моделей':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'LUX — классика, GEOMETRY — геометрия с подсветкой.'}]},
-  'Нестандартный размер':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Работаем с фиксированными размерами.'}]},
-  'Другой цвет':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Утверждённая палитра, другие оттенки не производим.'}]},
-  'Дорого':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Понимаю. Конструкция и подход отличаются.'}]},
-  'Сомнение в прочности':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Тестировалась нагрузка 200+ кг.'}]},
-  'Сомнение в качестве':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Если что-то не устроит — возврат.'}]},
-  'Подумаю / позже':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Поняла, если вопросы — пишите.'}]},
-  'Молчание после фильтра':{kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Ваш запрос ещё актуален?'}]},
-  'Дорого — закрытие':{kind:'side',note:'',hint:'',messages:[{label:'Закрытие',text:'Если вернётесь — буду рада помочь.'}]},
-  'Не сейчас':{kind:'side',note:'',hint:'',messages:[{label:'Закрытие',text:'Напишите, когда актуально.'}]}
+ blocks: {
+  'Входящий старт': {kind:'main',note:'Если клиент сразу ушёл в уточняющий вопрос, после ответа его нужно вернуть в магистраль.',hint:'',messages:[{label:'Стандартный входящий',text:'Здравствуйте. Меня зовут Ульяна, менеджер BORZO.\n\nСейчас отправлю цены и краткое описание.'},{label:'Если клиент сразу спросил город',text:'Здравствуйте. Фабрика в Астане. Отправляем по Казахстану через Kaspi.\n\nСейчас отправлю цены.'}]},
+  'Выбор модели': {kind:'main',note:'',hint:'После этого сообщения отправить фото моделей.',messages:[{label:'Основное сообщение',text:'Какой вариант вам ближе — LUX или GEOMETRY?'}]},
+  'Размер и цвет': {kind:'main',note:'Если клиент перескочил к доставке — вернуть к выбору размера.',hint:'',messages:[{label:'Основное сообщение',text:'Отлично 👍\n\nУ наших столов стандартные размеры: 3м / 3,5м / 4м\n\nПодскажите размер и цвет?'}]},
+  'Город клиента': {kind:'main',note:'',hint:'',messages:[{label:'Сообщение',text:'Ваш вариант доступен.\n\nПодскажите, с какого вы города?'}]},
+  'Доставка и оплата': {kind:'main',note:'',hint:'',messages:[{label:'Если Астана',text:'По Астане доставка бесплатная.\n\nПодскажите адрес и время?'}]},
+  'Финальное подтверждение': {kind:'main',note:'',hint:'',messages:[{label:'Подтверждение',text:'Подтверждаю:\n\n— модель\n— размер\n— цвет\n— город\n— оплата\n\nВсё верно?'}]},
+  'Где посмотреть': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Работаем в онлайн-формате от фабрики в Астане.\n\nЕсть видеообзоры — отправить?'}]},
+  'Разница моделей': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'LUX — классическая модель.\nGEOMETRY — сложная геометрия и подсветка.'}]},
+  'Нестандартный размер': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Мы работаем с фиксированными размерами. Индивидуальные не изготавливаем.'}]},
+  'Другой цвет': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Работаем с утверждённой палитрой. Другие оттенки не производим.'}]},
+  'Дорого': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Понимаю. Цена выше среднего, потому что конструкция и подход отличаются.'}]},
+  'Сомнение в прочности': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Конструкция тестировалась на нагрузку 200+ кг.'}]},
+  'Сомнение в качестве': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Если что-то не устроит — можно оформить возврат.'}]},
+  'Подумаю / позже': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Поняла вас. Если вопросы — уточняйте.'}]},
+  'Молчание после фильтра': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Подскажите, ваш запрос по столу ещё актуален?'}]},
+  'Дорого — закрытие': {kind:'side',note:'',hint:'',messages:[{label:'Закрытие',text:'Если вернётесь к вопросу позже — буду рада помочь.'}]},
+  'Не сейчас': {kind:'side',note:'',hint:'',messages:[{label:'Закрытие',text:'Если позже вопрос станет актуальным — напишите.'}]}
  },
- proposals:[],   // локальные кэш issues
- pendingSync: false
+ proposals: []
 };
 
-function loadLocal(){ try{const raw=localStorage.getItem(STORAGE_KEY); return raw?JSON.parse(raw):clone(defaults)}catch(e){return clone(defaults)} }
-function saveLocal(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-const clone = x => JSON.parse(JSON.stringify(x));
+function clone(x) { return JSON.parse(JSON.stringify(x)); }
+function loadLocal() { try{ const raw=localStorage.getItem(STORAGE_KEY); return raw?JSON.parse(raw):clone(defaults); }catch(e){ return clone(defaults); } }
+function saveLocal() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
-// Проверка авторизации
-function checkAuth(){ try{ const a=JSON.parse(localStorage.getItem(AUTH_KEY)); if(a && (a.role==='manager'||a.role==='owner') && Date.now()-a.timestamp<86400000){ state.role=a.role; return true } }catch(e){} return false; }
-function saveAuth(role){ localStorage.setItem(AUTH_KEY, JSON.stringify({role, timestamp:Date.now()})); }
-function updateRoleSelects(){ 
-    const mRole = document.getElementById('userDropdownRoleManager'); const oRole = document.getElementById('userDropdownRoleOwner');
-    if(mRole && oRole){ if(state.role==='manager'){ mRole.classList.add('active'); oRole.classList.remove('active'); } else { mRole.classList.remove('active'); oRole.classList.add('active'); } }
+let state = loadLocal();
+let editBlockName = null, editSectionName = null, editMessageIndex = null, inlineProposalIndex = null;
+
+function esc(s) { return String(s||'').replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
+function escAttr(s) { return esc(s).replace(/"/g, '&quot;'); }
+function escJs(s) { return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
+function isOwner() { return state.role === 'owner'; }
+
+function showAlertModal(title, msg) { alert(title + '\n\n' + msg); }
+function showConfirmModal(title, msg) { return Promise.resolve(confirm(title + '\n\n' + msg)); }
+function showPromptModal(title, label, def) { return Promise.resolve(prompt(title + '\n' + label, def||'')); }
+
+function saveAuth(role) { localStorage.setItem(AUTH_KEY, JSON.stringify({role, timestamp:Date.now()})); }
+function checkAuth() { try{ const a=JSON.parse(localStorage.getItem(AUTH_KEY)); if(a && (a.role==='manager'||a.role==='owner') && Date.now()-a.timestamp<86400000){ state.role=a.role; return true; } }catch(e){} return false; }
+function updateRoleSelects() { 
+  const m=document.getElementById('userDropdownRoleManager'), o=document.getElementById('userDropdownRoleOwner');
+  if(m && o) { if(state.role==='manager'){ m.classList.add('active'); o.classList.remove('active'); } else { m.classList.remove('active'); o.classList.add('active'); } }
 }
 
-// ======================== GITHUB API ============================
-async function githubFetch(endpoint, options={}){
-    const headers = { 'Accept':'application/vnd.github.v3+json' };
-    if(githubToken) headers['Authorization'] = `token ${githubToken}`;
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/${endpoint}`, { ...options, headers });
-    if(!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-    return res.json();
+// ======================== GITHUB ISSUES API ==========================
+async function githubFetch(endpoint, options={}) {
+  const headers = {'Accept':'application/vnd.github.v3+json'};
+  if(githubToken) headers['Authorization'] = `token ${githubToken}`;
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/${endpoint}`, {...options, headers});
+  if(!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+  return res.json();
 }
 
-// Создать issue (предложение)
-async function createIssue(proposalData){
-    if(!githubToken) throw new Error('Требуется GitHub токен. Руководитель, введите токен в настройках.');
-    const title = `[PROPOSAL] ${proposalData.type || 'change'} - ${proposalData.summary || 'предложение'}`;
-    const body = JSON.stringify(proposalData, null, 2);
-    const issue = await githubFetch('issues', { method:'POST', body: JSON.stringify({ title, body }) });
-    return issue.number;
+async function createIssue(proposalData) {
+  if(!githubToken) throw new Error('Требуется GitHub токен');
+  const title = `[PROPOSAL] ${proposalData.type || 'update'} - ${proposalData.summary || 'предложение'}`;
+  const body = JSON.stringify(proposalData, null, 2);
+  const issue = await githubFetch('issues', { method:'POST', body: JSON.stringify({ title, body, labels: ['proposal'] }) });
+  return issue.number;
 }
 
-// Получить все issues с меткой proposal (можно добавить фильтр)
-async function fetchIssues(){
-    if(!githubToken) return [];
-    try {
-        const issues = await githubFetch('issues?state=all&labels=proposal');
-        return issues.filter(i => !i.pull_request);
-    } catch(e){ console.warn(e); return []; }
+async function closeIssue(issueNumber, comment) {
+  if(!githubToken) return;
+  await githubFetch(`issues/${issueNumber}`, { method:'PATCH', body: JSON.stringify({ state:'closed' }) });
+  if(comment) await githubFetch(`issues/${issueNumber}/comments`, { method:'POST', body: JSON.stringify({ body: comment }) });
 }
 
-// Обновить issue (добавить комментарий или закрыть)
-async function updateIssueStatus(issueNumber, action, comment){
-    if(!githubToken) return;
-    if(action === 'close') await githubFetch(`issues/${issueNumber}`, { method:'PATCH', body: JSON.stringify({ state:'closed' }) });
-    if(comment) await githubFetch(`issues/${issueNumber}/comments`, { method:'POST', body: JSON.stringify({ body: comment }) });
+async function submitProposalToGitHub(proposal) {
+  const payload = {
+    type: proposal.targetType,
+    summary: proposal.condition || proposal.blockName || 'изменение',
+    target: proposal.targetName,
+    details: proposal.text,
+    extra: { blockName: proposal.blockName, sectionName: proposal.sectionName, mode: proposal.mode, sourceIndex: proposal.sourceIndex }
+  };
+  const issueNum = await createIssue(payload);
+  proposal._issueNumber = issueNum;
+  return issueNum;
 }
 
-// Преобразование локального предложения в issue-формат
-function proposalToIssuePayload(prop, id){
-    return {
-        type: prop.targetType || 'block',
-        summary: prop.condition || prop.blockName || 'изменение',
-        target: prop.targetName || prop.sectionName || 'скрипт',
-        details: prop.text || '',
-        extra: { blockName: prop.blockName, sectionName: prop.sectionName, mode: prop.mode, sourceIndex: prop.sourceIndex },
-        localId: id,
-        createdAt: new Date().toISOString()
-    };
-}
-
-// Синхронизация: загрузить issues из GitHub и обновить state.proposals
-async function syncFromGitHub(){
-    if(!githubToken || state.role !== 'owner') return;
-    try {
-        const issues = await fetchIssues();
-        const remoteMap = new Map();
-        for(const issue of issues){
-            if(issue.state === 'closed') continue;
-            try {
-                const data = JSON.parse(issue.body);
-                remoteMap.set(issue.number, { number: issue.number, ...data });
-            } catch(e){}
-        }
-        // Объединяем: существующие локальные предложения, которые ещё не отправлены (id < 0), плюс удалённые
-        const localProposals = state.proposals.filter(p => p._issueNumber === undefined || !remoteMap.has(p._issueNumber));
-        const remoteProposals = Array.from(remoteMap.values()).map(r => ({
-            id: r.localId || Date.now() + Math.random(),
-            _issueNumber: r.number,
-            targetType: r.type,
-            targetName: r.target,
-            blockName: r.extra?.blockName,
-            sectionName: r.extra?.sectionName,
-            condition: r.summary,
-            text: r.details,
-            mode: r.extra?.mode,
-            sourceIndex: r.extra?.sourceIndex,
-            remoteStatus: 'open'
-        }));
-        state.proposals = [...remoteProposals, ...localProposals.filter(p => !p._issueNumber)];
-        saveLocal(); render();
-    } catch(e){ console.warn('sync error', e); }
-}
-
-// Отправить предложение (менеджер)
-async function sendProposalToGitHub(proposalData){
-    if(!githubToken) throw new Error('GitHub токен не настроен. Обратитесь к руководителю.');
-    const issueNum = await createIssue(proposalData);
-    proposalData._issueNumber = issueNum;
-    return issueNum;
-}
-
-// Менеджер создаёт предложение (добавляем в локальный state + отправка в GitHub)
-async function submitProposalAsManager(proposal){
-    const payload = proposalToIssuePayload(proposal, proposal.id);
-    try {
-        const issueNum = await createIssue(payload);
-        proposal._issueNumber = issueNum;
-        state.proposals.unshift(proposal);
-        saveLocal();
-        await syncFromGitHub(); // подтянем статус
-        render();
-        showAlertModal('✅ Отправлено', `Предложение #${issueNum} создано в GitHub. Руководитель увидит его.`);
-    } catch(err){
-        console.error(err);
-        showAlertModal('Ошибка', `Не удалось отправить: ${err.message}. Проверьте токен и интернет.`);
+async function approveAndApply(proposal) {
+  if(proposal.targetType === 'main-list') {
+    let blockName = proposal.blockName || proposal.condition;
+    if(blockName && !state.blocks[blockName]) {
+      state.mainOrder.push(blockName);
+      state.blocks[blockName] = {kind:'main',note:'',hint:'',messages:[{label:proposal.condition,text:proposal.text,attachments:[]}]};
     }
-}
-
-// Действия руководителя: принять / отклонить / скорректировать (обновляем issue)
-async function ownerResolveProposal(proposal, action, editedData=null){
-    if(!proposal._issueNumber) {
-        // если нет issue, просто удаляем
-        const idx = state.proposals.findIndex(p => p.id === proposal.id);
-        if(idx!==-1) state.proposals.splice(idx,1);
-        saveLocal(); render();
-        return;
+  } else if(proposal.targetType === 'section') {
+    let blockName = proposal.blockName || proposal.condition;
+    if(blockName) {
+      if(!state.blocks[blockName]) state.blocks[blockName] = {kind:'side',note:'',hint:'',messages:[{label:proposal.condition,text:proposal.text,attachments:[]}]};
+      if(!state.sections[proposal.targetName]) state.sections[proposal.targetName] = [];
+      if(!state.sections[proposal.targetName].includes(blockName)) state.sections[proposal.targetName].push(blockName);
     }
-    let comment = '';
-    if(action === 'approve') comment = '✅ Предложение принято руководителем.';
-    else if(action === 'reject') comment = '❌ Предложение отклонено руководителем.';
-    else if(action === 'edit' && editedData) comment = `✏️ Руководитель скорректировал:\n\n${JSON.stringify(editedData, null, 2)}`;
-    
-    await updateIssueStatus(proposal._issueNumber, 'close', comment);
-    // Удаляем из локальных предложений
-    const idx = state.proposals.findIndex(p => p.id === proposal.id);
-    if(idx!==-1) state.proposals.splice(idx,1);
-    saveLocal();
-    render();
-}
-
-// Применить изменения (если принято)
-async function applyProposalToScript(proposal){
-    if(proposal.targetType === 'main-list'){
-        let blockName = proposal.blockName || proposal.condition;
-        if(blockName && !state.blocks[blockName]){
-            state.mainOrder.push(blockName);
-            state.blocks[blockName] = {kind:'main',note:'',hint:'',messages:[{label:proposal.condition,text:proposal.text}]};
-        }
-    } else if(proposal.targetType === 'section'){
-        let blockName = proposal.blockName || proposal.condition;
-        if(blockName){
-            if(!state.blocks[blockName]) state.blocks[blockName] = {kind:'side',note:'',hint:'',messages:[{label:proposal.condition,text:proposal.text}]};
-            if(!state.sections[proposal.targetName]) state.sections[proposal.targetName] = [];
-            if(!state.sections[proposal.targetName].includes(blockName)) state.sections[proposal.targetName].push(blockName);
-        }
-    } else if(proposal.targetType === 'new-section'){
-        let sectionName = proposal.sectionName || proposal.condition;
-        let blockName = proposal.blockName || '';
-        if(sectionName && !state.sections[sectionName]){
-            state.sectionOrder.push(sectionName);
-            state.sections[sectionName] = [];
-            if(blockName){
-                state.blocks[blockName] = {kind:'side',note:'',hint:'',messages:[{label:proposal.condition,text:proposal.text}]};
-                state.sections[sectionName].push(blockName);
-            }
-        }
-    } else if(proposal.targetType === 'block'){
-        let block = state.blocks[proposal.targetName];
-        if(block){
-            if(proposal.mode === 'replace' && Number.isInteger(proposal.sourceIndex) && block.messages[proposal.sourceIndex]){
-                block.messages[proposal.sourceIndex] = {label:proposal.condition, text:proposal.text, attachments: block.messages[proposal.sourceIndex].attachments || []};
-            } else {
-                block.messages.push({label:proposal.condition, text:proposal.text, attachments:[]});
-            }
-        }
+  } else if(proposal.targetType === 'new-section') {
+    let sectionName = proposal.sectionName || proposal.condition;
+    let blockName = proposal.blockName || '';
+    if(sectionName && !state.sections[sectionName]) {
+      state.sectionOrder.push(sectionName);
+      state.sections[sectionName] = [];
+      if(blockName) {
+        state.blocks[blockName] = {kind:'side',note:'',hint:'',messages:[{label:proposal.condition,text:proposal.text,attachments:[]}]};
+        state.sections[sectionName].push(blockName);
+      }
     }
-    saveLocal();
-    render();
-}
-
-// ================ UI / Рендер (адаптация под GitHub) ===============
-function renderProposalsDesktop(){
-    const badge = document.getElementById('propBadge');
-    if(badge) badge.innerHTML = state.proposals.length ? `<span class='badge'>${state.proposals.length}</span>` : '';
-    const el = document.getElementById('proposalList');
-    if(!el) return;
-    el.innerHTML = '';
-    if(!state.proposals.length){ el.innerHTML = "<div class='empty'>Нет активных предложений (GitHub)</div>"; return; }
-    for(let i=0; i<state.proposals.length; i++){
-        const p = state.proposals[i];
-        let target = p.targetType === 'main-list' ? 'Магистраль' : (p.targetType === 'section' ? `Раздел: ${p.targetName}` : (p.targetType === 'new-section' ? 'Новый раздел' : `Блок: ${p.targetName}`));
-        const div = document.createElement('div');
-        div.className = 'proposal-card';
-        let preview = `<div class='muted' style='margin-bottom:6px'>${esc(target)} ${p._issueNumber ? `(#${p._issueNumber})` : ''}</div>`;
-        if(p.targetType === 'new-section'){
-            preview += `<div><b>Раздел:</b> ${esc(p.sectionName)}</div><div><b>Элемент:</b> ${esc(p.blockName)}</div><div><b>Назначение:</b> ${esc(p.condition)}</div><div><b>Текст:</b> ${esc(p.text)}</div>`;
-        } else if(p.targetType === 'main-list'){
-            preview += `<div><b>Блок:</b> ${esc(p.blockName)}</div><div><b>Назначение:</b> ${esc(p.condition)}</div><div><b>Текст:</b> ${esc(p.text)}</div>`;
-        } else {
-            preview += `<div><b>${p.condition || 'Описание'}</b></div><div class='muted'>${esc(p.text)}</div>`;
-        }
-        div.innerHTML = preview;
-        const tools = document.createElement('div');
-        tools.className = 'toolbar';
-        if(state.role === 'owner'){
-            const acceptBtn = document.createElement('button');
-            acceptBtn.className = 'small-btn gold-btn';
-            acceptBtn.textContent = '✅ Принять';
-            acceptBtn.onclick = async ()=>{ await applyProposalToScript(p); await ownerResolveProposal(p, 'approve'); };
-            const rejectBtn = document.createElement('button');
-            rejectBtn.className = 'small-btn danger-btn';
-            rejectBtn.textContent = '❌ Отклонить';
-            rejectBtn.onclick = async ()=>{ await ownerResolveProposal(p, 'reject'); };
-            tools.append(acceptBtn, rejectBtn);
-        } else if(state.role === 'manager'){
-            const statusSpan = document.createElement('span');
-            statusSpan.className = 'muted';
-            statusSpan.textContent = p._issueNumber ? `📎 Отправлено #${p._issueNumber}` : '⏳ Ожидает отправки';
-            tools.appendChild(statusSpan);
-            if(!p._issueNumber){
-                const sendBtn = document.createElement('button');
-                sendBtn.className = 'small-btn gold-btn';
-                sendBtn.textContent = 'Отправить в GitHub';
-                sendBtn.onclick = async ()=> await submitProposalAsManager(p);
-                tools.appendChild(sendBtn);
-            }
-        }
-        div.appendChild(tools);
-        el.appendChild(div);
+  } else if(proposal.targetType === 'block') {
+    let block = state.blocks[proposal.targetName];
+    if(block) {
+      if(proposal.mode === 'replace' && Number.isInteger(proposal.sourceIndex) && block.messages[proposal.sourceIndex]) {
+        block.messages[proposal.sourceIndex] = {label:proposal.condition, text:proposal.text, attachments: block.messages[proposal.sourceIndex].attachments || []};
+      } else {
+        block.messages.push({label:proposal.condition, text:proposal.text, attachments:[]});
+      }
     }
+  }
+  saveLocal();
+  render();
 }
 
-// Переопределяем функции создания предложений (менеджер) для интеграции с GitHub
-async function createProposalViaGithub(targetType, targetName, extraData){
-    if(state.role !== 'manager') return;
-    let proposal = {
-        id: Date.now() + Math.random(),
-        targetType, targetName,
-        condition: extraData.condition || '',
-        text: extraData.text || '',
-        blockName: extraData.blockName,
-        sectionName: extraData.sectionName,
-        mode: extraData.mode,
-        sourceIndex: extraData.sourceIndex
+async function createProposal(targetType, targetName, data) {
+  if(!isOwner()) {
+    const proposal = {
+      id: Date.now() + Math.random(),
+      targetType, targetName,
+      condition: data.condition || '',
+      text: data.text || '',
+      blockName: data.blockName,
+      sectionName: data.sectionName,
+      mode: data.mode,
+      sourceIndex: data.sourceIndex
     };
     if(!proposal.condition && !proposal.text) return;
-    // добавляем локально и пытаемся отправить сразу
-    await submitProposalAsManager(proposal);
-}
-// Замена старых вызовов createProposal на новый асинхронный
-window.createProposal = createProposalViaGithub;
-
-// Остальной код рендера и событий (сокращён, но сохраняет функционал)
-function renderMain(containerId){ /* как в оригинале */ }
-function renderRightDesktop(){ /* оригинал */ }
-function renderCenter(){ /* оригинал */ }
-function render(){ updateRoleSelects(); renderMain('mainList'); renderMain('mobileMainList'); renderRightDesktop(); renderCenter(); renderProposalsDesktop(); if(window.renderRightMobile) window.renderRightMobile?.('mobileRight'); saveLocal(); }
-
-// Полифиллы
-const esc = s => String(s||'').replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;});
-const escAttr = s => esc(s).replace(/"/g, '&quot;');
-function showAlertModal(title, msg){ alert(title+'\n'+msg); } // упрощённо
-function showPromptModal(title, label, def){ return new Promise(resolve=>{ const val=prompt(title+'\n'+label, def); resolve(val); }); }
-function showConfirmModal(title, msg){ return new Promise(resolve=>resolve(confirm(title+'\n'+msg))); }
-
-// Инициализация и восстановление
-async function init(){
-    state = loadLocal();
-    if(!checkAuth()){ state.role='manager'; saveAuth('manager'); }
-    if(!githubToken && state.role==='owner'){
-        const token = prompt('🔐 Для работы с GitHub Issues введите ваш токен (классический, права repo). Он сохранится локально. Если не хотите — пропустите, но предложения не синхронизируются.', '');
-        if(token) setGithubToken(token);
+    try {
+      if(githubToken) {
+        await submitProposalToGitHub(proposal);
+      }
+      state.proposals.unshift(proposal);
+      saveLocal();
+      render();
+      showAlertModal('✅ Отправлено', 'Предложение отправлено руководителю через GitHub Issues');
+    } catch(e) {
+      showAlertModal('Ошибка', `Не удалось отправить: ${e.message}`);
     }
-    await syncFromGitHub();
-    render();
-    window.openBlock = (name)=>{ state.currentBlock=name; if(state.blocks[name]?.kind==='main') state.lastMain=name; saveLocal(); render(); };
-    window.returnToMain = ()=>{ state.currentBlock=state.lastMain||state.mainOrder[0]; render(); };
-    window.addOwnerMessage = ()=>{ const l=document.getElementById('new-label')?.value; const t=document.getElementById('new-text')?.value; if(l&&t){ state.blocks[state.currentBlock].messages.push({label:l,text:t,attachments:[]}); saveLocal(); render(); } };
-    window.copyMessage = (i)=>{ navigator.clipboard.writeText(state.blocks[state.currentBlock].messages[i].text); };
-    window.saveMeta = ()=>{ state.blocks[state.currentBlock].note = document.getElementById('meta-note')?.value||''; state.blocks[state.currentBlock].hint = document.getElementById('meta-hint')?.value||''; saveLocal(); render(); };
-    window.startEditMessage = (i)=>{ /* упрощённо */ alert('Редактирование в демо'); };
-    window.deleteMessage = async (i)=>{ if(await showConfirmModal('Удалить','?')){ state.blocks[state.currentBlock].messages.splice(i,1); saveLocal(); render(); } };
-    window.startEditBlock = (n)=>{ alert('Редактирование имени в демо'); };
-    window.deleteBlock = async (n)=>{ if(await showConfirmModal('Удалить блок', n)){ /* удаление */ } };
-    window.startEditSection = (n)=>{ alert('Редактирование раздела'); };
-    window.deleteSection = async (n)=>{ };
-    window.saveNewVariantProposal = async ()=>{
-        const cond = document.getElementById('prop-name')?.value;
-        const text = document.getElementById('prop-text')?.value;
-        if(cond && text) await createProposalViaGithub('block', state.currentBlock, { condition:cond, text:text });
-    };
-    window.startInlineProposal = (i)=>{ alert('Предложение изменения сообщения'); };
+  }
 }
+
+// ======================== RENDER FUNCTIONS ==========================
+function renderMain(containerId) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = '';
+  state.mainOrder.forEach(name => {
+    const active = state.currentBlock === name ? ' active' : '';
+    const div = document.createElement('div');
+    div.className = 'item' + active;
+    div.onclick = (e) => { if(e.target.closest('button')) return; state.currentBlock = name; if(state.blocks[name]?.kind === 'main') state.lastMain = name; saveLocal(); render(); };
+    div.innerHTML = `<div class="item-row"><div class="item-title">${esc(name)}</div></div>`;
+    el.appendChild(div);
+  });
+}
+
+function renderRightDesktop() {
+  const wrap = document.getElementById('right');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  state.sectionOrder.forEach(sectionName => {
+    const group = document.createElement('div');
+    group.style.marginBottom = '16px';
+    group.innerHTML = `<div class="section-head"><div class="section-title" style="font-size:20px">${esc(sectionName)}</div></div>`;
+    const list = document.createElement('div');
+    list.className = 'list';
+    (state.sections[sectionName] || []).forEach(name => {
+      const active = state.currentBlock === name ? ' active' : '';
+      const div = document.createElement('div');
+      div.className = 'item' + active;
+      div.onclick = (e) => { if(e.target.closest('button')) return; state.currentBlock = name; saveLocal(); render(); };
+      div.innerHTML = `<div class="item-row"><div class="item-title">${esc(name)}</div></div>`;
+      list.appendChild(div);
+    });
+    group.appendChild(list);
+    const addBtn = document.createElement('button');
+    addBtn.className = 'small-btn gold-btn';
+    addBtn.textContent = isOwner() ? '+ элемент' : '+ предложить элемент';
+    addBtn.onclick = async () => {
+      if(isOwner()) {
+        const n = await showPromptModal('Новый элемент', 'Название элемента');
+        if(n && n.trim() && !state.blocks[n.trim()]) {
+          state.blocks[n.trim()] = {kind:'side',note:'',hint:'',messages:[]};
+          state.sections[sectionName].push(n.trim());
+          saveLocal(); render();
+        }
+      } else {
+        const cond = await showPromptModal('Предложить элемент', 'Назначение / когда использовать');
+        const text = await showPromptModal('Текст сообщения', 'Текст первого сообщения');
+        if(cond && text) createProposal('section', sectionName, { condition: cond, text: text, blockName: '' });
+      }
+    };
+    group.appendChild(addBtn);
+    wrap.appendChild(group);
+  });
+  const addSec = document.createElement('button');
+  addSec.className = 'small-btn gold-btn';
+  addSec.textContent = isOwner() ? '+ раздел' : '+ предложить раздел';
+  addSec.onclick = async () => {
+    if(isOwner()) {
+      const n = await showPromptModal('Новый раздел', 'Название раздела');
+      if(n && n.trim() && !state.sections[n.trim()]) {
+        state.sectionOrder.push(n.trim());
+        state.sections[n.trim()] = [];
+        saveLocal(); render();
+      }
+    } else {
+      const sectionName = await showPromptModal('Предложить раздел', 'Название раздела');
+      const blockName = await showPromptModal('Название первого элемента', 'Название элемента');
+      const cond = await showPromptModal('Назначение / когда использовать', 'Описание');
+      const text = await showPromptModal('Текст сообщения', 'Текст');
+      if(sectionName && blockName && cond && text) createProposal('new-section', '', { sectionName, blockName, condition: cond, text });
+    }
+  };
+  wrap.appendChild(addSec);
+}
+
+function renderCenter() {
+  const block = state.blocks[state.currentBlock];
+  const el = document.getElementById('center');
+  const elMobile = document.getElementById('mobileCenter');
+  if(!block) { if(el) el.innerHTML = "<div class='empty'>Блок не найден</div>"; return; }
+  
+  let html = `<div class="center-title">${esc(state.currentBlock)}</div><div class="center-sub ${block.kind==='main'?'main':'side'}">${block.kind==='main'?'● Магистраль':'● Ветка сценария'}</div>`;
+  if(block.kind !== 'main') html += `<div class="toolbar"><button class="small-btn return-btn" onclick="window.returnToMain()">⬅ Вернуться в магистраль</button></div>`;
+  
+  if(block.note || isOwner()) {
+    html += `<div class="info-box gold-box">${isOwner() ? `<div style="font-weight:700">Пояснение</div><textarea id="meta-note" class="textarea" style="min-height:58px">${esc(block.note||'')}</textarea>` : esc(block.note||'')}</div>`;
+  }
+  if(block.hint || isOwner()) {
+    html += `<div class="info-box blue-box">${isOwner() ? `<div style="font-weight:700">Подсказка</div><textarea id="meta-hint" class="textarea" style="min-height:58px">${esc(block.hint||'')}</textarea>` : esc(block.hint||'')}</div>`;
+  }
+  if(isOwner()) html += `<div class="toolbar"><button class="small-btn gold-btn" onclick="window.saveMeta()">💾 Сохранить пояснение</button></div>`;
+  
+  (block.messages || []).forEach((msg, i) => {
+    html += `<div class="card"><div class="card-head"><div class="card-label">${esc(msg.label)}</div><div class="toolbar"><button class="copy-btn" onclick="window.copyMessage(${i})">📋 Копировать</button>${isOwner() ? `<button class="small-btn" onclick="window.startEditMessage(${i})">✎</button><button class="small-btn danger-btn" onclick="window.deleteMessage(${i})">🗑</button>` : `<button class="small-btn" onclick="window.startInlineProposal(${i})">💡 Предложить изменение</button>`}</div></div><div class="card-text">${esc(msg.text)}</div></div>`;
+  });
+  
+  if(isOwner()) {
+    html += `<div class="card"><div style="font-weight:700">➕ Добавить сообщение</div><input id="new-label" class="input" placeholder="Название"><textarea id="new-text" class="textarea" placeholder="Текст"></textarea><div class="toolbar"><button class="small-btn gold-btn" onclick="window.addOwnerMessage()">Добавить</button></div></div>`;
+  } else {
+    html += `<div class="card"><div style="font-weight:700">💡 Предложить новый вариант</div><input id="prop-name" class="input" placeholder="Назначение / когда использовать"><textarea id="prop-text" class="textarea" placeholder="Текст ответа"></textarea><div class="toolbar"><button class="small-btn gold-btn" onclick="window.saveNewVariantProposal()">Отправить предложение</button></div></div>`;
+  }
+  
+  if(el) el.innerHTML = html;
+  if(elMobile) elMobile.innerHTML = html;
+}
+
+function renderProposals() {
+  const badge = document.getElementById('propBadge');
+  if(badge) badge.innerHTML = state.proposals.length ? `<span class='badge'>${state.proposals.length}</span>` : '';
+  const el = document.getElementById('proposalList');
+  const elMobile = document.getElementById('mobileProposalList');
+  if(!el) return;
+  el.innerHTML = '';
+  if(!state.proposals.length) {
+    el.innerHTML = "<div class='empty'>✨ Нет активных предложений</div>";
+    if(elMobile) elMobile.innerHTML = "<div class='empty'>✨ Нет предложений</div>";
+    return;
+  }
+  state.proposals.forEach((p, idx) => {
+    let target = p.targetType === 'main-list' ? 'Магистраль' : (p.targetType === 'section' ? `Раздел: ${p.targetName}` : (p.targetType === 'new-section' ? '📁 Новый раздел' : `Блок: ${p.targetName}`));
+    const div = document.createElement('div');
+    div.className = 'proposal-card';
+    let preview = `<div class="muted">${esc(target)} ${p._issueNumber ? `#${p._issueNumber}` : '⏳ локально'}</div>`;
+    if(p.targetType === 'new-section') preview += `<div><b>${esc(p.sectionName)}</b> → ${esc(p.blockName)}</div><div class="muted">${esc(p.condition)}</div><div>${esc(p.text)}</div>`;
+    else if(p.targetType === 'main-list') preview += `<div><b>${esc(p.blockName)}</b></div><div class="muted">${esc(p.condition)}</div><div>${esc(p.text)}</div>`;
+    else preview += `<div><b>${esc(p.condition)}</b></div><div class="muted">${esc(p.text)}</div>`;
+    div.innerHTML = preview;
+    const tools = document.createElement('div');
+    tools.className = 'toolbar';
+    if(isOwner()) {
+      const accept = document.createElement('button');
+      accept.className = 'small-btn gold-btn';
+      accept.textContent = '✅ Принять';
+      accept.onclick = async () => { await approveAndApply(p); if(p._issueNumber) await closeIssue(p._issueNumber, '✅ Принято руководителем'); state.proposals = state.proposals.filter(pr => pr.id !== p.id); saveLocal(); render(); };
+      const reject = document.createElement('button');
+      reject.className = 'small-btn danger-btn';
+      reject.textContent = '❌ Отклонить';
+      reject.onclick = async () => { if(p._issueNumber) await closeIssue(p._issueNumber, '❌ Отклонено руководителем'); state.proposals = state.proposals.filter(pr => pr.id !== p.id); saveLocal(); render(); };
+      tools.append(accept, reject);
+    } else {
+      const status = document.createElement('span');
+      status.className = 'muted';
+      status.textContent = p._issueNumber ? '📎 Отправлено в GitHub' : '⏳ Ожидает отправки';
+      tools.appendChild(status);
+      if(!p._issueNumber && githubToken) {
+        const send = document.createElement('button');
+        send.className = 'small-btn gold-btn';
+        send.textContent = '📤 Отправить';
+        send.onclick = async () => { await submitProposalToGitHub(p); saveLocal(); render(); };
+        tools.appendChild(send);
+      }
+    }
+    div.appendChild(tools);
+    el.appendChild(div);
+    if(elMobile) elMobile.appendChild(div.cloneNode(true));
+  });
+}
+
+function renderMobileRight() {
+  const el = document.getElementById('mobileRight');
+  if(!el) return;
+  el.innerHTML = '';
+  state.sectionOrder.forEach(section => {
+    const group = document.createElement('div');
+    group.innerHTML = `<div class="section-title" style="font-size:18px;margin:12px 0 8px">📁 ${esc(section)}</div>`;
+    const list = document.createElement('div');
+    list.className = 'list';
+    (state.sections[section] || []).forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.onclick = () => { state.currentBlock = name; saveLocal(); render(); closeMobileMenus(); };
+      div.innerHTML = `<div class="item-title">${esc(name)}</div>`;
+      list.appendChild(div);
+    });
+    group.appendChild(list);
+    el.appendChild(group);
+  });
+}
+
+function closeMobileMenus() {
+  document.getElementById('mobileMenuLeft')?.classList.remove('show');
+  document.getElementById('mobileMenuRight')?.classList.remove('show');
+  document.getElementById('mobileMenuOverlay')?.classList.remove('show');
+}
+
+function render() {
+  updateRoleSelects();
+  const isOwnerRole = isOwner();
+  document.getElementById('downloadProjectBtn').style.display = isOwnerRole ? 'inline-block' : 'none';
+  document.getElementById('exportBtn').style.display = isOwnerRole ? 'inline-block' : 'none';
+  renderMain('mainList');
+  renderMain('mobileMainList');
+  renderRightDesktop();
+  renderMobileRight();
+  renderCenter();
+  renderProposals();
+  saveLocal();
+}
+
+// ======================== GLOBAL FUNCTIONS ==========================
+window.openBlock = (name) => { state.currentBlock = name; if(state.blocks[name]?.kind==='main') state.lastMain = name; saveLocal(); render(); };
+window.returnToMain = () => { state.currentBlock = state.lastMain || state.mainOrder[0]; saveLocal(); render(); closeMobileMenus(); };
+window.copyMessage = (i) => { navigator.clipboard.writeText(state.blocks[state.currentBlock].messages[i].text); showAlertModal('Скопировано', 'Текст сообщения скопирован'); };
+window.saveMeta = () => { state.blocks[state.currentBlock].note = document.getElementById('meta-note')?.value || ''; state.blocks[state.currentBlock].hint = document.getElementById('meta-hint')?.value || ''; saveLocal(); render(); };
+window.addOwnerMessage = () => { const l = document.getElementById('new-label')?.value; const t = document.getElementById('new-text')?.value; if(l && t) { state.blocks[state.currentBlock].messages.push({label:l,text:t,attachments:[]}); saveLocal(); render(); } };
+window.deleteMessage = async (i) => { if(await showConfirmModal('Удалить сообщение', 'Это действие нельзя отменить')) { state.blocks[state.currentBlock].messages.splice(i,1); saveLocal(); render(); } };
+window.startEditMessage = (i) => { editMessageIndex = i; alert('Редактирование сообщения доступно в полной версии'); };
+window.startInlineProposal = (i) => { const msg = state.blocks[state.currentBlock].messages[i]; createProposal('block', state.currentBlock, { condition: msg.label, text: msg.text, mode: 'replace', sourceIndex: i }); };
+window.saveNewVariantProposal = () => { const cond = document.getElementById('prop-name')?.value; const text = document.getElementById('prop-text')?.value; if(cond && text) createProposal('block', state.currentBlock, { condition: cond, text }); };
+
+// ======================== AUTH & INIT ==========================
+async function init() {
+  if(!checkAuth()) { state.role = 'manager'; saveAuth('manager'); }
+  if(!githubToken && state.role === 'owner') {
+    const token = prompt('🔐 Введите GitHub токен (классический, права repo) для работы с Issues:\nhttps://github.com/settings/tokens', '');
+    if(token) { githubToken = token; localStorage.setItem('github_token', token); }
+  }
+  render();
+  
+  document.getElementById('userMenuBtn')?.addEventListener('click', () => document.getElementById('userDropdownMenu')?.classList.toggle('show'));
+  document.getElementById('userDropdownRoleManager')?.addEventListener('click', () => { state.role = 'manager'; saveAuth('manager'); render(); });
+  document.getElementById('userDropdownRoleOwner')?.addEventListener('click', async () => { const code = prompt('Введите код руководителя'); if(code === '7004') { state.role = 'owner'; saveAuth('owner'); render(); } else alert('Неверный код'); });
+  document.getElementById('userDropdownLogout')?.addEventListener('click', () => { localStorage.removeItem(AUTH_KEY); state.role = 'manager'; saveAuth('manager'); render(); });
+  document.getElementById('logoutBtn')?.addEventListener('click', () => { localStorage.removeItem(AUTH_KEY); state.role = 'manager'; saveAuth('manager'); render(); });
+  document.getElementById('mobileMenuLeftBtn')?.addEventListener('click', () => { document.getElementById('mobileMenuLeft')?.classList.add('show'); document.getElementById('mobileMenuOverlay')?.classList.add('show'); });
+  document.getElementById('mobileMenuRightBtn')?.addEventListener('click', () => { document.getElementById('mobileMenuRight')?.classList.add('show'); document.getElementById('mobileMenuOverlay')?.classList.add('show'); });
+  document.getElementById('closeLeftMenu')?.addEventListener('click', closeMobileMenus);
+  document.getElementById('closeRightMenu')?.addEventListener('click', closeMobileMenus);
+  document.getElementById('mobileMenuOverlay')?.addEventListener('click', closeMobileMenus);
+  document.addEventListener('click', (e) => { if(!e.target.closest('.user-dropdown')) document.getElementById('userDropdownMenu')?.classList.remove('show'); });
+}
+
 init();
 </script>
 </body>
