@@ -1,596 +1,139 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BORZO - Script Navigator</title>
-  <style>
-  :root{
-    --bg:#3a3a3a; --bg2:#474747; --panel:#f8f7f3; --white:#fff; --line:#ddd8cf;
-    --text:#222; --muted:#6f6a63; --gold:#c9a24a; --gold2:#a9852f; --goldsoft:#f7edd6;
-    --bluesoft:#edf4ff; --danger:#c64c4c; --green:#189c54;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
-  header{height:82px;display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:rgba(20,20,20,.18);border-bottom:1px solid rgba(201,162,74,.35)}
-  .brand{display:flex;align-items:center;gap:14px}
-  .logo{border:2px solid var(--gold);color:var(--gold);padding:6px 14px;border-radius:8px;font-weight:800;letter-spacing:2px;font-size:28px;background:#2f2f2f}
-  .header-title{font-size:20px;font-weight:700;color:#fff}.header-sub{font-size:12px;color:#ddd;margin-top:4px}
-  .role-select{border:1px solid rgba(201,162,74,.45);background:#2f2f2f;color:#fff;border-radius:10px;padding:10px 12px}
-  .layout{display:grid;grid-template-columns:300px 1fr 340px;gap:16px;padding:16px;min-height:calc(100vh - 82px)}
-  .panel{background:var(--panel);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.15)}
-  .white{background:var(--white)}
-  .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-  .section-title{font-size:22px;font-weight:800}.muted{font-size:12px;color:var(--muted)}
-  .list{display:flex;flex-direction:column;gap:8px}
-  .item{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease;cursor:pointer}
-  .item:hover{border-color:var(--gold);background:#fffaf1;box-shadow:0 0 0 2px rgba(201,162,74,.08) inset}
-  .item.active{border-color:var(--gold);background:#fff7e8;box-shadow:0 0 0 2px rgba(201,162,74,.12) inset}
-  .item-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .item-title{flex:1;font-weight:700}
-  .hidden-actions{display:flex;gap:6px;min-width:74px;justify-content:flex-end;visibility:hidden;opacity:0;pointer-events:none}
-  .item:hover .hidden-actions,.item.active .hidden-actions{visibility:visible;opacity:1;pointer-events:auto}
-  .input,.textarea{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px 12px;background:#fff;font:inherit}
-  .textarea{min-height:120px;resize:vertical}
-  .icon-btn,.small-btn,.copy-btn{border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font:inherit}
-  .icon-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px}
-  .small-btn{padding:10px 12px;font-size:13px}
-  .copy-btn{min-height:48px;min-width:148px;padding:12px 20px;font-size:16px;font-weight:800;background:var(--gold);border-color:var(--gold2);color:#fff;box-shadow:0 4px 12px rgba(201,162,74,.18)}
-  .gold-btn{background:var(--gold);border-color:var(--gold2);color:#fff}
-  .danger-btn{color:var(--danger)}
-  .return-btn{background:var(--danger);border-color:#b54444;color:#fff;font-size:20px;font-weight:800;padding:16px 20px;width:100%}
-  .center-title{font-size:34px;font-weight:800;margin-bottom:4px}
-  .center-sub{font-size:18px;font-weight:800;margin-bottom:14px}
-  .info-box{border-radius:14px;padding:12px 14px;margin-bottom:12px;line-height:1.45}.gold-box{background:var(--goldsoft);border:1px solid #ead39f}.blue-box{background:var(--bluesoft);border:1px solid #c7d8ff}
-  .card{border:2px solid #2f3237;background:#ffffff;border-radius:14px;padding:14px;margin-bottom:14px}
-  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-  .card-label{font-size:12px;font-weight:900;color:var(--gold2);text-transform:uppercase;letter-spacing:.6px}
-  .card-text{white-space:pre-wrap;line-height:1.62;font-size:18px;color:#2a2a2a}
-  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .divider{height:1px;background:#e7e3da;margin:14px 0}.empty{padding:14px;border:1px dashed #cfcac0;border-radius:12px;background:#fff;color:var(--muted);text-align:center}
-  .app-modal-backdrop{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:9999}
-  .app-modal-backdrop.show{display:flex}
-  .app-modal{width:min(560px, calc(100vw - 32px)); background:#fff; border-radius:16px; border:1px solid var(--line); box-shadow:0 20px 40px rgba(0,0,0,.25); padding:16px}
-  .app-modal-title{font-size:20px; font-weight:800; margin-bottom:10px}
-  .app-modal-input,.app-modal-textarea{width:100%; border:1px solid #d7d2c7; border-radius:10px; padding:10px 12px; background:#fff; font:inherit}
-  .app-modal-textarea{min-height:120px; resize:vertical}
-  .app-modal-actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:12px}
-  .login-modal .password-field{display:none; margin-top:12px}
-  .login-modal .password-field.show{display:block}
-  .role-buttons{display:flex; gap:12px; margin-bottom:16px}
-  .role-btn{flex:1; padding:12px; font-size:16px; font-weight:700; border-radius:12px; cursor:pointer; border:1px solid var(--line); background:#fff}
-  .role-btn.active{background:var(--gold); border-color:var(--gold2); color:#fff}
-  .save-project-btn{background:#2c7a4d; margin-top:16px; width:100%}
-  @media (max-width:1150px){.layout{grid-template-columns:1fr}}
-  </style>
-</head>
-<body>
-<header>
-  <div class="brand">
-    <div class="logo">BORZO</div>
-    <div><div class="header-title">Script Navigator</div><div class="header-sub">Внутренний навигатор скриптов</div></div>
-  </div>
-  <div style="display:flex;gap:8px;align-items:center">
-    <button id="downloadProjectBtn" class="small-btn gold-btn">Скачать проект</button>
-    <button id="exportBtn" class="small-btn gold-btn">Экспорт базы</button>
-    <select id="roleSelect" class="role-select"><option value="manager">Менеджер</option><option value="owner">Руководитель</option></select>
-    <button id="logoutBtn" class="small-btn" style="background:#2f2f2f; border-color:#666; color:#fff;">Выйти</button>
-  </div>
-</header>
+// BORZO-Project/src/BlockEditor.js
 
-<div class="layout">
-  <aside class="panel">
-    <div class="section-head"><div class="section-title">Магистраль</div></div>
-    <div id="mainList" class="list"></div>
-    <button id="addMainBlockBtn" class="small-btn gold-btn" style="margin-top:12px">+ блок</button>
-    <div class="divider"></div>
-    <div class="section-head"><div class="section-title" style="font-size:18px">Предложения</div></div>
-    <div id="proposalList" class="list"></div>
-  </aside>
-  <main class="panel white"><div id="center"></div></main>
-  <aside class="panel" id="rightPanel"></aside>
-</div>
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from './authContext'; // Предполагаем наличие контекста аутентификации
 
-<script>
-// ======================== ДАННЫЕ ПО УМОЛЧАНИЮ ========================
-const defaultData = {
-  role: "owner",
-  currentBlock: "Сомнение в упаковку",
-  lastMain: "Город клиента",
-  mainOrder: ["Входящий старт", "Выбор модели", "Размер и цвет", "Город клиента", "Доставка и оплата", "Финальное подтверждение"],
-  sectionOrder: ["Вопросы клиентов", "Обработка возражений", "Пауза", "Закрытие клиента"],
-  sections: {
-    "Вопросы клиентов": ["Где посмотреть", "Разница моделей", "Нестандартный размер", "Другой цвет"],
-    "Обработка возражений": ["Дорого", "Сомнение в упаковку", "Сомнение в прочности", "Сомнение в качестве", "Доставка после 18:00"],
-    "Пауза": ["Подумаю / позже", "Молчание после фильтра", "Выбрал модель и пропал", "Пропал после ссылки на оплату"],
-    "Закрытие клиента": ["Дорого — закрытие", "Не сейчас"]
-  },
-  blocks: {
-    "Входящий старт": { kind: "main", note: "Если клиент сразу ушёл в уточняющий вопрос, после ответа его нужно вернуть в магистраль.", hint: "", messages: [{ label: "Стандартный входящий", text: "Здравствуйте. Меня зовут Салтанат, менеджер BORZO.\n\nСейчас отправлю цены и краткое описание.", attachments: [] }] },
-    "Выбор модели": { kind: "main", note: "", hint: "После этого сообщения отправить фото моделей.", messages: [{ label: "Основное сообщение", text: "Какой вариант вам ближе — LUX или GEOMETRY?", attachments: [] }] },
-    "Размер и цвет": { kind: "main", note: "Если клиент перескочил к доставке или городу — вернуть его к выбору размера и цвета.", hint: "", messages: [{ label: "Основное сообщение", text: "Отлично 👍\n\nУ наших столов есть стандартные размеры:\nВ сложенном виде консоль — 100×45×76 см\nВ разложенном формате доступны варианты — 3 м / 3,5 м / 4 м\n\nПодскажите размер и цвет? Уточню, доступен ли этот вариант сейчас.", attachments: [] }] },
-    "Город клиента": { kind: "main", note: "", hint: "", messages: [{ label: "После подтверждения модели и цвета (если в наличии)", text: "Ваш вариант доступен.\n\nПодскажите, с какого вы города?", attachments: [] }] },
-    "Доставка и оплата": { kind: "main", note: "", hint: "", messages: [{ label: "Если Астана", text: "По Астане доставка бесплатная.\n\nПодскажите ваш адрес и в какое время будет удобно принять доставку?", attachments: [] }] },
-    "Финальное подтверждение": { kind: "main", note: "", hint: "", messages: [{ label: "Подтверждение", text: "Подтверждаю:\n\n— модель\n— размер\n— цвет\n— город доставки\n— способ оплаты\n\nВсё верно?", attachments: [] }] },
-    "Где посмотреть": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Работаем в онлайн-формате напрямую от фабрики в Астане.\n\nЕсть подробные видеообзоры — отправить вам?", attachments: [] }] },
-    "Разница моделей": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "По качеству и надежности обе модели на высоком уровне.\nРазница в дизайне и деталях исполнения.\n\nLUX — более классическая модель.\nGEOMETRY — сложная геометрия основания,\nдекоративные элементы по углам столешницы и подсветка (с пультом).\nКакой дизайн вам ближе?", attachments: [] }] },
-    "Нестандартный размер": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Индивидуальные размеры не изготавливаем.\nМы работаем с фиксированными размерами ширина 1м, длина 3 / 3,5 / 4 м.\nЭто позволяет сохранить точную геометрию и надёжность конструкции.", attachments: [] }] },
-    "Другой цвет": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Другие оттенки не производим.\nМы работаем с утверждённой палитрой,\nчтобы сохранить точность оттенка и качество покрытия.", attachments: [] }] },
-    "Дорого": { kind: "side", note: "После обработки возражения нужно вернуться туда, где менеджер был до ветки.", hint: "", messages: [{ label: "Ответ", text: "Понимаю. Цена выше среднего, потому что конструкция и подход отличаются.\nЕсли хотите, могу отправить короткое видео с производства, где объясняем, из чего складывается стоимость?", attachments: [] }] },
-    "Сомнение в упаковку": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Не переживайте 👍\nУпаковка у нас заводская:\n\nПенопласт + пузырчатая плёнка + пластиковая защита углов + 5-слойный картон\n\nПоэтому всё доезжает без проблем.\n\nНо даже если что-то произойдёт в дороге — мы всегда решаем вопрос в пользу клиента.", attachments: [] }] },
-    "Сомнение в прочности": { kind: "side", note: "После обработки возражения нужно вернуться туда, где менеджер был до ветки.", hint: "", messages: [{ label: "Ответ", text: "Конструкция тестировалась на нагрузку 200+ кг.\nЕсли хотите — отправлю ссылку на видео теста.", attachments: [] }] },
-    "Сомнение в качестве": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Если вдруг что-то не устроит —\nможно оформить возврат.\nНо таких случаев ещё не было.", attachments: [] }] },
-    "Подумаю / позже": { kind: "side", note: "", hint: "", messages: [{ label: "Перевод в выбор модели", text: "Поняла вас. Если есть вопросы — уточняйте, я всё подробно расскажу.\nИли можем пока определиться с моделью ↓", attachments: [] }] },
-    "Молчание после фильтра": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Подскажите, ваш запрос по столу ещё актуален?", attachments: [] }] },
-    "Выбрал модель и пропал": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Фиксирую за вами выбранную модель?", attachments: [] }] },
-    "Пропал после ссылки на оплату": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Удалось оформить заказ?", attachments: [] }] },
-    "Дорого — закрытие": { kind: "side", note: "", hint: "", messages: [{ label: "Закрытие", text: "Возможно, сейчас просто не время.\nЕсли вернётесь к вопросу — буду рада помочь.", attachments: [] }] },
-    "Не сейчас": { kind: "side", note: "", hint: "", messages: [{ label: "Закрытие", text: "Хорошо. Если позже вопрос снова станет актуальным — напишите.", attachments: [] }] },
-    "Доставка после 18:00": { kind: "side", note: "", hint: "Индивидуально можно пойти на встречу", messages: [{ label: "Ответ", text: "После 18:00 доставка возможна,\nно будет платной — 6000 ₸.\nЕсли есть возможность принять в дневное время —\nдоставка будет бесплатной.", attachments: [] }] }
-  }
-};
+const BlockEditor = () => {
+  const { user } = useAuth();
+  const [blocks, setBlocks] = useState([]);
+  const [editingBlock, setEditingBlock] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState('');
+  
+  useEffect(() => {
+    loadBlocks();
+  }, []);
 
-let data = JSON.parse(JSON.stringify(defaultData));
-let role = "owner";
-
-// ======================== СОХРАНЕНИЕ ========================
-function saveToLocalStorage() {
-  const saveData = {
-    role: role,
-    currentBlock: data.currentBlock,
-    lastMain: data.lastMain,
-    mainOrder: data.mainOrder,
-    sectionOrder: data.sectionOrder,
-    sections: data.sections,
-    blocks: data.blocks
-  };
-  localStorage.setItem('borzo_v7', JSON.stringify(saveData));
-}
-
-function loadFromLocalStorage() {
-  const saved = localStorage.getItem('borzo_v7');
-  if (saved) {
+  const loadBlocks = async () => {
     try {
-      const parsed = JSON.parse(saved);
-      data.role = parsed.role || data.role;
-      data.currentBlock = parsed.currentBlock || data.currentBlock;
-      data.lastMain = parsed.lastMain || data.lastMain;
-      data.mainOrder = parsed.mainOrder || data.mainOrder;
-      data.sectionOrder = parsed.sectionOrder || data.sectionOrder;
-      data.sections = parsed.sections || data.sections;
-      data.blocks = parsed.blocks || data.blocks;
-      role = data.role;
-    } catch(e) { console.error(e); }
-  }
-}
-
-function saveProject() {
-  saveToLocalStorage();
-  alert('✅ Проект сохранен! Изменения применены для всех.');
-}
-
-// ======================== HELPER ========================
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/[&<>]/g, function(m) {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    return m;
-  });
-}
-
-function getBlock(name) {
-  if (!data.blocks[name]) {
-    data.blocks[name] = { kind: "side", note: "", hint: "", messages: [] };
-  }
-  return data.blocks[name];
-}
-
-// ======================== ОТРИСОВКА ========================
-function renderMainList() {
-  const container = document.getElementById('mainList');
-  if (!container) return;
-  container.innerHTML = '';
-  data.mainOrder.forEach(blockName => {
-    const div = document.createElement('div');
-    div.className = `item ${data.currentBlock === blockName ? 'active' : ''}`;
-    div.innerHTML = `
-      <div class="item-row">
-        <div class="item-title" onclick="selectBlock('${blockName.replace(/'/g, "\\'")}')">${escapeHtml(blockName)}</div>
-        <div class="hidden-actions">
-          <button class="icon-btn" onclick="event.stopPropagation(); startEditBlock('${blockName.replace(/'/g, "\\'")}')">✎</button>
-          <button class="icon-btn danger-btn" onclick="event.stopPropagation(); deleteBlock('${blockName.replace(/'/g, "\\'")}')">🗑</button>
-        </div>
-      </div>
-    `;
-    container.appendChild(div);
-  });
-}
-
-function renderRightPanel() {
-  const container = document.getElementById('rightPanel');
-  if (!container) return;
-  container.innerHTML = '';
-  
-  data.sectionOrder.forEach(sectionName => {
-    const blocks = data.sections[sectionName] || [];
-    const sectionDiv = document.createElement('div');
-    sectionDiv.style.marginBottom = '16px';
-    sectionDiv.innerHTML = `
-      <div class="section-head">
-        <div class="section-title" style="font-size:20px;cursor:pointer" onclick="startEditSection('${sectionName.replace(/'/g, "\\'")}')">${escapeHtml(sectionName)}</div>
-        <div class="hidden-actions" style="display:flex">
-          <button class="icon-btn" onclick="event.stopPropagation(); startEditSection('${sectionName.replace(/'/g, "\\'")}')">✎</button>
-          <button class="icon-btn danger-btn" onclick="event.stopPropagation(); deleteSection('${sectionName.replace(/'/g, "\\'")}')">🗑</button>
-        </div>
-      </div>
-      <div class="list">
-        ${blocks.map(blockName => `
-          <div class="item ${data.currentBlock === blockName ? 'active' : ''}" onclick="selectBlock('${blockName.replace(/'/g, "\\'")}')">
-            <div class="item-row">
-              <div class="item-title">${escapeHtml(blockName)}</div>
-              <div class="hidden-actions">
-                <button class="icon-btn" onclick="event.stopPropagation(); startEditBlock('${blockName.replace(/'/g, "\\'")}')">✎</button>
-                <button class="icon-btn danger-btn" onclick="event.stopPropagation(); deleteBlock('${blockName.replace(/'/g, "\\'")}')">🗑</button>
-              </div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-      <button class="small-btn gold-btn" onclick="addBlockToSection('${sectionName.replace(/'/g, "\\'")}')">+ элемент</button>
-    `;
-    container.appendChild(sectionDiv);
-  });
-  
-  const addSectionBtn = document.createElement('button');
-  addSectionBtn.className = 'small-btn gold-btn';
-  addSectionBtn.textContent = '+ раздел';
-  addSectionBtn.onclick = () => addNewSection();
-  container.appendChild(addSectionBtn);
-  
-  if (role === 'owner') {
-    const saveBtn = document.createElement('button');
-    saveBtn.className = 'small-btn gold-btn save-project-btn';
-    saveBtn.innerHTML = '💾 СОХРАНИТЬ ВСЕ ИЗМЕНЕНИЯ';
-    saveBtn.onclick = saveProject;
-    container.appendChild(saveBtn);
-  }
-}
-
-function renderCenter() {
-  const container = document.getElementById('center');
-  if (!container) return;
-  const block = getBlock(data.currentBlock);
-  const isMain = block.kind === 'main';
-  
-  container.innerHTML = `
-    <div class="center-title">${escapeHtml(data.currentBlock)}</div>
-    <div class="center-sub side">● ${isMain ? 'Магистраль' : 'Ветка сценария'}</div>
-    <div class="toolbar" style="margin-bottom:14px">
-      <button class="small-btn return-btn" onclick="returnToMain()">⬅ Вернуться в магистраль</button>
-    </div>
-    <div class="info-box gold-box">
-      <div style="font-weight:700;margin-bottom:8px">Пояснение</div>
-      <textarea id="meta-note" class="textarea" style="min-height:58px">${escapeHtml(block.note || '')}</textarea>
-    </div>
-    <div class="info-box blue-box">
-      <div style="font-weight:700;margin-bottom:8px">Подсказка</div>
-      <textarea id="meta-hint" class="textarea" style="min-height:58px">${escapeHtml(block.hint || '')}</textarea>
-    </div>
-    <div class="toolbar"><button class="small-btn gold-btn" onclick="saveMeta()">Сохранить пояснение и подсказку</button></div>
-    <div id="messagesContainer"></div>
-    <div class="card">
-      <div style="font-weight:700;margin-bottom:10px">Добавить сообщение</div>
-      <input id="new-label" class="input" placeholder="Название сообщения">
-      <textarea id="new-text" class="textarea" placeholder="Текст сообщения" style="min-height:80px"></textarea>
-      <div class="toolbar"><button class="small-btn gold-btn" onclick="addMessage()">Добавить сообщение</button></div>
-    </div>
-  `;
-  renderMessages();
-}
-
-function renderMessages() {
-  const container = document.getElementById('messagesContainer');
-  if (!container) return;
-  const block = getBlock(data.currentBlock);
-  const messages = block.messages || [];
-  if (messages.length === 0) {
-    container.innerHTML = '<div class="empty">Нет сообщений</div>';
-    return;
-  }
-  container.innerHTML = messages.map((msg, idx) => `
-    <div class="card">
-      <div class="card-head">
-        <div class="card-label">${escapeHtml(msg.label || 'Сообщение')}</div>
-        <div class="toolbar">
-          <button class="copy-btn" onclick="copyMessage(${idx})">Скопировать</button>
-          <button class="small-btn" onclick="editMessage(${idx})">Редактировать</button>
-          <button class="small-btn danger-btn" onclick="deleteMessage(${idx})">Удалить</button>
-        </div>
-      </div>
-      <div class="card-text">${escapeHtml(msg.text || '').replace(/\n/g, '<br>')}</div>
-    </div>
-  `).join('');
-}
-
-// ======================== ДЕЙСТВИЯ ========================
-function selectBlock(blockName) {
-  data.currentBlock = blockName;
-  if (getBlock(blockName).kind === 'main') data.lastMain = blockName;
-  saveToLocalStorage();
-  renderMainList();
-  renderRightPanel();
-  renderCenter();
-}
-
-function returnToMain() {
-  if (data.lastMain && data.blocks[data.lastMain]) selectBlock(data.lastMain);
-  else if (data.mainOrder.length) selectBlock(data.mainOrder[0]);
-}
-
-function saveMeta() {
-  const note = document.getElementById('meta-note')?.value || '';
-  const hint = document.getElementById('meta-hint')?.value || '';
-  const block = getBlock(data.currentBlock);
-  block.note = note;
-  block.hint = hint;
-  saveToLocalStorage();
-  alert('Сохранено');
-}
-
-function addMessage() {
-  const label = document.getElementById('new-label')?.value.trim();
-  const text = document.getElementById('new-text')?.value;
-  if (!label || !text) { alert('Заполните название и текст'); return; }
-  const block = getBlock(data.currentBlock);
-  if (!block.messages) block.messages = [];
-  block.messages.push({ label: label, text: text, attachments: [] });
-  document.getElementById('new-label').value = '';
-  document.getElementById('new-text').value = '';
-  saveToLocalStorage();
-  renderCenter();
-}
-
-function copyMessage(idx) {
-  const block = getBlock(data.currentBlock);
-  const msg = block.messages?.[idx];
-  if (msg?.text) { navigator.clipboard.writeText(msg.text); alert('Скопировано'); }
-}
-
-function editMessage(idx) {
-  const block = getBlock(data.currentBlock);
-  const msg = block.messages?.[idx];
-  if (!msg) return;
-  const newLabel = prompt('Название сообщения:', msg.label);
-  if (newLabel !== null) msg.label = newLabel;
-  const newText = prompt('Текст сообщения:', msg.text);
-  if (newText !== null) msg.text = newText;
-  saveToLocalStorage();
-  renderCenter();
-}
-
-function deleteMessage(idx) {
-  if (confirm('Удалить сообщение?')) {
-    const block = getBlock(data.currentBlock);
-    block.messages.splice(idx, 1);
-    saveToLocalStorage();
-    renderCenter();
-  }
-}
-
-function startEditBlock(blockName) {
-  const newName = prompt('Новое название блока:', blockName);
-  if (!newName || newName === blockName) return;
-  if (data.blocks[newName] && newName !== blockName) { alert('Блок с таким именем уже существует'); return; }
-  
-  if (data.mainOrder.includes(blockName)) {
-    const idx = data.mainOrder.indexOf(blockName);
-    data.mainOrder[idx] = newName;
-  }
-  for (const section in data.sections) {
-    const idx = data.sections[section].indexOf(blockName);
-    if (idx !== -1) data.sections[section][idx] = newName;
-  }
-  data.blocks[newName] = data.blocks[blockName];
-  delete data.blocks[blockName];
-  if (data.currentBlock === blockName) data.currentBlock = newName;
-  if (data.lastMain === blockName) data.lastMain = newName;
-  saveToLocalStorage();
-  renderMainList();
-  renderRightPanel();
-  renderCenter();
-}
-
-function deleteBlock(blockName) {
-  if (!confirm(`Удалить блок "${blockName}"?`)) return;
-  if (data.mainOrder.includes(blockName)) {
-    data.mainOrder = data.mainOrder.filter(b => b !== blockName);
-  }
-  for (const section in data.sections) {
-    data.sections[section] = data.sections[section].filter(b => b !== blockName);
-  }
-  delete data.blocks[blockName];
-  if (data.currentBlock === blockName) {
-    if (data.mainOrder.length) data.currentBlock = data.mainOrder[0];
-    else data.currentBlock = Object.keys(data.blocks)[0] || '';
-  }
-  saveToLocalStorage();
-  renderMainList();
-  renderRightPanel();
-  renderCenter();
-}
-
-function addBlockToSection(sectionName) {
-  const newName = prompt('Название нового блока:');
-  if (!newName) return;
-  if (data.blocks[newName]) { alert('Блок уже существует'); return; }
-  if (!data.sections[sectionName]) data.sections[sectionName] = [];
-  data.sections[sectionName].push(newName);
-  data.blocks[newName] = { kind: "side", note: "", hint: "", messages: [] };
-  saveToLocalStorage();
-  renderRightPanel();
-}
-
-function addNewBlockToMain() {
-  const newName = prompt('Название нового блока магистрали:');
-  if (!newName) return;
-  if (data.blocks[newName]) { alert('Блок уже существует'); return; }
-  data.mainOrder.push(newName);
-  data.blocks[newName] = { kind: "main", note: "", hint: "", messages: [] };
-  saveToLocalStorage();
-  renderMainList();
-}
-
-function startEditSection(sectionName) {
-  const newName = prompt('Новое название раздела:', sectionName);
-  if (!newName || newName === sectionName) return;
-  const idx = data.sectionOrder.indexOf(sectionName);
-  if (idx !== -1) data.sectionOrder[idx] = newName;
-  data.sections[newName] = data.sections[sectionName];
-  delete data.sections[sectionName];
-  saveToLocalStorage();
-  renderRightPanel();
-}
-
-function deleteSection(sectionName) {
-  if (!confirm(`Удалить раздел "${sectionName}" со всеми блоками?`)) return;
-  const blocks = data.sections[sectionName] || [];
-  blocks.forEach(blockName => delete data.blocks[blockName]);
-  delete data.sections[sectionName];
-  data.sectionOrder = data.sectionOrder.filter(s => s !== sectionName);
-  saveToLocalStorage();
-  renderRightPanel();
-}
-
-function addNewSection() {
-  const newName = prompt('Название нового раздела:');
-  if (!newName) return;
-  if (data.sections[newName]) { alert('Раздел уже существует'); return; }
-  data.sectionOrder.push(newName);
-  data.sections[newName] = [];
-  saveToLocalStorage();
-  renderRightPanel();
-}
-
-// ======================== ЭКСПОРТ/ИМПОРТ ========================
-function exportDatabase() {
-  const exportData = { mainOrder: data.mainOrder, sectionOrder: data.sectionOrder, sections: data.sections, blocks: data.blocks };
-  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'borzo_backup.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function downloadProject() {
-  const fullData = { role, currentBlock: data.currentBlock, lastMain: data.lastMain, mainOrder: data.mainOrder, sectionOrder: data.sectionOrder, sections: data.sections, blocks: data.blocks };
-  const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'borzo_project.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-// ======================== ЛОГИН ========================
-function showLoginModal() {
-  const modal = document.createElement('div');
-  modal.className = 'app-modal-backdrop show';
-  modal.innerHTML = `
-    <div class="app-modal login-modal">
-      <div class="app-modal-title">Вход в систему</div>
-      <div class="role-buttons">
-        <button class="role-btn" data-role="manager">Менеджер</button>
-        <button class="role-btn" data-role="owner">Руководитель</button>
-      </div>
-      <div class="password-field"><input type="password" class="app-modal-input" id="ownerPassword" placeholder="Пароль руководителя"></div>
-      <div class="app-modal-actions">
-        <button class="small-btn" id="cancelLogin">Отмена</button>
-        <button class="small-btn gold-btn" id="confirmLogin">Войти</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  
-  let selectedRole = 'manager';
-  const roleBtns = modal.querySelectorAll('.role-btn');
-  const passwordField = modal.querySelector('.password-field');
-  
-  roleBtns.forEach(btn => {
-    btn.onclick = () => {
-      roleBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedRole = btn.dataset.role;
-      if (selectedRole === 'owner') passwordField.classList.add('show');
-      else passwordField.classList.remove('show');
-    };
-  });
-  roleBtns[0].classList.add('active');
-  
-  modal.querySelector('#confirmLogin').onclick = () => {
-    if (selectedRole === 'owner') {
-      const pwd = modal.querySelector('#ownerPassword').value;
-      if (pwd !== 'admin123') { alert('Неверный пароль'); return; }
+      const response = await axios.get('/api/blocks');
+      setBlocks(response.data);
+    } catch (err) {
+      setError('Ошибка загрузки блоков');
     }
-    role = selectedRole;
-    data.role = role;
-    saveToLocalStorage();
-    document.body.removeChild(modal);
-    renderMainList();
-    renderRightPanel();
-    renderCenter();
   };
-  modal.querySelector('#cancelLogin').onclick = () => document.body.removeChild(modal);
-}
 
-function logout() {
-  role = 'manager';
-  data.role = 'manager';
-  saveToLocalStorage();
-  renderMainList();
-  renderRightPanel();
-  renderCenter();
-}
-
-// ======================== ИНИЦИАЛИЗАЦИЯ ========================
-function init() {
-  loadFromLocalStorage();
-  role = data.role;
-  renderMainList();
-  renderRightPanel();
-  renderCenter();
-  
-  document.getElementById('addMainBlockBtn').onclick = addNewBlockToMain;
-  document.getElementById('downloadProjectBtn').onclick = downloadProject;
-  document.getElementById('exportBtn').onclick = exportDatabase;
-  document.getElementById('logoutBtn').onclick = logout;
-  const roleSelect = document.getElementById('roleSelect');
-  roleSelect.value = role;
-  roleSelect.onchange = (e) => {
-    if (e.target.value === 'owner') showLoginModal();
-    else { role = 'manager'; data.role = 'manager'; saveToLocalStorage(); renderMainList(); renderRightPanel(); renderCenter(); }
-    roleSelect.value = role;
+  const startEditing = (blockId) => {
+    setEditingBlock(blockId);
   };
-}
 
-window.selectBlock = selectBlock;
-window.returnToMain = returnToMain;
-window.saveMeta = saveMeta;
-window.addMessage = addMessage;
-window.copyMessage = copyMessage;
-window.editMessage = editMessage;
-window.deleteMessage = deleteMessage;
-window.startEditBlock = startEditBlock;
-window.deleteBlock = deleteBlock;
-window.startEditSection = startEditSection;
-window.deleteSection = deleteSection;
-window.addBlockToSection = addBlockToSection;
+  const saveChanges = async (blockId, newContent) => {
+    setIsSaving(true);
+    setError('');
 
-init();
-</script>
-</body>
-</html>
+    try {
+      // Проверка прав доступа
+      if (!user || !user.role?.includes('director')) {
+        throw new Error('Нет прав на сохранение');
+      }
+
+      const response = await axios.put(
+        `/api/blocks/${blockId}`,
+        { content: newContent }
+      );
+
+      // Обновление статуса всех блоков
+      await axios.post('/api/blocks/updateStatus', {
+        blockId,
+        status: 'published'
+      });
+
+      // Уведомление всех пользователей
+      notifyUsers(blockId);
+
+      // Перезагрузка данных
+      await loadBlocks();
+      setEditingBlock(null);
+    } catch (err) {
+      setError(err.message || 'Произошла ошибка');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const notifyUsers = async (blockId) => {
+    try {
+      await axios.post('/api/notifications', {
+        blockId,
+        message: 'Изменения сохранены и применены'
+      });
+    } catch (err) {}
+  };
+
+  const renderBlock = (block) => {
+    if (editingBlock === block.id) {
+      return (
+        <div
+          key={block.id}
+          className="block-editor"
+          data-status={block.status}
+        >
+          <textarea
+            value={block.content}
+            onChange={(e) => 
+              setBlocks(prev => 
+                prev.map(b => 
+                  b.id === block.id ? { ...b, content: e.target.value } : b
+                )
+              )
+            }
+          />
+          <div className="editor-controls">
+            <button
+              disabled={isSaving}
+              onClick={() => 
+                saveChanges(block.id, block.content)
+              }
+            >
+              {isSaving ? 'Сохраняю...' : 'Сохранить'}
+            </button>
+            <button onClick={() => setEditingBlock(null)}>
+              Отмена
+            </button>
+          </div>
+          {error && <div className="error">{error}</div>}
+        </div>
+      );
+    }
+
+    return (
+      <div
+        key={block.id}
+        className={`block-view ${block.status}`}
+        onClick={() => startEditing(block.id)}
+      >
+        <h3>{block.title}</h3>
+        <div 
+          dangerouslySetInnerHTML={{__html: block.content}}
+        />
+        <span className="status-label">
+          {block.status === 'draft' ? 'Черновик' : 'Одобрено'}
+        </span>
+      </div>
+    );
+  };
+
+  return (
+    <div className="blocks-container">
+      <h2>Редактор блоков</h2>
+      <div className="blocks-list">
+        {blocks.map(renderBlock)}
+      </div>
+      <div className="actions">
+        {user.role?.includes('director') && (
+          <button onClick={() => setEditingBlock('new')}>
+            Добавить новый блок
+          </button>
+        )}
+      </div>
