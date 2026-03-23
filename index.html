@@ -1,658 +1,735 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>BORZO — GitHub Issues Integration</title>
-<style>
-/* Все ваши существующие стили остаются без изменений */
-:root{
-  --bg:#3a3a3a; --bg2:#474747; --panel:#f8f7f3; --white:#fff; --line:#ddd8cf;
-  --text:#222; --muted:#6f6a63; --gold:#c9a24a; --gold2:#a9852f; --goldsoft:#f7edd6;
-  --bluesoft:#edf4ff; --danger:#c64c4c; --green:#189c54;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
-header{height:60px;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(20,20,20,.18);border-bottom:1px solid rgba(201,162,74,.35);position:sticky;top:0;z-index:100}
-.brand{display:flex;align-items:center;gap:10px}
-.logo{border:2px solid var(--gold);color:var(--gold);padding:4px 10px;border-radius:8px;font-weight:800;letter-spacing:2px;font-size:22px;background:#2f2f2f}
-.header-title{font-size:16px;font-weight:700;color:#fff}.header-sub{font-size:10px;color:#ddd;margin-top:2px}
-.menu-buttons{display:flex;gap:8px;align-items:center}
-.menu-icon{background:rgba(201,162,74,.2);border:1px solid var(--gold);border-radius:40px;padding:8px 14px;cursor:pointer;color:var(--gold);font-size:16px;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s}
-.menu-icon:hover{background:rgba(201,162,74,.35);transform:scale(1.02)}
-.user-menu-btn{background:rgba(201,162,74,.2);border:1px solid var(--gold);border-radius:40px;padding:8px 14px;cursor:pointer;color:var(--gold);display:inline-flex;align-items:center;gap:6px}
-.mobile-buttons-container{display:flex;flex-direction:row;gap:8px;align-items:center}
-.role-select{display:none}
-.user-dropdown{position:relative}
-.user-dropdown-menu{position:absolute;top:50px;right:0;background:var(--panel);border-radius:16px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.2);min-width:180px;z-index:1000;display:none;overflow:hidden}
-.user-dropdown-menu.show{display:block}
-.user-dropdown-item{padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;color:var(--text)}
-.user-dropdown-item:hover{background:var(--goldsoft)}
-.user-dropdown-item.active{background:var(--goldsoft);color:var(--gold2);font-weight:600}
-.user-dropdown-item.active::after{content:"✓";margin-left:auto;color:var(--gold)}
-.user-dropdown-divider{height:1px;background:var(--line);margin:4px 0}
-.user-dropdown-item.logout{color:var(--danger)}
-.layout{display:grid;grid-template-columns:300px 1fr 340px;gap:16px;padding:16px;min-height:calc(100vh - 60px)}
-.panel{background:var(--panel);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.15)}
-.white{background:var(--white)}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-.section-title{font-size:22px;font-weight:800}
-.list{display:flex;flex-direction:column;gap:8px}
-.item{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;transition:all .15s}
-.item:hover{border-color:var(--gold);background:#fffaf1}
-.item.active{border-color:var(--gold);background:#fff7e8}
-.item-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.item-title{flex:1;font-weight:700;cursor:pointer}
-.hidden-actions{display:flex;gap:6px;visibility:hidden;opacity:0}
-.item:hover .hidden-actions,.item.active .hidden-actions{visibility:visible;opacity:1}
-.input,.textarea{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px 12px;background:#fff;font:inherit}
-.textarea{min-height:120px;resize:vertical}
-.icon-btn,.small-btn,.copy-btn{border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer}
-.icon-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center}
-.small-btn{padding:8px 12px;font-size:12px}
-.copy-btn{padding:10px 16px;font-size:14px;font-weight:800;background:var(--gold);border-color:var(--gold2);color:#fff}
-.gold-btn{background:var(--gold);border-color:var(--gold2);color:#fff}
-.danger-btn{color:var(--danger)}
-.return-btn{background:var(--danger);border-color:#b54444;color:#fff;font-weight:800;padding:12px 16px;min-width:280px}
-.center-title{font-size:28px;font-weight:800;margin-bottom:4px}
-.center-sub{font-size:16px;font-weight:800;margin-bottom:12px}
-.center-sub.main{color:var(--green)}
-.center-sub.side{color:var(--muted)}
-.info-box{border-radius:14px;padding:12px 14px;margin-bottom:12px}
-.gold-box{background:var(--goldsoft);border:1px solid #ead39f}
-.blue-box{background:var(--bluesoft);border:1px solid #c7d8ff}
-.card{border:2px solid #2f3237;background:#fff;border-radius:14px;padding:14px;margin-bottom:14px}
-.card-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px}
-.card-label{font-size:11px;font-weight:900;color:var(--gold2);text-transform:uppercase}
-.card-text{white-space:pre-wrap;line-height:1.62;font-size:16px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.divider{height:1px;background:#e7e3da;margin:14px 0}
-.empty{padding:14px;border:1px dashed #cfcac0;border-radius:12px;background:#fff;color:var(--muted);text-align:center}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--danger);color:#fff;font-size:12px;font-weight:700}
-.proposal-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff;margin-bottom:12px}
-.proposal-title{font-weight:700;margin-bottom:6px}
-.attachments-row{display:flex;gap:10px;overflow-x:auto;margin-top:8px}
-.asset-chip{min-width:100px;border:1px solid #d7d2c7;border-radius:10px;padding:6px;background:#fafafa}
-.drag-handle{width:24px;height:24px;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;background:#fff;cursor:grab}
-.material-row{display:flex;align-items:center;gap:8px;margin-top:8px}
-.app-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999}
-.app-modal-backdrop.show{display:flex}
-.app-modal{width:min(500px,calc(100vw - 32px));background:#fff;border-radius:16px;padding:16px}
-.app-modal-title{font-size:18px;font-weight:800}
-.app-modal-input,.app-modal-textarea{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px;margin:8px 0}
-.mobile-menu-panel{position:fixed;top:0;bottom:0;width:85%;max-width:320px;background:var(--panel);z-index:1001;overflow-y:auto;padding:16px;transition:transform 0.3s;transform:translateX(-100%)}
-.mobile-menu-panel.right{transform:translateX(100%)}
-.mobile-menu-panel.show{transform:translateX(0)}
-.mobile-menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none}
-.mobile-menu-overlay.show{display:block}
-@media (max-width:768px){.layout{display:block}.desktop-only{display:none!important}.mobile-only{display:block!important}}
-@media (min-width:769px){.mobile-only{display:none!important}.desktop-only{display:flex!important}}
-</style>
-</head>
-<body>
-<header>
-  <div class="brand">
-    <div class="logo">BORZO</div>
-    <div><div class="header-title">Script Navigator</div><div class="header-sub">GitHub Issues</div></div>
-  </div>
-  <div class="menu-buttons">
-    <div class="desktop-only" style="display:flex;gap:8px">
-        <button id="downloadProjectBtn" class="small-btn gold-btn" style="display:none">📥 Скачать проект</button>
-        <button id="exportBtn" class="small-btn gold-btn" style="display:none">📄 Экспорт базы</button>
-        <select id="roleSelect" class="role-select"><option value="manager">Менеджер</option><option value="owner">Руководитель</option></select>
-        <button id="logoutBtn" class="small-btn" style="background:#2f2f2f;color:#fff">🚪 Выйти</button>
-    </div>
-    <div class="mobile-only mobile-buttons-container" style="display:none">
-        <button id="mobileMenuLeftBtn" class="menu-icon">☰ Меню</button>
-        <button id="mobileMenuRightBtn" class="menu-icon">📁 Разделы</button>
-        <div class="user-dropdown">
-            <button id="userMenuBtn" class="user-menu-btn">👤</button>
-            <div id="userDropdownMenu" class="user-dropdown-menu">
-                <div id="userDropdownRoleManager" class="user-dropdown-item">👤 Менеджер</div>
-                <div id="userDropdownRoleOwner" class="user-dropdown-item">🧑‍💼 Руководитель</div>
-                <div class="user-dropdown-divider"></div>
-                <div id="userDropdownLogout" class="user-dropdown-item logout">🚪 Выйти</div>
-            </div>
-        </div>
-    </div>
-  </div>
-</header>
-
-<div class="layout desktop-only">
-  <aside class="panel">
-    <div class="section-head"><div class="section-title">📋 Магистраль</div></div>
-    <div id="mainList" class="list"></div>
-    <div class="divider"></div>
-    <div class="section-head"><div class="section-title" style="font-size:18px">💡 Предложения (GitHub)</div><div id="propBadge"></div></div>
-    <div id="managerReplyArea" class="list"></div>
-    <div id="proposalList" class="list"></div>
-  </aside>
-  <main class="panel white"><div id="center"></div></main>
-  <aside class="panel"><div id="right"></div></aside>
-</div>
-
-<div class="mobile-only">
-  <main class="panel white"><div id="mobileCenter"></div></main>
-</div>
-
-<div id="mobileMenuLeft" class="mobile-menu-panel left">
-    <div class="mobile-menu-header"><h3>📋 Магистраль</h3><button class="mobile-menu-close" id="closeLeftMenu">✕</button></div>
-    <div id="mobileMainList" class="list"></div>
-    <div class="divider"></div>
-    <div id="mobileProposalList" class="list"></div>
-</div>
-
-<div id="mobileMenuRight" class="mobile-menu-panel right">
-    <div class="mobile-menu-header"><h3>📂 Разделы</h3><button class="mobile-menu-close" id="closeRightMenu">✕</button></div>
-    <div id="mobileRight"></div>
-</div>
-
-<div id="mobileMenuOverlay" class="mobile-menu-overlay"></div>
-<div id="appModalBackdrop" class="app-modal-backdrop"><div class="app-modal"><div id="appModalTitle"></div><div id="appModalText"></div><div id="appModalFields"></div><div id="appModalActions" class="app-modal-actions"></div></div></div>
-
-<script>
-// ==================== GITHUB CONFIGURATION ====================
-const GITHUB_REPO_OWNER = "skvorcmen";
-const GITHUB_REPO_NAME = "Borzo";
-let githubToken = localStorage.getItem('github_token') || '';
-
-// ==================== DATA & STORAGE ====================
-const KEY = 'borzo_v7';
-const AUTH_KEY = 'borzo_auth';
-
-const defaults = {
- role: 'manager',
- currentBlock: 'Входящий старт',
- lastMain: 'Входящий старт',
- mainOrder: ['Входящий старт','Выбор модели','Размер и цвет','Город клиента','Доставка и оплата','Финальное подтверждение'],
- sectionOrder: ['Вопросы клиентов','Обработка возражений','Пауза','Закрытие клиента'],
- sections: {
-   'Вопросы клиентов': ['Где посмотреть','Разница моделей','Нестандартный размер','Другой цвет'],
-   'Обработка возражений': ['Дорого','Сомнение в прочности','Сомнение в качестве'],
-   'Пауза': ['Подумаю / позже','Молчание после фильтра'],
-   'Закрытие клиента': ['Дорого — закрытие','Не сейчас']
- },
- blocks: {
-  'Входящий старт': {kind:'main',note:'Если клиент сразу ушёл в уточняющий вопрос, после ответа его нужно вернуть в магистраль.',hint:'',messages:[{label:'Стандартный входящий',text:'Здравствуйте. Меня зовут Ульяна, менеджер BORZO.\n\nСейчас отправлю цены и краткое описание.'},{label:'Если клиент сразу спросил город',text:'Здравствуйте. Фабрика в Астане. Отправляем по Казахстану.\n\nСейчас отправлю цены.'},{label:'Шапка + прайс',text:'BORZO — дизайнерская консоль.\n\nLUX: 3м — 310000₸, 3.5м — 335000₸, 4м — 360000₸'}]},
-  'Выбор модели': {kind:'main',note:'',hint:'После этого сообщения отправить фото моделей.',messages:[{label:'Основное сообщение',text:'Какой вариант вам ближе — LUX или GEOMETRY?'}]},
-  'Размер и цвет': {kind:'main',note:'Если клиент перескочил к доставке — вернуть к выбору размера.',hint:'',messages:[{label:'Основное сообщение',text:'Отлично 👍\n\nСтандартные размеры: 3м / 3.5м / 4м\n\nПодскажите размер и цвет?'}]},
-  'Город клиента': {kind:'main',note:'',hint:'',messages:[{label:'Сообщение',text:'Ваш вариант доступен.\n\nПодскажите, с какого вы города?'}]},
-  'Доставка и оплата': {kind:'main',note:'',hint:'',messages:[{label:'Если Астана',text:'По Астане доставка бесплатная.\n\nПодскажите адрес и время?'}]},
-  'Финальное подтверждение': {kind:'main',note:'',hint:'',messages:[{label:'Подтверждение',text:'Подтверждаю:\n\n— модель\n— размер\n— цвет\n— город\n— оплата\n\nВсё верно?'}]},
-  'Где посмотреть': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Работаем онлайн от фабрики в Астане.\n\nЕсть видеообзоры — отправить?'}]},
-  'Разница моделей': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'LUX — классика.\nGEOMETRY — сложная геометрия и подсветка.'}]},
-  'Нестандартный размер': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Работаем с фиксированными размерами.'}]},
-  'Другой цвет': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Утверждённая палитра, другие оттенки не производим.'}]},
-  'Дорого': {kind:'side',note:'После обработки возражения нужно вернуться в магистраль.',hint:'',messages:[{label:'Ответ',text:'Понимаю. Цена выше среднего, потому что конструкция отличается.'}]},
-  'Сомнение в прочности': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Конструкция тестировалась на нагрузку 200+ кг.'}]},
-  'Сомнение в качестве': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Если что-то не устроит — можно оформить возврат.'}]},
-  'Подумаю / позже': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Поняла. Если вопросы — уточняйте.'}]},
-  'Молчание после фильтра': {kind:'side',note:'',hint:'',messages:[{label:'Ответ',text:'Ваш запрос ещё актуален?'}]},
-  'Дорого — закрытие': {kind:'side',note:'',hint:'',messages:[{label:'Закрытие',text:'Если вернётесь — буду рада помочь.'}]},
-  'Не сейчас': {kind:'side',note:'',hint:'',messages:[{label:'Закрытие',text:'Напишите, когда актуально.'}]}
- },
- proposals: [],
- managerMessages: []
-};
-
-function clone(x) { return JSON.parse(JSON.stringify(x)); }
-function load() { try{ const raw=localStorage.getItem(KEY); return raw?JSON.parse(raw):clone(defaults); } catch(e){ return clone(defaults); } }
-let state = load();
-function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
-
-function esc(s) { return String(s||'').replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
-function escAttr(s) { return esc(s).replace(/"/g, '&quot;'); }
-function escJs(s) { return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
-function isOwner() { return state.role === 'owner'; }
-
-function saveAuth(role) { localStorage.setItem(AUTH_KEY, JSON.stringify({role, timestamp:Date.now()})); }
-function checkAuth() { try{ const a=JSON.parse(localStorage.getItem(AUTH_KEY)); if(a && (a.role==='manager'||a.role==='owner') && Date.now()-a.timestamp<86400000){ state.role=a.role; return true; } } catch(e){} return false; }
-
-// ==================== GITHUB API FUNCTIONS ====================
-async function githubFetch(endpoint, options={}) {
-  const headers = {'Accept':'application/vnd.github.v3+json'};
-  if(githubToken) headers['Authorization'] = `token ${githubToken}`;
-  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/${endpoint}`, {...options, headers});
-  if(!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-  return res.json();
-}
-
-async function createIssue(proposal) {
-  if(!githubToken) throw new Error('Требуется GitHub токен. Руководитель, введите токен в настройках.');
-  const title = `[PROPOSAL] ${proposal.type} - ${proposal.summary}`;
-  const body = JSON.stringify(proposal, null, 2);
-  const issue = await githubFetch('issues', { method:'POST', body: JSON.stringify({ title, body, labels: ['proposal'] }) });
-  return issue.number;
-}
-
-async function closeIssue(issueNumber, comment) {
-  if(!githubToken) return;
-  await githubFetch(`issues/${issueNumber}`, { method:'PATCH', body: JSON.stringify({ state:'closed' }) });
-  if(comment) await githubFetch(`issues/${issueNumber}/comments`, { method:'POST', body: JSON.stringify({ body: comment }) });
-}
-
-async function sendProposalToGitHub(proposal) {
-  const payload = {
-    type: proposal.targetType || 'block',
-    summary: proposal.condition || proposal.blockName || 'Изменение',
-    target: proposal.targetName || 'скрипт',
-    details: proposal.text || '',
-    extra: { blockName: proposal.blockName, sectionName: proposal.sectionName, mode: proposal.mode, sourceIndex: proposal.sourceIndex }
-  };
-  const issueNum = await createIssue(payload);
-  proposal._issueNumber = issueNum;
-  return issueNum;
-}
-
-// ==================== PROPOSAL FUNCTIONS ====================
-async function addProposal(targetType, targetName, data) {
-  const proposal = {
-    id: Date.now() + Math.random(),
-    targetType,
-    targetName,
-    condition: data.condition || '',
-    text: data.text || '',
-    blockName: data.blockName,
-    sectionName: data.sectionName,
-    mode: data.mode,
-    sourceIndex: data.sourceIndex,
-    createdAt: new Date().toISOString()
-  };
-  
-  if(!proposal.condition && !proposal.text) return;
-  
-  if(isOwner()) {
-    // Owner applies directly
-    applyProposal(proposal);
-  } else {
-    // Manager sends to GitHub
-    try {
-      if(githubToken) {
-        await sendProposalToGitHub(proposal);
-      }
-      state.proposals.unshift(proposal);
-      save();
-      render();
-      showAlertModal('✅ Отправлено', 'Предложение отправлено руководителю через GitHub Issues');
-    } catch(e) {
-      showAlertModal('Ошибка', `Не удалось отправить: ${e.message}`);
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BORZO - Script Navigator</title>
+  <style>
+  :root{
+    --bg:#3a3a3a; --bg2:#474747; --panel:#f8f7f3; --white:#fff; --line:#ddd8cf;
+    --text:#222; --muted:#6f6a63; --gold:#c9a24a; --gold2:#a9852f; --goldsoft:#f7edd6;
+    --bluesoft:#edf4ff; --danger:#c64c4c; --green:#189c54;
   }
-}
-
-function applyProposal(proposal) {
-  if(proposal.targetType === 'block') {
-    const block = state.blocks[proposal.targetName];
-    if(block) {
-      if(proposal.mode === 'replace' && Number.isInteger(proposal.sourceIndex) && block.messages[proposal.sourceIndex]) {
-        block.messages[proposal.sourceIndex] = { label: proposal.condition, text: proposal.text, attachments: block.messages[proposal.sourceIndex].attachments || [] };
-      } else {
-        block.messages.push({ label: proposal.condition, text: proposal.text, attachments: [] });
-      }
-    }
-  } else if(proposal.targetType === 'main-list') {
-    const blockName = proposal.blockName || proposal.condition;
-    if(blockName && !state.blocks[blockName]) {
-      state.mainOrder.push(blockName);
-      state.blocks[blockName] = { kind: 'main', note: '', hint: '', messages: [{ label: proposal.condition, text: proposal.text, attachments: [] }] };
-    }
-  } else if(proposal.targetType === 'section') {
-    const blockName = proposal.blockName || proposal.condition;
-    if(blockName) {
-      if(!state.blocks[blockName]) state.blocks[blockName] = { kind: 'side', note: '', hint: '', messages: [{ label: proposal.condition, text: proposal.text, attachments: [] }] };
-      if(!state.sections[proposal.targetName]) state.sections[proposal.targetName] = [];
-      if(!state.sections[proposal.targetName].includes(blockName)) state.sections[proposal.targetName].push(blockName);
-    }
-  } else if(proposal.targetType === 'new-section') {
-    const sectionName = proposal.sectionName || proposal.condition;
-    const blockName = proposal.blockName || '';
-    if(sectionName && !state.sections[sectionName]) {
-      state.sectionOrder.push(sectionName);
-      state.sections[sectionName] = [];
-      if(blockName) {
-        state.blocks[blockName] = { kind: 'side', note: '', hint: '', messages: [{ label: proposal.condition, text: proposal.text, attachments: [] }] };
-        state.sections[sectionName].push(blockName);
-      }
-    }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
+  header{height:82px;display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:rgba(20,20,20,.18);border-bottom:1px solid rgba(201,162,74,.35)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{border:2px solid var(--gold);color:var(--gold);padding:6px 14px;border-radius:8px;font-weight:800;letter-spacing:2px;font-size:28px;background:#2f2f2f}
+  .header-title{font-size:20px;font-weight:700;color:#fff}.header-sub{font-size:12px;color:#ddd;margin-top:4px}
+  .role-select{border:1px solid rgba(201,162,74,.45);background:#2f2f2f;color:#fff;border-radius:10px;padding:10px 12px}
+  .layout{display:grid;grid-template-columns:300px 1fr 340px;gap:16px;padding:16px;min-height:calc(100vh - 82px)}
+  .panel{background:var(--panel);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.15)}
+  .white{background:var(--white)}
+  .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+  .section-title{font-size:22px;font-weight:800}.muted{font-size:12px;color:var(--muted)}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .item{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease}
+  .item:hover{border-color:var(--gold);background:#fffaf1;box-shadow:0 0 0 2px rgba(201,162,74,.08) inset}
+  .item.active{border-color:var(--gold);background:#fff7e8;box-shadow:0 0 0 2px rgba(201,162,74,.12) inset}
+  .item.drag-over{border-color:#2f3237 !important; box-shadow:0 0 0 2px rgba(47,50,55,.14) inset !important}
+  .card.drag-over{border-color:#2f3237 !important; box-shadow:0 0 0 2px rgba(47,50,55,.12) inset !important}
+  .item-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .item-title{flex:1;font-weight:700;cursor:pointer}
+  .hidden-actions{
+    display:flex;
+    gap:6px;
+    min-width:74px;
+    justify-content:flex-end;
+    visibility:hidden;
+    opacity:0;
+    pointer-events:none;
   }
-  save();
-  render();
-}
-
-async function approveProposal(index) {
-  const p = state.proposals[index];
-  if(!p) return;
-  applyProposal(p);
-  if(p._issueNumber) await closeIssue(p._issueNumber, '✅ Предложение принято руководителем');
-  state.proposals.splice(index, 1);
-  save();
-  render();
-}
-
-async function rejectProposal(index) {
-  const p = state.proposals[index];
-  if(!p) return;
-  const comment = await showPromptModal('Комментарий по отклонению', 'Почему отклонено?', '');
-  if(comment === null) return;
-  if(p._issueNumber) await closeIssue(p._issueNumber, `❌ Предложение отклонено руководителем.\n\nПричина: ${comment || 'Не указана'}`);
-  state.proposals.splice(index, 1);
-  save();
-  render();
-}
-
-// ==================== UI RENDER FUNCTIONS (ваши существующие) ====================
-let editBlockName = null, editSectionName = null, editMessageIndex = null, inlineProposalIndex = null, ownerEditProposalIndex = null, assetEditIndex = null;
-
-function openBlock(name){ state.currentBlock = name; if(state.blocks[name]?.kind === 'main') state.lastMain = name; save(); render(); closeMobileMenus(); }
-function returnToMain(){ state.currentBlock = state.lastMain || state.mainOrder[0]; save(); render(); closeMobileMenus(); }
-
-function showAlertModal(title, msg) { alert(title + '\n\n' + msg); }
-function showConfirmModal(title, msg) { return Promise.resolve(confirm(title + '\n\n' + msg)); }
-function showPromptModal(title, label, def) { return Promise.resolve(prompt(title + '\n' + label, def||'')); }
-
-function renderMain(containerId) {
-  const el = document.getElementById(containerId);
-  if(!el) return;
-  el.innerHTML = '';
-  state.mainOrder.forEach(name => {
-    const active = state.currentBlock === name ? ' active' : '';
-    const div = document.createElement('div');
-    div.className = 'item' + active;
-    div.onclick = (e) => { if(e.target.closest('button')) return; openBlock(name); };
-    div.innerHTML = `<div class="item-row"><div class="item-title">${esc(name)}</div></div>`;
-    el.appendChild(div);
-  });
-}
-
-function renderRightDesktop() {
-  const wrap = document.getElementById('right');
-  if(!wrap) return;
-  wrap.innerHTML = '';
-  state.sectionOrder.forEach(sectionName => {
-    const group = document.createElement('div');
-    group.style.marginBottom = '16px';
-    group.innerHTML = `<div class="section-head"><div class="section-title" style="font-size:20px">${esc(sectionName)}</div></div>`;
-    const list = document.createElement('div');
-    list.className = 'list';
-    (state.sections[sectionName] || []).forEach(name => {
-      const active = state.currentBlock === name ? ' active' : '';
-      const div = document.createElement('div');
-      div.className = 'item' + active;
-      div.onclick = (e) => { if(e.target.closest('button')) return; openBlock(name); };
-      div.innerHTML = `<div class="item-row"><div class="item-title">${esc(name)}</div></div>`;
-      list.appendChild(div);
-    });
-    group.appendChild(list);
-    const btn = document.createElement('button');
-    btn.className = 'small-btn gold-btn';
-    btn.textContent = isOwner() ? '+ элемент' : '+ предложить элемент';
-    btn.onclick = async () => {
-      if(isOwner()) {
-        const n = await showPromptModal('Новый элемент', 'Название элемента');
-        if(n && n.trim() && !state.blocks[n.trim()]) {
-          state.blocks[n.trim()] = { kind: 'side', note: '', hint: '', messages: [] };
-          state.sections[sectionName].push(n.trim());
-          save(); render();
-        }
-      } else {
-        const cond = await showPromptModal('Предложить элемент', 'Назначение / когда использовать');
-        if(cond) {
-          const text = await showPromptModal('Текст сообщения', 'Введите текст ответа');
-          if(text) addProposal('section', sectionName, { condition: cond, text: text });
-        }
+  .item:hover .hidden-actions,.item.active .hidden-actions,.item.show .hidden-actions{
+    visibility:visible;
+    opacity:1;
+    pointer-events:auto;
+  }
+  .input,.textarea,.item-input{width:100%;border:1px solid #d7d2c7;border-radius:10px;padding:10px 12px;background:#fff;font:inherit}
+  .textarea{min-height:120px;resize:vertical}
+  .icon-btn,.small-btn,.copy-btn{border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font:inherit}
+  .icon-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .small-btn{padding:10px 12px;font-size:13px}
+  .copy-btn{min-height:48px;min-width:148px;padding:12px 20px;font-size:16px;font-weight:800;background:var(--gold);border-color:var(--gold2);color:#fff;box-shadow:0 4px 12px rgba(201,162,74,.18)}
+  .gold-btn{background:var(--gold);border-color:var(--gold2);color:#fff}
+  .danger-btn{color:var(--danger)}
+  .return-btn{background:var(--danger);border-color:#b54444;color:#fff;font-size:20px;font-weight:800;padding:16px 20px;min-width:320px}
+  .center-title{font-size:34px;font-weight:800;margin-bottom:4px}
+  .center-sub{font-size:18px;font-weight:800;margin-bottom:14px}
+  .center-sub.main{color:var(--green)}
+  .center-sub.side{color:var(--muted)}
+  .info-box{border-radius:14px;padding:12px 14px;margin-bottom:12px;line-height:1.45}.gold-box{background:var(--goldsoft);border:1px solid #ead39f}.blue-box{background:var(--bluesoft);border:1px solid #c7d8ff}
+  .card{border:2px solid #2f3237;background:#ffffff;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .card-main{display:block}
+  .drag-handle{
+  width:24px;height:24px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;
+  background:#fff;
+  color:#666;
+  cursor:grab;
+  user-select:none;-webkit-user-select:none;
+  flex:0 0 auto;
+  }
+  .drag-handle:active{cursor:grabbing}
+  .card-body{flex:1;min-width:0}
+  .card-text{user-select:text;-webkit-user-select:text;cursor:text}
+  .material-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .card-label{font-size:12px;font-weight:900;color:var(--gold2);text-transform:uppercase;letter-spacing:.6px}
+  .card-text{white-space:pre-wrap;line-height:1.62;font-size:18px;color:#2a2a2a}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .divider{height:1px;background:#e7e3da;margin:14px 0}.empty{padding:14px;border:1px dashed #cfcac0;border-radius:12px;background:#fff;color:var(--muted)}
+  .badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--danger);color:#fff;font-size:12px;font-weight:700}
+  .proposal-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .proposal-title{font-weight:700;margin-bottom:6px}
+  .attachments-row{display:flex;gap:10px;overflow-x:auto;padding:6px 0 2px 0;margin-top:8px}
+  .asset-chip{min-width:120px;max-width:140px;border:1px solid #d7d2c7;border-radius:10px;padding:6px;background:#fafafa;display:flex;flex-direction:column;gap:4px}
+  .asset-chip-title{font-size:12px;font-weight:700;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .asset-chip-preview{height:60px;border:1px solid #ece7dc;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px}
+  .asset-chip-preview img{max-width:100%;max-height:100%;display:block;border-radius:8px}
+  .asset-chip-link{font-size:11px;line-height:1.3;color:#555;word-break:break-all;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .asset-editor{margin-top:10px;border-top:1px solid #e7e3da;padding-top:10px}
+  .asset-editor-grid{display:grid;grid-template-columns:1fr 120px 1fr;gap:8px}
+  .asset-file{font:inherit}
+  
+  .app-modal-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.45);
+    display:none; align-items:center; justify-content:center; z-index:9999;
+  }
+  .app-modal-backdrop.show{display:flex}
+  .app-modal{
+    width:min(560px, calc(100vw - 32px));
+    background:#fff; border-radius:16px; border:1px solid var(--line);
+    box-shadow:0 20px 40px rgba(0,0,0,.25); padding:16px;
+  }
+  .app-modal-title{font-size:20px; font-weight:800; margin-bottom:10px}
+  .app-modal-text{font-size:14px; color:var(--muted); margin-bottom:10px}
+  .app-modal-input,.app-modal-textarea{
+    width:100%; border:1px solid #d7d2c7; border-radius:10px; padding:10px 12px; background:#fff; font:inherit;
+  }
+  .app-modal-textarea{min-height:120px; resize:vertical}
+  .app-modal-actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:12px}
+  
+  .login-modal .app-modal-input {
+      margin-bottom: 12px;
+  }
+  .login-modal .role-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+  }
+  .login-modal .role-btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: #fff;
+      transition: all 0.2s;
+  }
+  .login-modal .role-btn.active {
+      background: var(--gold);
+      border-color: var(--gold2);
+      color: #fff;
+  }
+  .login-modal .password-field {
+      display: none;
+  }
+  .login-modal .password-field.show {
+      display: block;
+  }
+  
+  @media (max-width:1150px){.layout{grid-template-columns:1fr}}
+  </style>
+  </head>
+  <body>
+  <header>
+    <div class="brand">
+      <div class="logo">BORZO</div>
+      <div><div class="header-title">Script Navigator</div><div class="header-sub">Внутренний навигатор скриптов</div></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="downloadProjectBtn" class="small-btn gold-btn" style="display: inline-block;">Скачать проект</button>
+      <button id="exportBtn" class="small-btn gold-btn" style="display: inline-block;">Экспорт базы</button>
+      <select id="roleSelect" class="role-select"><option value="manager">Менеджер</option><option value="owner">Руководитель</option></select>
+      <button id="logoutBtn" class="small-btn" style="background:#2f2f2f; border-color:#666; color:#fff;">Выйти</button>
+    </div>
+  </header>
+  
+  <div class="layout">
+    <aside class="panel">
+      <div class="section-head"><div class="section-title">Магистраль</div></div>
+      <div id="mainList" class="list"></div>
+      <button class="small-btn gold-btn" id="addMainBlockBtn">+ блок</button>
+      <div class="divider"></div>
+      <div class="section-head"><div class="section-title" style="font-size:18px">Предложения</div><div id="propBadge"></div></div>
+      <div id="managerReplyArea" class="list"></div>
+      <div id="proposalList" class="list"></div>
+    </aside>
+    <main class="panel white"><div id="center"></div></main>
+    <aside class="panel" id="rightPanel"></aside>
+  </div>
+  
+  <script>
+    // ======================== ДАННЫЕ ПО УМОЛЧАНИЮ ========================
+    const defaultData = {
+      role: "owner",
+      currentBlock: "Сомнение в упаковку",
+      lastMain: "Город клиента",
+      mainOrder: ["Входящий старт", "Выбор модели", "Размер и цвет", "Город клиента", "Доставка и оплата", "Финальное подтверждение"],
+      sectionOrder: ["Вопросы клиентов", "Обработка возражений", "Пауза", "Закрытие клиента"],
+      sections: {
+        "Вопросы клиентов": ["Где посмотреть", "Разница моделей", "Нестандартный размер", "Другой цвет"],
+        "Обработка возражений": ["Дорого", "Сомнение в упаковку", "Сомнение в прочности", "Сомнение в качестве", "Доставка после 18:00"],
+        "Пауза": ["Подумаю / позже", "Молчание после фильтра", "Выбрал модель и пропал", "Пропал после ссылки на оплату"],
+        "Закрытие клиента": ["Дорого — закрытие", "Не сейчас"]
+      },
+      blocks: {
+        "Входящий старт": { kind: "main", note: "Если клиент сразу ушёл в уточняющий вопрос, после ответа его нужно вернуть в магистраль.", hint: "", messages: [{ label: "Стандартный входящий", text: "Здравствуйте. Меня зовут Салтанат, менеджер BORZO.\n\nСейчас отправлю цены и краткое описание.", attachments: [] }] },
+        "Выбор модели": { kind: "main", note: "", hint: "После этого сообщения отправить фото моделей.", messages: [{ label: "Основное сообщение", text: "Какой вариант вам ближе — LUX или GEOMETRY?", attachments: [] }] },
+        "Размер и цвет": { kind: "main", note: "Если клиент перескочил к доставке или городу — вернуть его к выбору размера и цвета.", hint: "", messages: [{ label: "Основное сообщение", text: "Отлично 👍\n\nУ наших столов есть стандартные размеры:\nВ сложенном виде консоль — 100×45×76 см\nВ разложенном формате доступны варианты — 3 м / 3,5 м / 4 м\n\nПодскажите размер и цвет? Уточню, доступен ли этот вариант сейчас.", attachments: [] }] },
+        "Город клиента": { kind: "main", note: "", hint: "", messages: [{ label: "После подтверждения модели и цвета (если в наличии)", text: "Ваш вариант доступен.\n\nПодскажите, с какого вы города?", attachments: [] }] },
+        "Доставка и оплата": { kind: "main", note: "", hint: "", messages: [{ label: "Если Астана", text: "По Астане доставка бесплатная.\n\nПодскажите ваш адрес и в какое время будет удобно принять доставку?", attachments: [] }] },
+        "Финальное подтверждение": { kind: "main", note: "", hint: "", messages: [{ label: "Подтверждение", text: "Подтверждаю:\n\n— модель\n— размер\n— цвет\n— город доставки\n— способ оплаты\n\nВсё верно?", attachments: [] }] },
+        "Где посмотреть": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Работаем в онлайн-формате напрямую от фабрики в Астане.\n\nЕсть подробные видеообзоры — отправить вам?", attachments: [] }] },
+        "Разница моделей": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "По качеству и надежности обе модели на высоком уровне.\nРазница в дизайне и деталях исполнения.\n\nLUX — более классическая модель.\nGEOMETRY — сложная геометрия основания,\nдекоративные элементы по углам столешницы и подсветка (с пультом).\nКакой дизайн вам ближе?", attachments: [] }] },
+        "Нестандартный размер": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Индивидуальные размеры не изготавливаем.\nМы работаем с фиксированными размерами ширина 1м, длина 3 / 3,5 / 4 м.\nЭто позволяет сохранить точную геометрию и надёжность конструкции.", attachments: [] }] },
+        "Другой цвет": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Другие оттенки не производим.\nМы работаем с утверждённой палитрой,\nчтобы сохранить точность оттенка и качество покрытия.", attachments: [] }] },
+        "Дорого": { kind: "side", note: "После обработки возражения нужно вернуться туда, где менеджер был до ветки.", hint: "", messages: [{ label: "Ответ", text: "Понимаю. Цена выше среднего, потому что конструкция и подход отличаются.\nЕсли хотите, могу отправить короткое видео с производства, где объясняем, из чего складывается стоимость?", attachments: [] }] },
+        "Сомнение в упаковку": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Не переживайте 👍\nУпаковка у нас заводская:\n\nПенопласт + пузырчатая плёнка + пластиковая защита углов + 5-слойный картон\n\nПоэтому всё доезжает без проблем.\n\nНо даже если что-то произойдёт в дороге — мы всегда решаем вопрос в пользу клиента.", attachments: [] }] },
+        "Сомнение в прочности": { kind: "side", note: "После обработки возражения нужно вернуться туда, где менеджер был до ветки.", hint: "", messages: [{ label: "Ответ", text: "Конструкция тестировалась на нагрузку 200+ кг.\nЕсли хотите — отправлю ссылку на видео теста.", attachments: [] }] },
+        "Сомнение в качестве": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Если вдруг что-то не устроит —\nможно оформить возврат.\nНо таких случаев ещё не было.", attachments: [] }] },
+        "Подумаю / позже": { kind: "side", note: "", hint: "", messages: [{ label: "Перевод в выбор модели (скинуть фото и вопрос)", text: "Поняла вас. Если есть вопросы — уточняйте, я всё подробно расскажу.\nИли можем пока определиться с моделью ↓", attachments: [] }] },
+        "Молчание после фильтра": { kind: "side", note: "", hint: "", messages: [{ label: "Ответ", text: "Подскажите, ваш запрос по столу ещё актуален?", attachments: [] }] },
+        "Выбрал модель и пропал": { kind: "side", note: "", hint: "", messages: [{ label: "Через 2–3 часа (днём) или на следующий день утром (если вечер)", text: "Фиксирую за вами выбранную модель?", attachments: [] }] },
+        "Пропал после ссылки на оплату": { kind: "side", note: "", hint: "", messages: [{ label: "Через 60 минут", text: "Удалось оформить заказ?", attachments: [] }] },
+        "Дорого — закрытие": { kind: "side", note: "", hint: "", messages: [{ label: "Закрытие", text: "Возможно, сейчас просто не время.\nЕсли вернётесь к вопросу — буду рада помочь.", attachments: [] }] },
+        "Не сейчас": { kind: "side", note: "", hint: "", messages: [{ label: "Клиент прямо говорит \"НЕТ\"", text: "Хорошо. Если позже вопрос снова станет актуальным — напишите.", attachments: [] }] },
+        "Доставка после 18:00": { kind: "side", note: "", hint: "Индивидуально можно пойти на встречу и сделать бесплатную доставку до 18:30", messages: [{ label: "Ответ", text: "После 18:00 доставка возможна,\nно будет платной — 6000 ₸.\nЕсли есть возможность принять в дневное время —\nдоставка будет бесплатной.", attachments: [] }] }
       }
     };
-    group.appendChild(btn);
-    wrap.appendChild(group);
-  });
-  const addSec = document.createElement('button');
-  addSec.className = 'small-btn gold-btn';
-  addSec.textContent = isOwner() ? '+ раздел' : '+ предложить раздел';
-  addSec.onclick = async () => {
-    if(isOwner()) {
-      const n = await showPromptModal('Новый раздел', 'Название раздела');
-      if(n && n.trim() && !state.sections[n.trim()]) {
-        state.sectionOrder.push(n.trim());
-        state.sections[n.trim()] = [];
-        save(); render();
+
+    // ======================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ========================
+    let data = JSON.parse(JSON.stringify(defaultData));
+    let role = "owner";
+    let currentUser = null; // для логина
+
+    // ======================== ФУНКЦИИ СОХРАНЕНИЯ ========================
+    function saveToLocalStorage() {
+      const saveData = {
+        role: role,
+        currentBlock: data.currentBlock,
+        lastMain: data.lastMain,
+        mainOrder: data.mainOrder,
+        sectionOrder: data.sectionOrder,
+        sections: data.sections,
+        blocks: data.blocks
+      };
+      localStorage.setItem('borzo_v7', JSON.stringify(saveData));
+    }
+
+    function loadFromLocalStorage() {
+      const saved = localStorage.getItem('borzo_v7');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          data.role = parsed.role || data.role;
+          data.currentBlock = parsed.currentBlock || data.currentBlock;
+          data.lastMain = parsed.lastMain || data.lastMain;
+          data.mainOrder = parsed.mainOrder || data.mainOrder;
+          data.sectionOrder = parsed.sectionOrder || data.sectionOrder;
+          data.sections = parsed.sections || data.sections;
+          data.blocks = parsed.blocks || data.blocks;
+          role = data.role;
+        } catch(e) { console.error(e); }
       }
-    } else {
-      const sectionName = await showPromptModal('Предложить раздел', 'Название раздела');
-      if(sectionName) {
-        const blockName = await showPromptModal('Название первого элемента', 'Название элемента');
-        if(blockName) {
-          const cond = await showPromptModal('Назначение / когда использовать', 'Описание');
-          if(cond) {
-            const text = await showPromptModal('Текст сообщения', 'Введите текст');
-            if(text) addProposal('new-section', '', { sectionName, blockName, condition: cond, text });
+    }
+
+    // ======================== ФУНКЦИЯ СОХРАНЕНИЯ ПРОЕКТА (ДЛЯ РУКОВОДИТЕЛЯ) ========================
+    function saveProject() {
+      saveToLocalStorage();
+      alert('✅ Проект успешно сохранен! Все изменения применены для всех пользователей.');
+    }
+
+    // ======================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ========================
+    function getBlock(blockName) {
+      if (!data.blocks[blockName]) {
+        data.blocks[blockName] = { kind: "side", note: "", hint: "", messages: [] };
+      }
+      return data.blocks[blockName];
+    }
+
+    // ======================== ОТРИСОВКА ИНТЕРФЕЙСА ========================
+    function renderMainList() {
+      const container = document.getElementById('mainList');
+      if (!container) return;
+      container.innerHTML = '';
+      data.mainOrder.forEach(blockName => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.setAttribute('draggable', 'true');
+        div.setAttribute('data-block', blockName);
+        div.innerHTML = `
+          <div class="item-row">
+            <div class="item-title" ondblclick="selectBlock('${blockName.replace(/'/g, "\\'")}')">${escapeHtml(blockName)}</div>
+            <div class="hidden-actions">
+              <button class="icon-btn" onclick="startEditBlock('${blockName.replace(/'/g, "\\'")}')">✎</button>
+              <button class="icon-btn danger-btn" onclick="deleteBlock('${blockName.replace(/'/g, "\\'")}')">🗑</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderRightPanel() {
+      const container = document.getElementById('rightPanel');
+      if (!container) return;
+      container.innerHTML = '';
+      
+      data.sectionOrder.forEach(sectionName => {
+        const blocks = data.sections[sectionName] || [];
+        const sectionDiv = document.createElement('div');
+        sectionDiv.style.marginBottom = '16px';
+        sectionDiv.setAttribute('data-section', sectionName);
+        sectionDiv.innerHTML = `
+          <div class="section-head">
+            <div class="section-title" style="font-size:20px;cursor:pointer" ondblclick="startEditSection('${sectionName.replace(/'/g, "\\'")}')">${escapeHtml(sectionName)}</div>
+            <div class="hidden-actions" style="display:flex">
+              <button class="icon-btn" onclick="startEditSection('${sectionName.replace(/'/g, "\\'")}')">✎</button>
+              <button class="icon-btn danger-btn" onclick="deleteSection('${sectionName.replace(/'/g, "\\'")}')">🗑</button>
+            </div>
+          </div>
+          <div class="list">
+            ${blocks.map(blockName => `
+              <div class="item ${data.currentBlock === blockName ? 'active' : ''}" draggable="true" data-block="${blockName}">
+                <div class="item-row">
+                  <div class="item-title" ondblclick="selectBlock('${blockName.replace(/'/g, "\\'")}')">${escapeHtml(blockName)}</div>
+                  <div class="hidden-actions">
+                    <button class="icon-btn" onclick="startEditBlock('${blockName.replace(/'/g, "\\'")}')">✎</button>
+                    <button class="icon-btn danger-btn" onclick="deleteBlock('${blockName.replace(/'/g, "\\'")}')">🗑</button>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <button class="small-btn gold-btn" onclick="addBlockToSection('${sectionName.replace(/'/g, "\\'")}')">+ элемент</button>
+        `;
+        container.appendChild(sectionDiv);
+      });
+      
+      const addSectionBtn = document.createElement('button');
+      addSectionBtn.className = 'small-btn gold-btn';
+      addSectionBtn.textContent = '+ раздел';
+      addSectionBtn.onclick = () => addNewSection();
+      container.appendChild(addSectionBtn);
+      
+      // Кнопка сохранения проекта для руководителя
+      if (role === 'owner') {
+        const saveBtn = document.createElement('button');
+        saveBtn.id = 'globalSaveBtn';
+        saveBtn.className = 'small-btn gold-btn';
+        saveBtn.style.marginTop = '16px';
+        saveBtn.style.width = '100%';
+        saveBtn.style.background = '#2c7a4d';
+        saveBtn.innerHTML = '💾 СОХРАНИТЬ ВСЕ ИЗМЕНЕНИЯ ПРОЕКТА';
+        saveBtn.onclick = saveProject;
+        container.appendChild(saveBtn);
+      }
+    }
+
+    function renderCenter() {
+      const container = document.getElementById('center');
+      if (!container) return;
+      const block = getBlock(data.currentBlock);
+      const isMain = block.kind === 'main';
+      
+      container.innerHTML = `
+        <div class="center-title">${escapeHtml(data.currentBlock)}</div>
+        <div class="center-sub side">● ${isMain ? 'Магистраль' : 'Ветка сценария'}</div>
+        <div class="toolbar" style="margin-bottom:14px">
+          <button class="small-btn return-btn" onclick="returnToMain()">⬅ Вернуться в магистраль</button>
+        </div>
+        <div class="info-box gold-box">
+          <div style="font-weight:700;margin-bottom:8px">Пояснение</div>
+          <textarea id="meta-note" class="textarea" style="min-height:58px;height:58px">${escapeHtml(block.note || '')}</textarea>
+        </div>
+        <div class="info-box blue-box">
+          <div style="font-weight:700;margin-bottom:8px">Подсказка</div>
+          <textarea id="meta-hint" class="textarea" style="min-height:58px;height:58px">${escapeHtml(block.hint || '')}</textarea>
+        </div>
+        <div class="toolbar" style="margin-bottom:14px">
+          <button class="small-btn gold-btn" onclick="saveMeta()">Сохранить пояснение и подсказку</button>
+        </div>
+        <div id="messagesContainer"></div>
+        <div class="card">
+          <div style="font-weight:700;margin-bottom:10px">Добавить сообщение</div>
+          <input id="new-label" class="input" placeholder="Название сообщения">
+          <textarea id="new-text" class="textarea" placeholder="Текст сообщения"></textarea>
+          <div class="toolbar">
+            <button class="small-btn gold-btn" onclick="addOwnerMessage()">Добавить сообщение</button>
+          </div>
+        </div>
+      `;
+      
+      renderMessages();
+    }
+    
+    function renderMessages() {
+      const container = document.getElementById('messagesContainer');
+      if (!container) return;
+      const block = getBlock(data.currentBlock);
+      const messages = block.messages || [];
+      container.innerHTML = messages.map((msg, idx) => `
+        <div class="card message-card" data-message-index="${idx}">
+          <div class="card-main">
+            <div class="card-body">
+              <div class="card-head">
+                <div class="card-label">${escapeHtml(msg.label || 'Сообщение')}</div>
+                <div class="toolbar" style="margin-top:0">
+                  <button class="copy-btn" onclick="copyMessage(${idx})">Скопировать</button>
+                  <button class="small-btn" onclick="startEditMessage(${idx})">Редактировать</button>
+                  <button class="small-btn danger-btn" onclick="deleteMessage(${idx})">Удалить</button>
+                </div>
+              </div>
+              <div class="card-text">${escapeHtml(msg.text || '').replace(/\n/g, '<br>')}</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // ======================== ДЕЙСТВИЯ ========================
+    function selectBlock(blockName) {
+      data.currentBlock = blockName;
+      if (getBlock(blockName).kind === 'main') data.lastMain = blockName;
+      saveToLocalStorage();
+      renderCenter();
+      renderMainList();
+      renderRightPanel();
+    }
+    
+    function returnToMain() {
+      if (data.lastMain && data.blocks[data.lastMain]) {
+        selectBlock(data.lastMain);
+      } else if (data.mainOrder.length > 0) {
+        selectBlock(data.mainOrder[0]);
+      }
+    }
+    
+    function saveMeta() {
+      const note = document.getElementById('meta-note')?.value || '';
+      const hint = document.getElementById('meta-hint')?.value || '';
+      const block = getBlock(data.currentBlock);
+      block.note = note;
+      block.hint = hint;
+      saveToLocalStorage();
+      alert('Сохранено');
+    }
+    
+    function addOwnerMessage() {
+      const label = document.getElementById('new-label')?.value.trim();
+      const text = document.getElementById('new-text')?.value;
+      if (!label || !text) { alert('Заполните название и текст'); return; }
+      const block = getBlock(data.currentBlock);
+      if (!block.messages) block.messages = [];
+      block.messages.push({ label: label, text: text, attachments: [] });
+      document.getElementById('new-label').value = '';
+      document.getElementById('new-text').value = '';
+      saveToLocalStorage();
+      renderCenter();
+    }
+    
+    function copyMessage(idx) {
+      const block = getBlock(data.currentBlock);
+      const msg = block.messages?.[idx];
+      if (msg?.text) {
+        navigator.clipboard.writeText(msg.text);
+        alert('Скопировано');
+      }
+    }
+    
+    function startEditMessage(idx) {
+      const block = getBlock(data.currentBlock);
+      const msg = block.messages?.[idx];
+      if (!msg) return;
+      const newLabel = prompt('Название сообщения:', msg.label);
+      if (newLabel !== null) msg.label = newLabel;
+      const newText = prompt('Текст сообщения:', msg.text);
+      if (newText !== null) msg.text = newText;
+      saveToLocalStorage();
+      renderCenter();
+    }
+    
+    function deleteMessage(idx) {
+      if (confirm('Удалить сообщение?')) {
+        const block = getBlock(data.currentBlock);
+        block.messages.splice(idx, 1);
+        saveToLocalStorage();
+        renderCenter();
+      }
+    }
+    
+    function startEditBlock(blockName) {
+      const block = getBlock(blockName);
+      const newName = prompt('Новое название блока:', blockName);
+      if (!newName || newName === blockName) return;
+      
+      // Обновляем во всех структурах
+      if (data.mainOrder.includes(blockName)) {
+        const idx = data.mainOrder.indexOf(blockName);
+        data.mainOrder[idx] = newName;
+      }
+      for (const section in data.sections) {
+        const idx = data.sections[section].indexOf(blockName);
+        if (idx !== -1) data.sections[section][idx] = newName;
+      }
+      data.blocks[newName] = data.blocks[blockName];
+      delete data.blocks[blockName];
+      if (data.currentBlock === blockName) data.currentBlock = newName;
+      if (data.lastMain === blockName) data.lastMain = newName;
+      
+      saveToLocalStorage();
+      renderMainList();
+      renderRightPanel();
+      renderCenter();
+    }
+    
+    function deleteBlock(blockName) {
+      if (!confirm(`Удалить блок "${blockName}"?`)) return;
+      if (data.mainOrder.includes(blockName)) {
+        data.mainOrder = data.mainOrder.filter(b => b !== blockName);
+      }
+      for (const section in data.sections) {
+        data.sections[section] = data.sections[section].filter(b => b !== blockName);
+      }
+      delete data.blocks[blockName];
+      if (data.currentBlock === blockName) {
+        if (data.mainOrder.length) data.currentBlock = data.mainOrder[0];
+        else data.currentBlock = Object.keys(data.blocks)[0] || '';
+      }
+      saveToLocalStorage();
+      renderMainList();
+      renderRightPanel();
+      renderCenter();
+    }
+    
+    function addBlockToSection(sectionName) {
+      const newName = prompt('Название нового блока:');
+      if (!newName) return;
+      if (!data.sections[sectionName]) data.sections[sectionName] = [];
+      if (data.blocks[newName]) { alert('Блок с таким именем уже существует'); return; }
+      data.sections[sectionName].push(newName);
+      data.blocks[newName] = { kind: "side", note: "", hint: "", messages: [] };
+      saveToLocalStorage();
+      renderRightPanel();
+    }
+    
+    function addNewBlockToMain() {
+      const newName = prompt('Название нового блока магистрали:');
+      if (!newName) return;
+      if (data.blocks[newName]) { alert('Блок с таким именем уже существует'); return; }
+      data.mainOrder.push(newName);
+      data.blocks[newName] = { kind: "main", note: "", hint: "", messages: [] };
+      saveToLocalStorage();
+      renderMainList();
+    }
+    
+    function startEditSection(sectionName) {
+      const newName = prompt('Новое название раздела:', sectionName);
+      if (!newName || newName === sectionName) return;
+      const idx = data.sectionOrder.indexOf(sectionName);
+      if (idx !== -1) data.sectionOrder[idx] = newName;
+      data.sections[newName] = data.sections[sectionName];
+      delete data.sections[sectionName];
+      saveToLocalStorage();
+      renderRightPanel();
+    }
+    
+    function deleteSection(sectionName) {
+      if (!confirm(`Удалить раздел "${sectionName}" со всеми блоками?`)) return;
+      const blocks = data.sections[sectionName] || [];
+      blocks.forEach(blockName => delete data.blocks[blockName]);
+      delete data.sections[sectionName];
+      data.sectionOrder = data.sectionOrder.filter(s => s !== sectionName);
+      saveToLocalStorage();
+      renderRightPanel();
+    }
+    
+    function addNewSection() {
+      const newName = prompt('Название нового раздела:');
+      if (!newName) return;
+      if (data.sections[newName]) { alert('Раздел уже существует'); return; }
+      data.sectionOrder.push(newName);
+      data.sections[newName] = [];
+      saveToLocalStorage();
+      renderRightPanel();
+    }
+    
+    // ======================== ЭКСПОРТ/ИМПОРТ ========================
+    function exportDatabase() {
+      const exportData = {
+        mainOrder: data.mainOrder,
+        sectionOrder: data.sectionOrder,
+        sections: data.sections,
+        blocks: data.blocks
+      };
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'borzo_backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    
+    function downloadProject() {
+      const fullData = {
+        role: role,
+        currentBlock: data.currentBlock,
+        lastMain: data.lastMain,
+        mainOrder: data.mainOrder,
+        sectionOrder: data.sectionOrder,
+        sections: data.sections,
+        blocks: data.blocks
+      };
+      const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'borzo_project.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    
+    // ======================== ЛОГИН ========================
+    function showLoginModal() {
+      const modal = document.createElement('div');
+      modal.className = 'app-modal-backdrop show';
+      modal.innerHTML = `
+        <div class="app-modal login-modal">
+          <div class="app-modal-title">Вход в систему</div>
+          <div class="role-buttons">
+            <button class="role-btn" data-role="manager">Менеджер</button>
+            <button class="role-btn" data-role="owner">Руководитель</button>
+          </div>
+          <div class="password-field">
+            <input type="password" class="app-modal-input" id="ownerPassword" placeholder="Пароль руководителя">
+          </div>
+          <div class="app-modal-actions">
+            <button class="small-btn" id="cancelLogin">Отмена</button>
+            <button class="small-btn gold-btn" id="confirmLogin">Войти</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      
+      let selectedRole = 'manager';
+      const roleBtns = modal.querySelectorAll('.role-btn');
+      const passwordField = modal.querySelector('.password-field');
+      
+      roleBtns.forEach(btn => {
+        btn.onclick = () => {
+          roleBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          selectedRole = btn.dataset.role;
+          if (selectedRole === 'owner') passwordField.classList.add('show');
+          else passwordField.classList.remove('show');
+        };
+      });
+      roleBtns[0].classList.add('active');
+      
+      modal.querySelector('#confirmLogin').onclick = () => {
+        if (selectedRole === 'owner') {
+          const pwd = modal.querySelector('#ownerPassword').value;
+          if (pwd !== 'admin123') {
+            alert('Неверный пароль руководителя');
+            return;
           }
         }
-      }
+        role = selectedRole;
+        data.role = role;
+        saveToLocalStorage();
+        document.body.removeChild(modal);
+        renderMainList();
+        renderRightPanel();
+        renderCenter();
+      };
+      modal.querySelector('#cancelLogin').onclick = () => {
+        document.body.removeChild(modal);
+      };
     }
-  };
-  wrap.appendChild(addSec);
-}
-
-function renderCenter() {
-  const block = state.blocks[state.currentBlock];
-  const el = document.getElementById('center');
-  const elMobile = document.getElementById('mobileCenter');
-  if(!block) { if(el) el.innerHTML = "<div class='empty'>Блок не найден</div>"; return; }
-  
-  let html = `<div class="center-title">${esc(state.currentBlock)}</div><div class="center-sub ${block.kind==='main'?'main':'side'}">${block.kind==='main'?'● Магистраль':'● Ветка сценария'}</div>`;
-  if(block.kind !== 'main') html += `<div class="toolbar"><button class="small-btn return-btn" onclick="returnToMain()">⬅ Вернуться в магистраль</button></div>`;
-  
-  if(block.note || isOwner()) {
-    html += `<div class="info-box gold-box">${isOwner() ? `<strong>Пояснение</strong><textarea id="meta-note" class="textarea" style="margin-top:8px">${esc(block.note||'')}</textarea>` : esc(block.note||'')}</div>`;
-  }
-  if(block.hint || isOwner()) {
-    html += `<div class="info-box blue-box">${isOwner() ? `<strong>Подсказка</strong><textarea id="meta-hint" class="textarea" style="margin-top:8px">${esc(block.hint||'')}</textarea>` : esc(block.hint||'')}</div>`;
-  }
-  if(isOwner()) html += `<button class="small-btn gold-btn" onclick="saveMeta()">💾 Сохранить пояснение</button>`;
-  
-  (block.messages || []).forEach((msg, i) => {
-    html += `<div class="card"><div class="card-head"><span class="card-label">${esc(msg.label)}</span><div><button class="copy-btn" onclick="copyMessage(${i})">📋 Копировать</button>${isOwner() ? `<button class="small-btn" onclick="startEditMessage(${i})">✎</button><button class="small-btn danger-btn" onclick="deleteMessage(${i})">🗑</button>` : `<button class="small-btn" onclick="startInlineProposal(${i})">💡 Предложить изменение</button>`}</div></div><div class="card-text">${esc(msg.text)}</div></div>`;
-  });
-  
-  if(isOwner()) {
-    html += `<div class="card"><strong>➕ Добавить сообщение</strong><input id="new-label" class="input" placeholder="Название"><textarea id="new-text" class="textarea" placeholder="Текст"></textarea><button class="small-btn gold-btn" onclick="addOwnerMessage()">Добавить</button></div>`;
-  } else {
-    html += `<div class="card"><strong>💡 Предложить новый вариант</strong><input id="prop-name" class="input" placeholder="Назначение / когда использовать"><textarea id="prop-text" class="textarea" placeholder="Текст ответа"></textarea><button class="small-btn gold-btn" onclick="saveNewVariantProposal()">Отправить предложение</button></div>`;
-  }
-  
-  if(el) el.innerHTML = html;
-  if(elMobile) elMobile.innerHTML = html;
-}
-
-function renderProposals() {
-  const badge = document.getElementById('propBadge');
-  if(badge) badge.innerHTML = state.proposals.length ? `<span class="badge">${state.proposals.length}</span>` : '';
-  const el = document.getElementById('proposalList');
-  if(!el) return;
-  el.innerHTML = '';
-  if(!state.proposals.length) { el.innerHTML = "<div class='empty'>✨ Нет активных предложений</div>"; return; }
-  
-  state.proposals.forEach((p, idx) => {
-    let target = p.targetType === 'main-list' ? 'Магистраль' : (p.targetType === 'section' ? `Раздел: ${p.targetName}` : (p.targetType === 'new-section' ? '📁 Новый раздел' : `Блок: ${p.targetName}`));
-    const div = document.createElement('div');
-    div.className = 'proposal-card';
-    let preview = `<div class="muted">${esc(target)} ${p._issueNumber ? `#${p._issueNumber}` : '⏳ локально'}</div>`;
-    if(p.targetType === 'new-section') preview += `<div><b>${esc(p.sectionName)}</b> → ${esc(p.blockName)}</div><div class="muted">${esc(p.condition)}</div><div>${esc(p.text)}</div>`;
-    else if(p.targetType === 'main-list') preview += `<div><b>${esc(p.blockName)}</b></div><div class="muted">${esc(p.condition)}</div><div>${esc(p.text)}</div>`;
-    else preview += `<div><b>${esc(p.condition)}</b></div><div class="muted">${esc(p.text)}</div>`;
-    div.innerHTML = preview;
     
-    const tools = document.createElement('div');
-    tools.className = 'toolbar';
-    if(isOwner()) {
-      const accept = document.createElement('button');
-      accept.className = 'small-btn gold-btn';
-      accept.textContent = '✅ Принять';
-      accept.onclick = () => approveProposal(idx);
-      const reject = document.createElement('button');
-      reject.className = 'small-btn danger-btn';
-      reject.textContent = '❌ Отклонить';
-      reject.onclick = () => rejectProposal(idx);
-      tools.append(accept, reject);
-    } else {
-      const status = document.createElement('span');
-      status.className = 'muted';
-      status.textContent = p._issueNumber ? '📎 Отправлено в GitHub' : '⏳ Ожидает отправки';
-      tools.appendChild(status);
-      if(!p._issueNumber && githubToken) {
-        const send = document.createElement('button');
-        send.className = 'small-btn gold-btn';
-        send.textContent = '📤 Отправить';
-        send.onclick = async () => { await sendProposalToGitHub(p); save(); render(); };
-        tools.appendChild(send);
-      }
+    function logout() {
+      role = 'manager';
+      data.role = 'manager';
+      saveToLocalStorage();
+      renderMainList();
+      renderRightPanel();
+      renderCenter();
     }
-    div.appendChild(tools);
-    el.appendChild(div);
-  });
-}
-
-function renderRightMobile(containerId) {
-  const el = document.getElementById(containerId);
-  if(!el) return;
-  el.innerHTML = '';
-  state.sectionOrder.forEach(section => {
-    const group = document.createElement('div');
-    group.innerHTML = `<div class="section-title" style="font-size:18px;margin:12px 0 8px">📁 ${esc(section)}</div>`;
-    const list = document.createElement('div');
-    list.className = 'list';
-    (state.sections[section] || []).forEach(name => {
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.onclick = () => { openBlock(name); closeMobileMenus(); };
-      div.innerHTML = `<div class="item-title">${esc(name)}</div>`;
-      list.appendChild(div);
-    });
-    group.appendChild(list);
-    el.appendChild(group);
-  });
-}
-
-function renderManagerReplyDesktop() {
-  const el = document.getElementById('managerReplyArea');
-  if(!el) return;
-  el.innerHTML = '';
-  if(isOwner()) return;
-  if(Array.isArray(state.managerMessages) && state.managerMessages.length) {
-    const div = document.createElement('div');
-    div.className = 'proposal-card';
-    div.innerHTML = "<div class='proposal-title'>📬 Ответ от руководителя</div><div class='muted'>Есть новый комментарий</div>";
-    const btn = document.createElement('button');
-    btn.className = 'small-btn gold-btn';
-    btn.textContent = 'Открыть';
-    btn.onclick = () => {
-      const msg = state.managerMessages.shift();
-      save();
-      showAlertModal('Ответ от руководителя', msg.text);
-      render();
-    };
-    div.appendChild(btn);
-    el.appendChild(div);
-  }
-}
-
-function renderProposalsMobile(containerId) {
-  const el = document.getElementById(containerId);
-  if(!el) return;
-  el.innerHTML = '';
-  if(!state.proposals.length) { el.innerHTML = "<div class='empty'>Нет предложений</div>"; return; }
-  state.proposals.forEach(p => {
-    const div = document.createElement('div');
-    div.className = 'proposal-card';
-    div.innerHTML = `<div class="muted">${esc(p.condition || 'Предложение')}</div><div>${esc(p.text?.substring(0, 80))}${p.text?.length > 80 ? '...' : ''}</div>`;
-    el.appendChild(div);
-  });
-}
-
-function copyMessage(i){ navigator.clipboard.writeText(state.blocks[state.currentBlock].messages[i].text); showAlertModal('Скопировано', 'Текст скопирован'); }
-function saveMeta(){ state.blocks[state.currentBlock].note = document.getElementById('meta-note')?.value || ''; state.blocks[state.currentBlock].hint = document.getElementById('meta-hint')?.value || ''; save(); renderCenter(); }
-function addOwnerMessage(){ const l=document.getElementById('new-label')?.value; const t=document.getElementById('new-text')?.value; if(l&&t){ state.blocks[state.currentBlock].messages.push({label:l,text:t,attachments:[]}); save(); renderCenter(); } }
-function deleteMessage(i){ if(confirm('Удалить сообщение?')){ state.blocks[state.currentBlock].messages.splice(i,1); save(); renderCenter(); } }
-function startEditMessage(i){ editMessageIndex=i; renderCenter(); }
-function startInlineProposal(i){ const msg=state.blocks[state.currentBlock].messages[i]; addProposal('block', state.currentBlock, { condition: msg.label, text: msg.text, mode:'replace', sourceIndex:i }); }
-function saveNewVariantProposal(){ const cond=document.getElementById('prop-name')?.value; const text=document.getElementById('prop-text')?.value; if(cond&&text) addProposal('block', state.currentBlock, { condition: cond, text: text }); }
-
-function closeMobileMenus() {
-  document.getElementById('mobileMenuLeft')?.classList.remove('show');
-  document.getElementById('mobileMenuRight')?.classList.remove('show');
-  document.getElementById('mobileMenuOverlay')?.classList.remove('show');
-}
-
-function render() {
-  renderMain('mainList');
-  renderMain('mobileMainList');
-  renderRightDesktop();
-  renderRightMobile('mobileRight');
-  renderCenter();
-  renderProposals();
-  renderProposalsMobile('mobileProposalList');
-  renderManagerReplyDesktop();
-  
-  const isOwnerRole = isOwner();
-  const downloadBtn = document.getElementById('downloadProjectBtn');
-  const exportBtnElem = document.getElementById('exportBtn');
-  if(downloadBtn) downloadBtn.style.display = isOwnerRole ? 'inline-block' : 'none';
-  if(exportBtnElem) exportBtnElem.style.display = isOwnerRole ? 'inline-block' : 'none';
-}
-
-// ==================== AUTH & INIT ====================
-function init() {
-  if(!checkAuth()) { state.role = 'manager'; saveAuth('manager'); }
-  
-  if(!githubToken && state.role === 'owner') {
-    const token = prompt('🔐 Введите GitHub токен (классический, права repo) для работы с Issues:\nhttps://github.com/settings/tokens', '');
-    if(token) { githubToken = token; localStorage.setItem('github_token', token); }
-  }
-  
-  render();
-  
-  // Event listeners
-  document.getElementById('userDropdownRoleManager')?.addEventListener('click', () => { state.role = 'manager'; saveAuth('manager'); render(); });
-  document.getElementById('userDropdownRoleOwner')?.addEventListener('click', async () => { const code = prompt('Введите код руководителя'); if(code === '7004') { state.role = 'owner'; saveAuth('owner'); render(); } else alert('Неверный код'); });
-  document.getElementById('userDropdownLogout')?.addEventListener('click', () => { localStorage.removeItem(AUTH_KEY); state.role = 'manager'; saveAuth('manager'); render(); });
-  document.getElementById('logoutBtn')?.addEventListener('click', () => { localStorage.removeItem(AUTH_KEY); state.role = 'manager'; saveAuth('manager'); render(); });
-  document.getElementById('roleSelect')?.addEventListener('change', (e) => { const role=e.target.value; if(role==='owner'){ const code=prompt('Код руководителя'); if(code==='7004'){ state.role='owner'; saveAuth('owner'); } else{ state.role='manager'; saveAuth('manager'); document.getElementById('roleSelect').value='manager'; } } else{ state.role='manager'; saveAuth('manager'); } render(); });
-  document.getElementById('userMenuBtn')?.addEventListener('click', () => document.getElementById('userDropdownMenu')?.classList.toggle('show'));
-  document.getElementById('mobileMenuLeftBtn')?.addEventListener('click', () => { document.getElementById('mobileMenuLeft')?.classList.add('show'); document.getElementById('mobileMenuOverlay')?.classList.add('show'); });
-  document.getElementById('mobileMenuRightBtn')?.addEventListener('click', () => { document.getElementById('mobileMenuRight')?.classList.add('show'); document.getElementById('mobileMenuOverlay')?.classList.add('show'); });
-  document.getElementById('closeLeftMenu')?.addEventListener('click', closeMobileMenus);
-  document.getElementById('closeRightMenu')?.addEventListener('click', closeMobileMenus);
-  document.getElementById('mobileMenuOverlay')?.addEventListener('click', closeMobileMenus);
-  document.addEventListener('click', (e) => { if(!e.target.closest('.user-dropdown')) document.getElementById('userDropdownMenu')?.classList.remove('show'); });
-  
-  // Export functions
-  document.getElementById('exportBtn')?.addEventListener('click', () => {
-    const dataStr = JSON.stringify(state, null, 2);
-    const blob = new Blob([dataStr], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `borzo_backup_${new Date().toISOString().slice(0,19)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-  
-  document.getElementById('downloadProjectBtn')?.addEventListener('click', () => {
-    const raw = localStorage.getItem(KEY) || JSON.stringify(state);
-    let htmlText = document.documentElement.outerHTML;
-    const boot = "<script>try{localStorage.setItem('borzo_v7'," + JSON.stringify(raw) + ");}catch(e){}<\/script>\n<script>";
-    htmlText = htmlText.replace("<script>\nconst KEY='borzo_v7';", boot + "\nconst KEY='borzo_v7';");
-    const blob = new Blob([htmlText], {type:'text/html;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'borzo_project.html';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-}
-
-init();
-</script>
+    
+    // ======================== ESCAPE HTML ========================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+        return c;
+      });
+    }
+    
+    // ======================== ИНИЦИАЛИЗАЦИЯ ========================
+    function init() {
+      loadFromLocalStorage();
+      role = data.role;
+      renderMainList();
+      renderRightPanel();
+      renderCenter();
+      
+      document.getElementById('addMainBlockBtn').onclick = addNewBlockToMain;
+      document.getElementById('downloadProjectBtn').onclick = downloadProject;
+      document.getElementById('exportBtn').onclick = exportDatabase;
+      document.getElementById('logoutBtn').onclick = logout;
+      document.getElementById('roleSelect').value = role;
+      document.getElementById('roleSelect').onchange = (e) => {
+        if (e.target.value === 'owner') {
+          showLoginModal();
+          e.target.value = role;
+        } else {
+          role = 'manager';
+          data.role = 'manager';
+          saveToLocalStorage();
+          renderMainList();
+          renderRightPanel();
+          renderCenter();
+        }
+      };
+    }
+    
+    // Глобальные функции для вызова из HTML
+    window.selectBlock = selectBlock;
+    window.returnToMain = returnToMain;
+    window.saveMeta = saveMeta;
+    window.addOwnerMessage = addOwnerMessage;
+    window.copyMessage = copyMessage;
+    window.startEditMessage = startEditMessage;
+    window.deleteMessage = deleteMessage;
+    window.startEditBlock = startEditBlock;
+    window.deleteBlock = deleteBlock;
+    window.startEditSection = startEditSection;
+    window.deleteSection = deleteSection;
+    window.addBlockToSection = addBlockToSection;
+    window.addNewBlockToMain = addNewBlockToMain;
+    
+    init();
+  </script>
 </body>
 </html>
